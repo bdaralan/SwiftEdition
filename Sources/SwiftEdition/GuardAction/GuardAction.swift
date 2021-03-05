@@ -20,17 +20,17 @@ public extension GuardAction where Object: AnyObject, Argument == Never {
 public extension GuardAction where Object: AnyObject {
     
     static func weak(_ object: Object, perform: @escaping (Object, Argument) -> Void) -> (Argument) -> Void {
-        let action = { [weak object] (parameter: Argument) in
+        let action = { [weak object] (argument: Argument) in
             guard let object = object else { return }
-            perform(object, parameter)
+            perform(object, argument)
         }
         return action
     }
     
     static func weak(_ object: Object, argument: Argument.Type, perform: @escaping (Object, Argument) -> Void) -> (Argument) -> Void {
-        let action = { [weak object] (parameter: Argument) in
+        let action = { [weak object] (argument: Argument) in
             guard let object = object else { return }
-            perform(object, parameter)
+            perform(object, argument)
         }
         return action
     }
