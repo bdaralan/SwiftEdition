@@ -1,7 +1,6 @@
 import SwiftUI
 
 
-@available(iOS 13.0.0, *)
 public struct UIViewControllerWrapper<ViewController>: UIViewControllerRepresentable where ViewController: UIViewController {
     
     private let onMake: () -> ViewController

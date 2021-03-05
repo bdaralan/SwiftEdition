@@ -14,6 +14,12 @@ public extension NSLayoutConstraint {
         self.priority = priority
         return self
     }
+    
+    @discardableResult
+    func assign(to variable: inout NSLayoutConstraint?) -> NSLayoutConstraint {
+        variable = self
+        return self
+    }
 }
 
 

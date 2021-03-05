@@ -1,7 +1,6 @@
 import SwiftUI
 
 
-@available(iOS 13.0.0, *)
 public struct UIViewWrapper<View>: UIViewRepresentable where View: UIView {
     
     private let onMake: () -> View
