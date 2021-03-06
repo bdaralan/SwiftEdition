@@ -63,7 +63,7 @@ public extension Color {
     ///
     /// The hex value is case insensitive.
     ///
-    /// - Parameter hex: Example: `BDA12A`, `#BDA12A`, `bda12a`, or `#bda12a`.
+    /// - Parameter hex: A color's hex value; example: `BDA12A` or `bda12a`.
     init(hex: String) {
         self.init(UIColor(hex: hex) ?? .clear)
     }
