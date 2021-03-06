@@ -20,6 +20,12 @@ public extension NSLayoutConstraint {
         variable = self
         return self
     }
+    
+    @discardableResult
+    func store(in array: inout [NSLayoutConstraint]) -> NSLayoutConstraint {
+        array.append(self)
+        return self
+    }
 }
 
 
