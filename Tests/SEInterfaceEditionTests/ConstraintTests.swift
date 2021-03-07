@@ -1,5 +1,5 @@
 import XCTest
-@testable import SwiftEdition
+@testable import SEInterfaceEdition
 
 
 final class ConstraintTests: XCTestCase {
@@ -45,10 +45,4 @@ final class ConstraintTests: XCTestCase {
         subview.topAnchor.constraint(equalTo: superview.topAnchor).assign(to: &constraint)
         XCTAssertNotNil(constraint)
     }
-    
-    static var allTests = [
-        ("testActivateMethod", testActivateMethod),
-        ("testPriorityMethod", testPriorityMethod),
-        ("testAssignMethod", testAssignMethod)
-    ]
 }

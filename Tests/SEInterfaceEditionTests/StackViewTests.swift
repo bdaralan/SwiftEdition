@@ -1,5 +1,5 @@
 import XCTest
-@testable import SwiftEdition
+@testable import SEInterfaceEdition
 
 
 final class StackViewTests: XCTestCase {
@@ -85,13 +85,4 @@ final class StackViewTests: XCTestCase {
         XCTAssertEqual(stack.directionalLayoutMargins, .zero)
         XCTAssertEqual(stack.padding, .zero)
     }
-    
-    static var allTests = [
-        ("testInitArrayViews", testInitArrayViews),
-        ("testInitVariadicViews", testInitVariadicViews),
-        ("testSetArrayArrangedSubviews", testSetArrayArrangedSubviews),
-        ("testSetVariadicArrangedSubviews", testSetVariadicArrangedSubviews),
-        ("testRemoveArrangedSubviews", testRemoveArrangedSubviews),
-        ("testPadding", testPadding)
-    ]
 }

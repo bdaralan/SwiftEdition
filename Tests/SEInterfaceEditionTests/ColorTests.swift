@@ -1,6 +1,6 @@
 import XCTest
 import SwiftUI
-@testable import SwiftEdition
+@testable import SEInterfaceEdition
 
 
 final class ColorTests: XCTestCase {
@@ -14,8 +14,4 @@ final class ColorTests: XCTestCase {
         
         XCTAssertNotNil(Color(hex: "#BDA12A"))
     }
-    
-    static var allTests = [
-        ("testInitHex", testInitHex)
-    ]
 }

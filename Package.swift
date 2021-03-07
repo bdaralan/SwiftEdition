@@ -7,23 +7,18 @@ let package = Package(
     name: "SwiftEdition",
     platforms: [.iOS(.v13)],
     products: [
-        // Products define the executables and libraries a package produces, and make them visible to other packages.
-        .library(
-            name: "SwiftEdition",
-            targets: ["SwiftEdition"]),
-    ],
-    dependencies: [
-        // Dependencies declare other packages that this package depends on.
-        // .package(url: /* package url */, from: "1.0.0"),
+        .library(name: "SwiftEdition", targets: ["SwiftEdition"]),
+        .library(name: "SECombineEdition", targets: ["SECombineEdition"]),
+        .library(name: "SEInterfaceEdition", targets: ["SEInterfaceEdition"]),
+        .library(name: "SEUtilityEdition", targets: ["SEUtilityEdition"])
     ],
     targets: [
-        // Targets are the basic building blocks of a package. A target can define a module or a test suite.
-        // Targets can depend on other targets in this package, and on products in packages this package depends on.
-        .target(
-            name: "SwiftEdition",
-            dependencies: []),
-        .testTarget(
-            name: "SwiftEditionTests",
-            dependencies: ["SwiftEdition"]),
+        .target(name: "SwiftEdition"),
+        .target(name: "SECombineEdition"),
+        .target(name: "SEInterfaceEdition"),
+        .target(name: "SEUtilityEdition"),
+        .testTarget(name: "SEUtilityEditionTests", dependencies: ["SEUtilityEdition"]),
+        .testTarget(name: "SEInterfaceEditionTests", dependencies: ["SEInterfaceEdition"])
     ]
 )
+
