@@ -1,7 +1,7 @@
 import Combine
 
 
-extension Publisher where Failure == Never {
+public extension Publisher where Failure == Never {
     
     /// Assigns value to a property on an object.
     ///
