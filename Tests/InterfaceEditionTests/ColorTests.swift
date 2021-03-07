@@ -1,6 +1,6 @@
 import XCTest
 import SwiftUI
-@testable import SEInterfaceEdition
+@testable import InterfaceEdition
 
 
 final class ColorTests: XCTestCase {

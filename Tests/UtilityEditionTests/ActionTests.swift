@@ -1,5 +1,5 @@
 import XCTest
-@testable import SEUtilityEdition
+@testable import UtilityEdition
 
 
 final class ActionTests: XCTestCase {

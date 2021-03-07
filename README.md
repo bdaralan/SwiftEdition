@@ -1,3 +1,3 @@
 # SwiftEdition
 
-A description of this package.
+Personal frequently use extensions and components.

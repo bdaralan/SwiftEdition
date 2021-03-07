@@ -1,5 +1,5 @@
 import XCTest
-@testable import SEInterfaceEdition
+@testable import InterfaceEdition
 
 
 final class ConstraintTests: XCTestCase {
