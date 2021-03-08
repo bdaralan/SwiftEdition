@@ -2,31 +2,30 @@ import Foundation
 
 
 /// A convenient object used to create closure that handle weak capture.
-public enum Action<Object, Argument> {}
+public enum Action {}
 
 
-public extension Action where Object: AnyObject, Argument == Never {
+extension Action {
     
-    static func weak(_ object: Object, perform: @escaping (Object) -> Void) -> () -> Void {
-        let action = { [weak object] in
+    public static func weak<Object>(_ object: Object, perform: @escaping (Object) -> Void) -> () -> Void where Object: AnyObject {
+        return { [weak object] in
             guard let object = object else { return }
             perform(object)
         }
-        return action
     }
 }
 
 
-public extension Action where Object: AnyObject {
+extension Action {
     
-    static func weak(_ object: Object, perform: @escaping (Object, Argument) -> Void) -> (Argument) -> Void {
+    public static func weak<Object, Argument>(_ object: Object, perform: @escaping (Object, Argument) -> Void) -> (Argument) -> Void where Object: AnyObject {
         return { [weak object] argument in
             guard let object = object else { return }
             perform(object, argument)
         }
     }
     
-    static func weak(_ object: Object, argument: Argument.Type, perform: @escaping (Object, Argument) -> Void) -> (Argument) -> Void {
+    public static func weak<Object, Argument>(_ object: Object, argument: Argument.Type, perform: @escaping (Object, Argument) -> Void) -> (Argument) -> Void where Object: AnyObject {
         return { [weak object] argument in
             guard let object = object else { return }
             perform(object, argument)

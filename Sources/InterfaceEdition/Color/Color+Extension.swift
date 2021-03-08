@@ -3,7 +3,7 @@ import SwiftUI
 
 // MARK: - UIColor
 
-public extension UIColor {
+extension UIColor {
     
     // Use set to get O(1) check.
     static private let validHex = Set("0123456789AaBbCcDdEeFf")
@@ -21,7 +21,7 @@ public extension UIColor {
     /// The hex value is case insensitive.
     ///
     /// - Parameter hex: A color's hex value; example: `BDA12A` or `bda12a`.
-    convenience init?(hex: String) {
+    public convenience init?(hex: String) {
         guard hex.count == 6, hex.allSatisfy(Self.validHex.contains) else {
             print("⚠️ unable to create color from hex: '\(hex)' ⚠️")
             return nil
@@ -49,7 +49,7 @@ public extension UIColor {
     
     /// Create a random color.
     /// - Returns: A random color.
-    static func random() -> UIColor {
+    public static func random() -> UIColor {
         self.init(red: .random(in: 0...1), green: .random(in: 0...1), blue: .random(in: 0...1), alpha: 1)
     }
 }
@@ -57,28 +57,28 @@ public extension UIColor {
 
 // MARK: Color
 
-public extension Color {
+extension Color {
     
     /// Create a color with hex value.
     ///
     /// The hex value is case insensitive.
     ///
     /// - Parameter hex: A color's hex value; example: `BDA12A` or `bda12a`.
-    init(hex: String) {
+    public init(hex: String) {
         self.init(UIColor(hex: hex) ?? .clear)
     }
     
     /// Create a random color.
     /// - Returns: A random color.
-    static func random() -> Color {
+    public static func random() -> Color {
         self.init(red: .random(in: 0...1), green: .random(in: 0...1), blue: .random(in: 0...1))
     }
 }
 
 
-fileprivate extension String {
+extension String {
     
-    func character(at index: Int) -> Character {
+    fileprivate func character(at index: Int) -> Character {
         self[self.index(startIndex, offsetBy: index)]
     }
 }

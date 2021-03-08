@@ -1,43 +1,43 @@
 import UIKit
 
 
-public extension NSLayoutConstraint {
+extension NSLayoutConstraint {
     
     @discardableResult
-    func activate(_ active: Bool = true) -> NSLayoutConstraint {
+    public func activate(_ active: Bool = true) -> NSLayoutConstraint {
         isActive = active
         return self
     }
     
     @discardableResult
-    func priority(_ priority: UILayoutPriority) -> NSLayoutConstraint {
+    public func priority(_ priority: UILayoutPriority) -> NSLayoutConstraint {
         self.priority = priority
         return self
     }
     
     @discardableResult
-    func assign(to variable: inout NSLayoutConstraint?) -> NSLayoutConstraint {
+    public func assign(to variable: inout NSLayoutConstraint?) -> NSLayoutConstraint {
         variable = self
         return self
     }
     
     @discardableResult
-    func store(in array: inout [NSLayoutConstraint]) -> NSLayoutConstraint {
+    public func store(in array: inout [NSLayoutConstraint]) -> NSLayoutConstraint {
         array.append(self)
         return self
     }
 }
 
 
-public extension UIView {
+extension UIView {
     
-    func addSubview(_ view: UIView, useAutoLayout: Bool) {
+    public func addSubview(_ view: UIView, useAutoLayout: Bool) {
         view.translatesAutoresizingMaskIntoConstraints = !useAutoLayout
         addSubview(view)
     }
     
     @discardableResult
-    func constraint(fill view: UIView, padding: NSDirectionalEdgeInsets = .zero) -> (top: NSLayoutConstraint, leading: NSLayoutConstraint, bottom: NSLayoutConstraint, trailing: NSLayoutConstraint) {
+    public func constraint(fill view: UIView, padding: NSDirectionalEdgeInsets = .zero) -> (top: NSLayoutConstraint, leading: NSLayoutConstraint, bottom: NSLayoutConstraint, trailing: NSLayoutConstraint) {
         translatesAutoresizingMaskIntoConstraints = false
         let top = topAnchor.constraint(equalTo: view.topAnchor, constant: padding.top)
         let leading = leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: padding.leading)
@@ -48,7 +48,7 @@ public extension UIView {
     }
     
     @discardableResult
-    func constraint(fill guide: UILayoutGuide, padding: NSDirectionalEdgeInsets = .zero) -> (top: NSLayoutConstraint, leading: NSLayoutConstraint, bottom: NSLayoutConstraint, trailing: NSLayoutConstraint) {
+    public func constraint(fill guide: UILayoutGuide, padding: NSDirectionalEdgeInsets = .zero) -> (top: NSLayoutConstraint, leading: NSLayoutConstraint, bottom: NSLayoutConstraint, trailing: NSLayoutConstraint) {
         translatesAutoresizingMaskIntoConstraints = false
         let top = topAnchor.constraint(equalTo: guide.topAnchor, constant: padding.top)
         let leading = leadingAnchor.constraint(equalTo: guide.leadingAnchor, constant: padding.leading)

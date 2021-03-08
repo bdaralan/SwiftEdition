@@ -1,11 +1,19 @@
 import UIKit
 
 
-public extension UIAction {
+extension UIAction {
     
-    convenience init(handler: @escaping () -> Void) {
+    public convenience init(handler: @escaping () -> Void) {
         self.init { action in
             handler()
         }
+    }
+}
+
+
+extension UIControl {
+    
+    public func addAction(_ action: @escaping () -> Void, for event: Event) {
+        addAction(UIAction(handler: action), for: event)
     }
 }

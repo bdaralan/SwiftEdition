@@ -5,7 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "SwiftEdition",
-    platforms: [.iOS(.v13)],
+    platforms: [.iOS(.v14)],
     products: [
         .library(name: "CombineEdition", targets: ["CombineEdition"]),
         .library(name: "InterfaceEdition", targets: ["InterfaceEdition"]),
@@ -13,10 +13,10 @@ let package = Package(
     ],
     targets: [
         .target(name: "CombineEdition"),
-        .target(name: "InterfaceEdition"),
+        .target(name: "InterfaceEdition", dependencies: ["CombineEdition", "UtilityEdition"]),
         .target(name: "UtilityEdition"),
         .testTarget(name: "UtilityEditionTests", dependencies: ["UtilityEdition"]),
-        .testTarget(name: "InterfaceEditionTests", dependencies: ["InterfaceEdition"])
+        .testTarget(name: "InterfaceEditionTests", dependencies: ["InterfaceEdition"]),
     ]
 )
 
