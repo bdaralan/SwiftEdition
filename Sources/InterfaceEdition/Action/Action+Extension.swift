@@ -13,7 +13,7 @@ extension UIAction {
 
 extension UIControl {
     
-    public func addAction(_ action: @escaping () -> Void, for event: Event) {
-        addAction(UIAction(handler: action), for: event)
+    public func onReceived(_ event: Event, perform: @escaping () -> Void) {
+        addAction(UIAction(handler: perform), for: event)
     }
 }

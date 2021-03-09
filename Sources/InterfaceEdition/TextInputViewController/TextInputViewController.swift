@@ -39,39 +39,6 @@ public final class TextInputViewController: UIViewController {
         setupBindings()
     }
     
-    private func update(with header: TextInputModel.Header) {
-        let title = header.title.localized
-        let cancel = header.cancel.localized
-        titleLabel.text = title
-        cancelButton.setTitle(cancel, for: .normal)
-    }
-    
-    private func update(with field: TextInputModel.Field) {
-        if textField.text != field.text {
-            textField.text = field.text
-        }
-        textField.placeholder = field.placeholder.localized
-        textField.keyboardType = field.keyboard
-        textField.returnKeyType = field.returnKey
-        divider.backgroundColor = field.divider ?? .opaqueSeparator
-    }
-    
-    private func update(with prompt: TextInputModel.Prompt) {
-        let text = prompt.text.localized
-        let color = prompt.color ?? .secondaryLabel
-        promptLabel.text = text
-        promptLabel.textColor = color
-        promptLabel.superview?.isHidden = text.isEmpty
-    }
-    
-    private func update(with items: [TextInputItem]) {
-        var snapshot = ItemDataSourceSnapshot()
-        let dataItems = items.compactMap(ItemDataSourceItem.init)
-        snapshot.appendSections([0])
-        snapshot.appendItems(dataItems, toSection: 0)
-        itemDataSource.apply(snapshot)
-    }
-    
     private func setupBindings() {
         bindings.removeAll()
         
@@ -90,6 +57,10 @@ public final class TextInputViewController: UIViewController {
         model.$items.sink(weak: self, storeIn: &bindings) { this, items in
             this.update(with: items)
         }
+        
+        model.$action.sink(weak: self, storeIn: &bindings) { this, action in
+            this.handleAction(action)
+        }
     }
     
     private func setupTextFieldActions() {
@@ -104,11 +75,11 @@ public final class TextInputViewController: UIViewController {
         }
         
         let returnKeyAction = Action.weak(self) { this in
-            this.model.actions.onCommit?()
+            this.model.handler.onCommit?()
         }
         
-        textField.addAction(textChangedAction, for: .editingChanged)
-        textField.addAction(returnKeyAction, for: .editingDidEndOnExit)
+        textField.onReceived(.editingChanged, perform: textChangedAction)
+        textField.onReceived(.editingDidEndOnExit, perform: returnKeyAction)
     
         if model.field.initiallyActive {
             textField.becomeFirstResponder()
@@ -117,10 +88,10 @@ public final class TextInputViewController: UIViewController {
     
     private func setupCancelButtonActions() {
         let cancel = Action.weak(self) { this in
-            this.model.actions.onCancel?()
+            this.model.handler.onCancel?()
         }
         
-        cancelButton.addAction(cancel, for: .touchUpInside)
+        cancelButton.onReceived(.touchUpInside, perform: cancel)
     }
     
     private func setupItemDataSource() {
@@ -207,11 +178,82 @@ extension TextInputViewController: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let item = itemDataSource.itemIdentifier(for: indexPath) else { return }
         switch item {
-        case let .tag(item):
-            let cell = collectionView.cellForItem(at: indexPath) as! TagItemCell
-            cell.animateSelection()
-            item.performAction()
+        case let .tag(item): handleDidSelectTagItem(item)
         }
+    }
+}
+
+
+// MARK: - Handler
+
+extension TextInputViewController {
+    
+    private func update(with header: TextInputModel.Header) {
+        let title = header.title.localized
+        let cancel = header.cancel.localized
+        titleLabel.text = title
+        cancelButton.setTitle(cancel, for: .normal)
+    }
+    
+    private func update(with field: TextInputModel.Field) {
+        if textField.text != field.text {
+            textField.text = field.text
+        }
+        textField.placeholder = field.placeholder.localized
+        textField.keyboardType = field.keyboard
+        textField.returnKeyType = field.returnKey
+        divider.backgroundColor = field.divider ?? .opaqueSeparator
+    }
+    
+    private func update(with prompt: TextInputModel.Prompt) {
+        let text = prompt.text.localized
+        let color = prompt.color ?? .secondaryLabel
+        promptLabel.text = text
+        promptLabel.textColor = color
+        promptLabel.superview?.isHidden = text.isEmpty
+    }
+    
+    private func update(with items: [TextInputItem]) {
+        var snapshot = ItemDataSourceSnapshot()
+        let dataItems = items.compactMap(ItemDataSourceItem.init)
+        snapshot.appendSections([0])
+        snapshot.appendItems(dataItems, toSection: 0)
+        itemDataSource.apply(snapshot)
+    }
+    
+    private func handleDidSelectTagItem(_ item: TextInputModel.TagItem) {
+        guard let action = item.action else { return }
+        guard let indexPath = itemDataSource.indexPath(for: .tag(item)) else { return }
+        guard let cell = itemCollection.cellForItem(at: indexPath) else { return }
+        let control = UIControl(frame: .zero, primaryAction: action)
+        
+        animateCellSelection(cell)
+        control.sendAction(action)
+    }
+    
+    private func handleAction(_ action: TextInputModel.Action?) {
+        switch action {
+        case .none: break
+        case .shakeTextField: shakeTextField()
+        }
+    }
+    
+    private func shakeTextField() {
+        let animation = CAKeyframeAnimation(keyPath: "transform.translation.x")
+        animation.duration = 0.25
+        animation.values = [1, -3, -6, -3, 1, 3, 6, 3, 1]
+        animation.repeatCount = 2
+        textField.layer.add(animation, forKey: nil)
+        
+        let feedback = UINotificationFeedbackGenerator()
+        feedback.notificationOccurred(.error)
+    }
+    
+    private func animateCellSelection(_ cell: UICollectionViewCell) {
+        let animation = CAKeyframeAnimation(keyPath: "transform.scale")
+        animation.duration = 0.2
+        animation.values = [1, 0.8, 1]
+        cell.contentView.layer.add(animation, forKey: nil)
     }
 }
 
@@ -227,10 +269,11 @@ extension TextInputViewController {
         case tag(TextInputModel.TagItem)
         
         init?(item: TextInputItem) {
-            switch item {
-            case is TextInputModel.TagItem: self = .tag(item as! TextInputModel.TagItem)
-            default: return nil
+            if let item = item as? TextInputModel.TagItem {
+                self = .tag(item)
+                return
             }
+            return nil
         }
     }
 }
@@ -241,24 +284,27 @@ extension TextInputViewController {
 struct TextInputViewController_Previews: PreviewProvider {
     static let model = TextInputModel()
     static var previews: some View {
-        Color(.systemBackground).sheet(isPresented: .constant(true)) {
-            UIViewControllerWrapper {
-                model.header.title = "Text Input"
-                model.field.placeholder = "Placeholder"
-                model.prompt.text = "Prompt"
-                
-                let deleteTag1 = Action.weak(model) { model in
-                    model.items.remove(at: 0)
-                }
-
-                let tag1 = TextInputModel.TagItem(text: "Tag 1", action: deleteTag1)
-                let tag2 = TextInputModel.TagItem(text: "Tag 2")
-
-                model.items = [tag1, tag2]
-                
-                return TextInputViewController(model: model)
+        UIViewControllerWrapper {
+            model.header.title = "Text Input"
+            model.field.placeholder = "Placeholder"
+            model.prompt.text = "Prompt"
+            
+            let delete = Action.weak(model) { model in
+                model.items.remove(at: 0)
             }
-            .preferredColorScheme(.dark)
+            let tag1 = TextInputModel.TagItem(text: "Delete", foreground: .systemRed, background: UIColor.systemRed.withAlphaComponent(0.1), action: delete)
+            
+            let tag2 = TextInputModel.TagItem(text: "No Action")
+            
+            let animate = Action.weak(model) { model in
+                model.sendAction(.shakeTextField)
+            }
+            let tag3 = TextInputModel.TagItem(text: "Shake", action: animate)
+
+            model.items = [tag1, tag2, tag3]
+            
+            let controller = TextInputViewController(model: model)
+            return controller
         }
     }
 }

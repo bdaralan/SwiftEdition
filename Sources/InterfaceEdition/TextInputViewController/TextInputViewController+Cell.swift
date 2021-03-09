@@ -13,13 +13,6 @@ extension TextInputViewController {
             contentContainer.backgroundColor = item.background ?? tintColor.withAlphaComponent(0.1)
         }
         
-        func animateSelection() {
-            let animation = CAKeyframeAnimation(keyPath: "transform.scale")
-            animation.duration = 0.2
-            animation.values = [1, 0.8, 1]
-            contentContainer.layer.add(animation, forKey: nil)
-        }
-        
         override func setupContentContainer() {
             super.setupContentContainer()
             

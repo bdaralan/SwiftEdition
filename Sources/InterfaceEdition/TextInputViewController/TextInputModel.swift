@@ -13,11 +13,19 @@ public final class TextInputModel: ObservableObject {
     
     @Published public var items = [TextInputItem]()
     
-    public var actions = Actions()
+    @Published var action: Action?
+    
+    public var handler = Handler()
     
     public init() {}
+    
+    public func sendAction(_ action: Action) {
+        self.action = action
+    }
 }
 
+
+// MARK: - Header
 
 extension TextInputModel {
     
@@ -29,6 +37,12 @@ extension TextInputModel {
         
         public init() {}
     }
+}
+
+
+// MARK: - Field
+
+extension TextInputModel {
     
     public struct Field {
         
@@ -49,6 +63,12 @@ extension TextInputModel {
         
         public init() {}
     }
+}
+
+
+// MARK: - Prompt
+
+extension TextInputModel {
     
     public struct Prompt {
         
@@ -58,8 +78,14 @@ extension TextInputModel {
         
         public init() {}
     }
+}
+
+
+// MARK: - Handler
+
+extension TextInputModel {
     
-    public struct Actions {
+    public struct Handler {
         
         /// An action for cancel button.
         public var onCancel: (() -> Void)?
@@ -68,6 +94,20 @@ extension TextInputModel {
         public var onCommit: (() -> Void)?
         
         public init() {}
+    }
+}
+
+
+// MARK: - Action
+
+extension TextInputModel {
+    
+    public enum Action {
+        
+        /// An action that will shake the text field horizontally.
+        ///
+        /// This can be used to indicate invalid input.
+        case shakeTextField
     }
 }
 
@@ -96,8 +136,18 @@ extension TextInputModel {
         
         public var background: UIColor?
         
-        var action: UIAction?
+        let action: UIAction?
         
+        /// Create a tag item.
+        ///
+        /// If need to match the default background color, use a solid color with 0.1 opacity.
+        ///
+        /// - Parameters:
+        ///   - id: An identifier. The default is a UUID.
+        ///   - text: The name of the tag.
+        ///   - foreground: The color of the text.
+        ///   - background: The background color of the tag.
+        ///   - action: An action to perform when tapped.
         public init(
             id: String = UUID().uuidString,
             text: String,
@@ -110,12 +160,6 @@ extension TextInputModel {
             self.foreground = foreground
             self.background = background
             self.action = action == nil ? nil : .init(handler: action!)
-        }
-        
-        func performAction() {
-            guard let action = action else { return }
-            let control = UIControl(frame: .zero, primaryAction: action)
-            control.sendAction(action)
         }
     }
 }
