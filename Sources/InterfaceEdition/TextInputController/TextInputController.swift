@@ -141,7 +141,7 @@ public final class TextInputController: UIViewController {
         content.setArrangedSubviews(titleView, fieldView, promptView, itemCollection)
         content.padding.top = 24
         
-        view.addSubview(content, useAutoLayout: true)
+        view.addAutoLayoutSubview(content)
         content.constraint(fill: view)
         
         divider.heightAnchor.constraint(equalToConstant: 0.4).activate()

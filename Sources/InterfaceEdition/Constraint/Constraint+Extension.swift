@@ -31,8 +31,13 @@ extension NSLayoutConstraint {
 
 extension UIView {
     
-    public func addSubview(_ view: UIView, useAutoLayout: Bool) {
-        view.translatesAutoresizingMaskIntoConstraints = !useAutoLayout
+    /// Add a view that will be configured with auto layout as subview.
+    ///
+    /// The method also set `view.translatesAutoresizingMaskIntoConstraints` to `false`.
+    ///
+    /// - Parameter view: A view to be added as subview.
+    public func addAutoLayoutSubview(_ view: UIView) {
+        view.translatesAutoresizingMaskIntoConstraints = false
         addSubview(view)
     }
     

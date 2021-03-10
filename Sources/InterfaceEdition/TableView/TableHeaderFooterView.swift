@@ -15,7 +15,7 @@ open class TableHeaderFooterView: UITableViewHeaderFooterView {
     }
     
     open func setupContentContainer() {
-        contentView.addSubview(contentContainer, useAutoLayout: true)
+        contentView.addAutoLayoutSubview(contentContainer)
         contentContainer.constraint(fill: contentView)
     }
 }

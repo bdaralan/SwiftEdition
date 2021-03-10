@@ -15,7 +15,7 @@ open class CollectionHeaderView: UICollectionReusableView {
     }
     
     open func setupContentContainer() {
-        addSubview(contentContainer, useAutoLayout: true)
+        addAutoLayoutSubview(contentContainer)
         contentContainer.constraint(fill: self)
     }
 }
