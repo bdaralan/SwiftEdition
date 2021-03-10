@@ -36,6 +36,7 @@ public struct TextInputTagItem: TextInputItem, Hashable {
     /// - Parameters:
     ///   - id: An identifier. The default is a UUID.
     ///   - text: The name of the tag.
+    ///   - image: The leading image of the tag.
     ///   - foreground: The color of the text.
     ///   - background: The background color of the tag.
     ///   - action: An action to perform when tapped.
