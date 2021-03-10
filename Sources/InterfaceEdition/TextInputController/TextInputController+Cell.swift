@@ -1,7 +1,7 @@
 import UIKit
 
 
-extension TextInputViewController {
+extension TextInputController {
     
     final class TagItemCell: CollectionCell {
         

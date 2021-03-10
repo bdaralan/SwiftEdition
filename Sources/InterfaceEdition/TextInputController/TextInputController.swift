@@ -4,7 +4,7 @@ import CombineEdition
 import UtilityEdition
 
 
-public final class TextInputViewController: UIViewController {
+public final class TextInputController: UIViewController {
     
     let model: TextInputModel
     
@@ -173,7 +173,7 @@ public final class TextInputViewController: UIViewController {
 
 // MARK: - Item Delegate
 
-extension TextInputViewController: UICollectionViewDelegate {
+extension TextInputController: UICollectionViewDelegate {
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let item = itemDataSource.itemIdentifier(for: indexPath) else { return }
@@ -186,7 +186,7 @@ extension TextInputViewController: UICollectionViewDelegate {
 
 // MARK: - Handler
 
-extension TextInputViewController {
+extension TextInputController {
     
     private func update(with header: TextInputModel.Header) {
         let title = header.title.localized
@@ -260,7 +260,7 @@ extension TextInputViewController {
 
 // MARK: - Item DataSource
 
-extension TextInputViewController {
+extension TextInputController {
     
     private typealias ItemDataSource = UICollectionViewDiffableDataSource<Int, ItemDataSourceItem>
     private typealias ItemDataSourceSnapshot = NSDiffableDataSourceSnapshot<Int, ItemDataSourceItem>
@@ -303,7 +303,7 @@ struct TextInputViewController_Previews: PreviewProvider {
 
             model.items = [tag1, tag2, tag3]
             
-            let controller = TextInputViewController(model: model)
+            let controller = TextInputController(model: model)
             return controller
         }
     }

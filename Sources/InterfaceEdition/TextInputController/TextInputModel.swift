@@ -1,7 +1,7 @@
 import UIKit
 
 
-/// A state model used to managed `TextInputViewController`.
+/// A state model used to managed `TextInputController`.
 ///
 public final class TextInputModel: ObservableObject {
     
