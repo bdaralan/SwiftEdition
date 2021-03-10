@@ -293,7 +293,8 @@ struct TextInputViewController_Previews: PreviewProvider {
             let delete = Action.weak(model) { model in
                 model.items.remove(at: 0)
             }
-            let tag1 = TextInputTagItem(text: "Delete", foreground: .systemRed, background: UIColor.systemRed.withAlphaComponent(0.1), action: delete)
+            let image = UIImage(systemName: "trash")
+            let tag1 = TextInputTagItem(text: "Delete", image: image, foreground: .systemRed, background: UIColor.systemRed.withAlphaComponent(0.1), action: delete)
             
             let tag2 = TextInputTagItem(text: "No Action")
             

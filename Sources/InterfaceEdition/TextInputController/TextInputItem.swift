@@ -21,6 +21,8 @@ public struct TextInputTagItem: TextInputItem, Hashable {
     
     public var text: String
     
+    public var image: UIImage?
+    
     public var foreground: UIColor?
     
     public var background: UIColor?
@@ -40,12 +42,14 @@ public struct TextInputTagItem: TextInputItem, Hashable {
     public init(
         id: String = UUID().uuidString,
         text: String,
+        image: UIImage? = nil,
         foreground: UIColor? = nil,
         background: UIColor? = nil,
         action: (() -> Void)? = nil
     ) {
         self.id = id
         self.text = text
+        self.image = image
         self.foreground = foreground
         self.background = background
         self.action = action == nil ? nil : .init(handler: action!)
