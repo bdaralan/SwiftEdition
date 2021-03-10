@@ -3,11 +3,11 @@ import UIKit
 
 extension TextInputViewController {
     
-    class TagItemCell: CollectionCell {
+    final class TagItemCell: CollectionCell {
         
         private let label = UILabel()
         
-        func update(with item: TextInputModel.TagItem) {
+        func update(with item: TextInputTagItem) {
             label.text = item.text.localized
             label.textColor = item.foreground ?? .secondaryLabel
             contentContainer.backgroundColor = item.background ?? tintColor.withAlphaComponent(0.1)

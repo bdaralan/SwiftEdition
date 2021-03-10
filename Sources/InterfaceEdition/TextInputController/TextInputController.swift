@@ -221,7 +221,7 @@ extension TextInputViewController {
         itemDataSource.apply(snapshot)
     }
     
-    private func handleDidSelectTagItem(_ item: TextInputModel.TagItem) {
+    private func handleDidSelectTagItem(_ item: TextInputTagItem) {
         guard let action = item.action else { return }
         guard let indexPath = itemDataSource.indexPath(for: .tag(item)) else { return }
         guard let cell = itemCollection.cellForItem(at: indexPath) else { return }
@@ -266,10 +266,10 @@ extension TextInputViewController {
     private typealias ItemDataSourceSnapshot = NSDiffableDataSourceSnapshot<Int, ItemDataSourceItem>
     
     private enum ItemDataSourceItem: Hashable {
-        case tag(TextInputModel.TagItem)
+        case tag(TextInputTagItem)
         
         init?(item: TextInputItem) {
-            if let item = item as? TextInputModel.TagItem {
+            if let item = item as? TextInputTagItem {
                 self = .tag(item)
                 return
             }
@@ -292,14 +292,14 @@ struct TextInputViewController_Previews: PreviewProvider {
             let delete = Action.weak(model) { model in
                 model.items.remove(at: 0)
             }
-            let tag1 = TextInputModel.TagItem(text: "Delete", foreground: .systemRed, background: UIColor.systemRed.withAlphaComponent(0.1), action: delete)
+            let tag1 = TextInputTagItem(text: "Delete", foreground: .systemRed, background: UIColor.systemRed.withAlphaComponent(0.1), action: delete)
             
-            let tag2 = TextInputModel.TagItem(text: "No Action")
+            let tag2 = TextInputTagItem(text: "No Action")
             
             let animate = Action.weak(model) { model in
                 model.sendAction(.shakeTextField)
             }
-            let tag3 = TextInputModel.TagItem(text: "Shake", action: animate)
+            let tag3 = TextInputTagItem(text: "Shake", action: animate)
 
             model.items = [tag1, tag2, tag3]
             
