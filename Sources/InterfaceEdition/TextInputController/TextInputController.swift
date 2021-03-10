@@ -254,7 +254,7 @@ extension TextInputController {
         let animation = CAKeyframeAnimation(keyPath: "transform.scale")
         animation.duration = 0.2
         animation.values = [1, 0.8, 1]
-        cell.contentView.layer.add(animation, forKey: nil)
+        cell.layer.add(animation, forKey: nil)
     }
 }
 
