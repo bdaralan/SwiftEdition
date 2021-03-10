@@ -116,6 +116,7 @@ public final class TextInputController: UIViewController {
         
         promptLabel.adjustsFontForContentSizeCategory = true
         promptLabel.font = .init(style: .footnote)
+        promptLabel.numberOfLines = 0
                 
         itemCollection.delegate = self
         itemCollection.collectionViewLayout = makeItemCollectionLayout()
