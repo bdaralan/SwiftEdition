@@ -13,7 +13,7 @@ public final class TextInputModel: ObservableObject {
     
     @Published public var items = [TextInputItem]()
     
-    @Published var action: Action?
+    @Published private(set) var action: Action?
     
     public var handler = Handler()
     
@@ -50,6 +50,7 @@ extension TextInputModel {
         
         public var placeholder = ""
         
+        /// A value indicates that the text field should be the first responder when appear.
         public var initiallyActive = true
         
         public var keyboard: UIKeyboardType = .default
