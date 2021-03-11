@@ -9,5 +9,6 @@ import Foundation
 ///
 public protocol TextInputItem {
     
+    /// A unique identifier for identifying the item.
     var id: String { get }
 }

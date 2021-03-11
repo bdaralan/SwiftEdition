@@ -132,6 +132,7 @@ public final class TextInputController: UIViewController {
         titleView.setArrangedSubviews(titleLabel, cancelButton)
         titleView.padding = .init(horizontal: 20)
         titleView.alignment = .firstBaseline
+        titleView.distribution = .equalCentering
         
         let fieldView = UIStackView(.vertical, spacing: 16)
         fieldView.setArrangedSubviews(textField, divider)
@@ -148,8 +149,6 @@ public final class TextInputController: UIViewController {
         content.constraint(fill: view)
         
         divider.heightAnchor.constraint(equalToConstant: 0.4).activate()
-
-        cancelButton.setContentHuggingPriority(.required, for: .horizontal)
         
         itemCollection.heightAnchor.constraint(greaterThanOrEqualToConstant: 100).activate()
     }
@@ -233,22 +232,24 @@ extension TextInputController {
     }
     
     private func setupCellBinding(for item: TextInputTagItem, at indexPath: IndexPath) {
-        item.$text.dropFirst().sink(weak: self, storeIn: &itemBindings, key: "\(item.id).text") { this, text in
+        let key: (String) -> String = { item.id.appending($0) }
+        
+        item.$text.dropFirst().sink(weak: self, storeIn: &itemBindings, key: key("text")) { this, text in
             let cell = this.itemCollection.cellForItem(at: indexPath) as? TagItemCell
             cell?.update(text: text)
         }
         
-        item.$image.dropFirst().sink(weak: self, storeIn: &itemBindings, key: "\(item.id).image") { this, image in
+        item.$image.dropFirst().sink(weak: self, storeIn: &itemBindings, key: key("image")) { this, image in
             let cell = this.itemCollection.cellForItem(at: indexPath) as? TagItemCell
             cell?.update(image: image)
         }
         
-        item.$foreground.dropFirst().sink(weak: self, storeIn: &itemBindings, key: "\(item.id).foreground") { this, foreground in
+        item.$foreground.dropFirst().sink(weak: self, storeIn: &itemBindings, key: key("foreground")) { this, foreground in
             let cell = this.itemCollection.cellForItem(at: indexPath) as? TagItemCell
             cell?.update(foreground: foreground)
         }
         
-        item.$background.dropFirst().sink(weak: self, storeIn: &itemBindings, key: "\(item.id).background") { this, background in
+        item.$background.dropFirst().sink(weak: self, storeIn: &itemBindings, key: key("background")) { this, background in
             let cell = this.itemCollection.cellForItem(at: indexPath) as? TagItemCell
             cell?.update(background: background)
         }
@@ -309,36 +310,38 @@ struct TextInputViewController_Previews: PreviewProvider {
     static var previews: some View {
         UIViewControllerWrapper {
             model.header.title = "Text Input"
+            model.field.text = "Password"
             model.field.placeholder = "Placeholder"
             model.prompt.text = "Prompt"
             
-            let tag1 = TextInputTagItem(text: "Delete") { item in
-                let index = model.items.firstIndex(where: { $0.id == item.id })!
-                model.items.remove(at: index)
+            let delete = TextInputTagItem(text: "Delete") { item in
+                model.items.removeAll(where: { $0.id == item.id })
             }
-            tag1.image = UIImage(systemName: "trash")
-            tag1.foreground = .systemRed
-            tag1.background = UIColor.systemRed.withAlphaComponent(0.1)
+            delete.image = UIImage(systemName: "trash")
+            delete.foreground = .systemRed
+            delete.background = delete.foreground?.withAlphaComponent(0.1)
             
-            let tag2 = TextInputTagItem(text: "No Action")
+            let noAction = TextInputTagItem(text: "No Action")
             
-            let tag3 = TextInputTagItem(text: "Shake") { item in
+            let shake = TextInputTagItem(text: "Shake") { item in
                 model.sendAction(.shakeTextField)
             }
             
-            let tag4 = TextInputTagItem(text: "") { item in
+            let toggleSecureField = TextInputTagItem(text: "") { item in
                 model.field.isSecureEntry.toggle()
                 item.image = UIImage(systemName: model.field.isSecureEntry ? "eye" : "eye.slash")
                 item.background = model.field.isSecureEntry ? .systemGreen : .systemRed
                 item.background = item.background?.withAlphaComponent(0.1)
             }
-            tag4.background = UIColor.systemRed.withAlphaComponent(0.1)
-            tag4.image = UIImage(systemName: "eye.slash")
+            toggleSecureField.background = UIColor.systemRed.withAlphaComponent(0.1)
+            toggleSecureField.image = UIImage(systemName: "eye.slash")
 
-            model.items = [tag1, tag2, tag3, tag4]
+            model.items = [delete, noAction, shake, toggleSecureField]
             
             let controller = TextInputController(model: model)
+            controller.view.backgroundColor = .systemGroupedBackground
             return controller
         }
+        .ignoresSafeArea()
     }
 }
