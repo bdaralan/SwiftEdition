@@ -27,6 +27,13 @@ extension Publisher where Failure == Never {
         .store(in: &collection)
     }
     
+    public func sink<Object>(weak object: Object, receiveValue: @escaping (Object, Output) -> Void) -> AnyCancellable where Object: AnyObject {
+        sink { [weak object] output in
+            guard let object = object else { return }
+            receiveValue(object, output)
+        }
+    }
+    
     public func sink<Object>(weak object: Object, storeIn set: inout Set<AnyCancellable>, receiveValue: @escaping (Object, Output) -> Void) where Object: AnyObject {
         sink { [weak object] output in
             guard let object = object else { return }
@@ -41,5 +48,13 @@ extension Publisher where Failure == Never {
             receiveValue(object, output)
         }
         .store(in: &collection)
+    }
+    
+    public func sink<Object, Key>(weak object: Object, storeIn map: inout [Key: AnyCancellable], key: Key, receiveValue: @escaping (Object, Output) -> Void) where Object: AnyObject, Key: Hashable {
+        let cancellable = sink { [weak object] output in
+            guard let object = object else { return }
+            receiveValue(object, output)
+        }
+        map[key] = cancellable
     }
 }

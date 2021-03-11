@@ -51,11 +51,13 @@ extension TextInputModel {
         public var placeholder = ""
         
         /// A value indicates that the text field should be the first responder when appear.
-        public var initiallyActive = true
+        public var isInitiallyActive = true
         
         public var keyboard: UIKeyboardType = .default
         
         public var returnKey: UIReturnKeyType = .done
+        
+        public var isSecureEntry: Bool = false
         
         /// Use this to format text when text changed.
         public var formatter: ((String) -> String)?

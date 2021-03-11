@@ -9,14 +9,30 @@ extension TextInputController {
         private let imageLabel = UILabel()
         
         func update(with item: TextInputTagItem) {
-            label.text = item.text.localized
-            label.textColor = item.foreground ?? .secondaryLabel
-            
-            imageLabel.textColor = label.textColor
-            imageLabel.isHidden = item.image == nil
-            imageLabel.attributedText = item.image.map({ .init(attachment: .init(image: $0)) })
-            
-            backgroundColor = item.background ?? tintColor.withAlphaComponent(0.1)
+            update(text: item.text)
+            update(image: item.image)
+            update(foreground: item.foreground)
+            update(background: item.background)
+        }
+        
+        func update(text: String) {
+            label.text = text.localized
+            label.isHidden = text.isEmpty
+        }
+        
+        func update(image: UIImage?) {
+            imageLabel.attributedText = image.map({ .init(attachment: .init(image: $0)) })
+            imageLabel.isHidden = image == nil
+        }
+        
+        func update(foreground: UIColor?) {
+            let color = foreground ?? .secondaryLabel
+            label.textColor = color
+            imageLabel.textColor = color
+        }
+        
+        func update(background: UIColor?) {
+            backgroundColor = background ?? tintColor.withAlphaComponent(0.1)
         }
         
         override func setupContentContainer() {
