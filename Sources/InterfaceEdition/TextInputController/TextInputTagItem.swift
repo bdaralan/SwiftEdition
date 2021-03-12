@@ -6,18 +6,18 @@ public final class TextInputTagItem: TextInputItem, Hashable {
     public let id: String
     
     /// The name of the tag.
-    @Published public var text: String
+    public var text: String
     
     /// The image of the tag.
-    @Published public var image: UIImage?
+    public var image: UIImage?
     
     /// The foreground color of the tag.
-    @Published public var foreground: UIColor?
+    public var foreground: UIColor?
     
     /// The background color of the tag.
     ///
     /// If need to match the default background style, use 0.1 opacity.
-    @Published public var background: UIColor?
+    public var background: UIColor?
     
     let action: ((TextInputTagItem) -> Void)?
     

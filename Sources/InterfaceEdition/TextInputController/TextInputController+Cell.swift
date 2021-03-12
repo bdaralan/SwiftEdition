@@ -11,30 +11,17 @@ extension TextInputController {
         private let imageLabel = UILabel()
         
         func update(with item: TextInputTagItem) {
-            update(text: item.text)
-            update(image: item.image)
-            update(foreground: item.foreground)
-            update(background: item.background)
-        }
-        
-        func update(text: String) {
-            label.text = text.localized
-            label.isHidden = text.isEmpty
-        }
-        
-        func update(image: UIImage?) {
-            imageLabel.attributedText = image.map({ .init(attachment: .init(image: $0)) })
-            imageLabel.isHidden = image == nil
-        }
-        
-        func update(foreground: UIColor?) {
-            let color = foreground ?? .secondaryLabel
-            label.textColor = color
-            imageLabel.textColor = color
-        }
-        
-        func update(background: UIColor?) {
-            backgroundColor = background ?? tintColor.withAlphaComponent(0.1)
+            label.text = item.text.localized
+            label.isHidden = item.text.isEmpty
+            
+            imageLabel.attributedText = item.image.map({ .init(attachment: .init(image: $0)) })
+            imageLabel.isHidden = item.image == nil
+            
+            let foreground = item.foreground ?? .secondaryLabel
+            label.textColor = foreground
+            imageLabel.textColor = foreground
+            
+            backgroundColor = item.background ?? tintColor.withAlphaComponent(0.1)
         }
         
         override func setupContentContainer() {
@@ -67,33 +54,22 @@ extension TextInputController {
         private let imageLabel = UILabel()
         
         func update(with item: TextInputToggleItem) {
-            update(text: item.text, active: item.active)
-            update(image: item.image, active: item.active)
-            update(foreground: item.foreground, active: item.active)
-            update(background: item.background, active: item.active)
-        }
-        
-        private func update(text: TextInputToggleItem.Property<String?>, active: Bool) {
-            let text = active ? text.active ?? "" : text.inactive ?? text.active ?? ""
+            let active = item.active
+            
+            let text = active ? item.text.active : item.text.inactive
             label.text = text.localized
             label.isHidden = text.isEmpty
-        }
-        
-        private func update(image: TextInputToggleItem.Property<UIImage?>, active: Bool) {
-            let image = active ? image.active : image.inactive ?? image.active
+            
+            let image = active ? item.image.active : item.image.inactive
             imageLabel.attributedText = image.map({ .init(attachment: .init(image: $0)) })
             imageLabel.isHidden = image == nil
-        }
-        
-        private func update(foreground: TextInputToggleItem.Property<UIColor?>, active: Bool) {
-            let color = active ? foreground.active : foreground.inactive ?? foreground.active
-            label.textColor = color ?? .secondaryLabel
-            imageLabel.textColor = color ?? .secondaryLabel
-        }
-        
-        private func update(background: TextInputToggleItem.Property<UIColor?>, active: Bool) {
-            let color = active ? background.active : background.inactive ?? background.active
-            backgroundColor = color ?? tintColor.withAlphaComponent(0.1)
+            
+            let foreground = active ? item.foreground.active : item.foreground.inactive
+            label.textColor = foreground ?? .secondaryLabel
+            imageLabel.textColor = foreground ?? .secondaryLabel
+            
+            let background = active ? item.background.active : item.background.inactive
+            backgroundColor = background ?? tintColor.withAlphaComponent(0.1)
         }
         
         override func setupContentContainer() {
