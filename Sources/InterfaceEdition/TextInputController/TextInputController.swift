@@ -104,6 +104,11 @@ public final class TextInputController: UIViewController {
                 cell.update(with: item)
                 self.setupCellBinding(for: item, at: indexPath)
                 return cell
+                
+            case let .toggle(item):
+                let cell = collection.dequeueCell(ToggleItemCell.self, for: indexPath)
+                cell.update(with: item)
+                return cell
             }
         }
     }
@@ -127,6 +132,7 @@ public final class TextInputController: UIViewController {
         itemCollection.alwaysBounceHorizontal = false
         itemCollection.backgroundColor = .clear
         itemCollection.registerCell(TagItemCell.self)
+        itemCollection.registerCell(ToggleItemCell.self)
         
         let titleView = UIStackView(.horizontal, spacing: 8)
         titleView.setArrangedSubviews(titleLabel, cancelButton)
@@ -181,11 +187,39 @@ extension TextInputController: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let item = itemDataSource.itemIdentifier(for: indexPath) else { return }
         switch item {
-        case let .tag(item):
-            guard let action = item.action else { return }
+        case let .tag(tag):
+            guard let action = tag.action else { return }
             guard let cell = collectionView.cellForItem(at: indexPath) else { return }
             animateCellSelection(cell)
-            action(item)
+            action(tag)
+            
+        case let .toggle(toggle):
+            guard let cell = collectionView.cellForItem(at: indexPath) as? ToggleItemCell else { return }
+            animateCellSelection(cell)
+            toggle.active.toggle()
+            
+            cell.update(with: toggle)
+            update(with: model.items) {
+                toggle.action(toggle)
+            }
+        }
+    }
+    
+    private func handleDidSelectTagItem(_ tag: TextInputTagItem, at indexPath: IndexPath) {
+        guard let action = tag.action else { return }
+        guard let cell = itemCollection.cellForItem(at: indexPath) else { return }
+        animateCellSelection(cell)
+        action(tag)
+    }
+    
+    private func handleDidSelectToggleItem(_ toggle: TextInputToggleItem, at indexPath: IndexPath) {
+        guard let cell = itemCollection.cellForItem(at: indexPath) as? ToggleItemCell else { return }
+        animateCellSelection(cell)
+        toggle.active.toggle()
+        
+        cell.update(with: toggle)
+        update(with: model.items) {
+            toggle.action(toggle)
         }
     }
 }
@@ -221,14 +255,14 @@ extension TextInputController {
         promptLabel.superview?.isHidden = text.isEmpty
     }
     
-    private func update(with items: [TextInputItem]) {
+    private func update(with items: [TextInputItem], completion: (() -> Void)? = nil) {
         itemBindings.removeAll()
         
         var snapshot = ItemDataSourceSnapshot()
         let dataItems = items.compactMap(ItemDataSourceItem.init)
         snapshot.appendSections([0])
         snapshot.appendItems(dataItems, toSection: 0)
-        itemDataSource.apply(snapshot, animatingDifferences: true)
+        itemDataSource.apply(snapshot, animatingDifferences: true, completion: completion)
     }
     
     private func setupCellBinding(for item: TextInputTagItem, at indexPath: IndexPath) {
@@ -254,6 +288,22 @@ extension TextInputController {
             cell?.update(background: background)
         }
     }
+    
+//    func setupCellBinding(for item: TextInputToggleItem, at indexPath: IndexPath) {
+//        let key: (String) -> String = { item.id.appending($0) }
+//
+//        item.$active.dropFirst().sink(weak: self, storeIn: &itemBindings, key: key("active")) { this, active in
+//            guard let cell = this.itemCollection.cellForItem(at: indexPath) as? ToggleItemCell else { return }
+//            cell.update(active: active)
+//            this.update(with: this.model.items)
+//
+////            let toggleItem = this.itemDataSource.itemIdentifier(for: indexPath)!
+////            var snapshot = ItemDataSourceSnapshot()
+////            snapshot.reloadItems([toggleItem])
+////            this.itemDataSource.apply(snapshot, animatingDifferences: true)
+//
+//        }
+//    }
     
     private func handleAction(_ action: TextInputModel.Action?) {
         switch action {
@@ -291,10 +341,15 @@ extension TextInputController {
     
     private enum ItemDataSourceItem: Hashable {
         case tag(TextInputTagItem)
+        case toggle(TextInputToggleItem)
         
         init?(item: TextInputItem) {
             if let item = item as? TextInputTagItem {
                 self = .tag(item)
+                return
+            }
+            if let item = item as? TextInputToggleItem {
+                self = .toggle(item)
                 return
             }
             return nil
@@ -335,8 +390,15 @@ struct TextInputViewController_Previews: PreviewProvider {
             }
             toggleSecureField.background = UIColor.systemRed.withAlphaComponent(0.1)
             toggleSecureField.image = UIImage(systemName: "eye.slash")
+            
+            let toggle = TextInputToggleItem(active: true) { item in
+            }
+            toggle.text.active = "Active"
+            toggle.text.inactive = "Inactive"
+            toggle.image.active = UIImage(systemName: "circle.fill")
+            toggle.image.inactive = UIImage(systemName: "circle")
 
-            model.items = [delete, noAction, shake, toggleSecureField]
+            model.items = [delete, noAction, shake, toggleSecureField, toggle]
             
             let controller = TextInputController(model: model)
             controller.view.backgroundColor = .systemGroupedBackground
