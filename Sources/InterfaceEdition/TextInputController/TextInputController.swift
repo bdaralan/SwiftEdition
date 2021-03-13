@@ -16,13 +16,13 @@ public final class TextInputController: UIViewController {
     
     private let promptLabel = UILabel()
     
-    private let itemCollection = UICollectionView(frame: .zero, collectionViewLayout: .init())
-    private var itemDataSource: ItemDataSource!
+    private let itemController: UIHostingController<TextInputItemView>
     
     private var bindings: Set<AnyCancellable> = []
     
     public init(model: TextInputModel) {
         self.model = model
+        self.itemController = .init(rootView: .init(model: model))
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -32,11 +32,12 @@ public final class TextInputController: UIViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        addChild(itemController)
         setup()
-        setupItemDataSource()
         setupTextFieldActions()
         setupCancelButtonActions()
         setupBindings()
+        itemController.didMove(toParent: self)
     }
     
     private func setupBindings() {
@@ -52,10 +53,6 @@ public final class TextInputController: UIViewController {
         
         model.$prompt.sink(weak: self, storeIn: &bindings) { this, prompt in
             this.update(with: prompt)
-        }
-        
-        model.$items.sink(weak: self, storeIn: &bindings) { this, items in
-            this.update(with: items)
         }
         
         model.$action.sink(weak: self, storeIn: &bindings) { this, action in
@@ -94,22 +91,6 @@ public final class TextInputController: UIViewController {
         cancelButton.onReceive(.touchUpInside, perform: cancel)
     }
     
-    private func setupItemDataSource() {
-        itemDataSource = .init(collectionView: itemCollection) { collection, indexPath, item in
-            switch item {
-            case let .tag(item):
-                let cell = collection.dequeueCell(TagItemCell.self, for: indexPath)
-                cell.update(with: item)
-                return cell
-                
-            case let .toggle(item):
-                let cell = collection.dequeueCell(ToggleItemCell.self, for: indexPath)
-                cell.update(with: item)
-                return cell
-            }
-        }
-    }
-    
     private func setup() {
         titleLabel.adjustsFontForContentSizeCategory = true
         titleLabel.font = .init(style: .title2, traits: .traitBold)
@@ -122,14 +103,9 @@ public final class TextInputController: UIViewController {
         promptLabel.adjustsFontForContentSizeCategory = true
         promptLabel.font = .init(style: .footnote)
         promptLabel.numberOfLines = 0
-                
-        itemCollection.delegate = self
-        itemCollection.collectionViewLayout = makeItemCollectionLayout()
-        itemCollection.alwaysBounceVertical = false
-        itemCollection.alwaysBounceHorizontal = false
-        itemCollection.backgroundColor = .clear
-        itemCollection.registerCell(TagItemCell.self)
-        itemCollection.registerCell(ToggleItemCell.self)
+        
+        let itemListView = itemController.view!
+        itemListView.backgroundColor = .clear
         
         let titleView = UIStackView(.horizontal, spacing: 8)
         titleView.setArrangedSubviews(titleLabel, cancelButton)
@@ -145,15 +121,13 @@ public final class TextInputController: UIViewController {
         promptView.padding = .init(horizontal: 20)
         
         let content = UIStackView(.vertical, spacing: 32)
-        content.setArrangedSubviews(titleView, fieldView, promptView, itemCollection)
+        content.setArrangedSubviews(titleView, fieldView, promptView, itemListView, UIView())
         content.padding.top = 24
         
         view.addAutoLayoutSubview(content)
         content.constraint(fill: view)
         
         divider.heightAnchor.constraint(equalToConstant: 0.4).activate()
-        
-        itemCollection.heightAnchor.constraint(greaterThanOrEqualToConstant: 100).activate()
     }
     
     private func makeItemCollectionLayout() -> UICollectionViewCompositionalLayout {
@@ -173,40 +147,6 @@ public final class TextInputController: UIViewController {
         configuration.scrollDirection = .vertical
         
         return .init(section: section, configuration: configuration)
-    }
-}
-
-
-// MARK: - Item Delegate
-
-extension TextInputController: UICollectionViewDelegate {
-    
-    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let item = itemDataSource.itemIdentifier(for: indexPath) else { return }
-        switch item {
-        case .tag: handleDidSelectTagItem(item, at: indexPath)
-        case .toggle: handleDidSelectToggleItem(item, at: indexPath)
-        }
-    }
-    
-    private func handleDidSelectTagItem(_ item: ItemDataSourceItem, at indexPath: IndexPath) {
-        guard case let .tag(tag) = item else { return }
-        guard let action = tag.action else { return }
-        guard let cell = itemCollection.cellForItem(at: indexPath) as? TagItemCell else { return }
-        animateCellSelection(cell)
-        action(tag)
-        cell.update(with: tag)
-        update(with: model.items)
-    }
-    
-    private func handleDidSelectToggleItem(_ item: ItemDataSourceItem, at indexPath: IndexPath) {
-        guard case let .toggle(toggle) = item else { return }
-        guard let cell = itemCollection.cellForItem(at: indexPath) as? ToggleItemCell else { return }
-        animateCellSelection(cell)
-        toggle.active.toggle()
-        toggle.action(toggle)
-        cell.update(with: toggle)
-        update(with: model.items)
     }
 }
 
@@ -239,19 +179,6 @@ extension TextInputController {
         promptLabel.text = text
         promptLabel.textColor = color
         promptLabel.superview?.isHidden = text.isEmpty
-    }
-    
-    private func update(with items: [TextInputItem]) {
-        var snapshot = ItemDataSourceSnapshot()
-        let dataItems = items.compactMap { item -> TextInputControllerItemDataSourceConvertible? in
-            item as? TextInputControllerItemDataSourceConvertible
-        }
-        let items = dataItems.map({ $0.item() })
-        snapshot.appendSections([0])
-        snapshot.appendItems(items, toSection: 0)
-        
-        let initialSnapshot = itemDataSource.snapshot().numberOfSections == 0
-        itemDataSource.apply(snapshot, animatingDifferences: !initialSnapshot)
     }
     
     private func handleAction(_ action: TextInputModel.Action?) {
@@ -292,8 +219,8 @@ struct TextInputViewController_Previews: PreviewProvider {
             model.field.placeholder = "Placeholder"
             model.prompt.text = "Prompt"
             
-            let delete = TextInputTagItem(text: "Delete") { item in
-                model.items.removeAll(where: { $0.id == item.id })
+            var delete = TextInputTagItem(text: "Delete") { item in
+                model.item.delete(itemID: item.id)
             }
             delete.image = UIImage(systemName: "trash")
             delete.foreground = .systemRed
@@ -303,18 +230,17 @@ struct TextInputViewController_Previews: PreviewProvider {
             
             let shake = TextInputTagItem(text: "Shake") { item in
                 model.sendAction(.shakeTextField)
-                item.text = item.text == "Shake" ? "Shake Long Text" : "Shake"
             }
             
-            let secure = TextInputToggleItem(active: false) { item in
+            var secure = TextInputToggleItem(active: false) { item in
                 model.field.isSecureEntry = item.active
             }
-            secure.image.active = UIImage(systemName: "eye")
-            secure.image.inactive = UIImage(systemName: "eye.slash")
-            secure.background.active = UIColor.systemRed.withAlphaComponent(0.1)
-            secure.background.inactive = UIColor.systemGreen.withAlphaComponent(0.1)
+            secure.images.active = UIImage(systemName: "eye")
+            secure.images.inactive = UIImage(systemName: "eye.slash")
+            secure.backgrounds.active = UIColor.systemRed.withAlphaComponent(0.1)
+            secure.backgrounds.inactive = UIColor.systemGreen.withAlphaComponent(0.1)
 
-            model.items = [delete, noAction, shake, secure]
+            model.item.list = [delete, noAction, shake, secure]
             
             let controller = TextInputController(model: model)
             controller.view.backgroundColor = .systemGroupedBackground

@@ -11,7 +11,7 @@ public final class TextInputModel: ObservableObject {
     
     @Published public var prompt = Prompt()
     
-    @Published public var items = [TextInputItem]()
+    @Published public var item = Item()
     
     @Published private(set) var action: Action?
     
@@ -80,6 +80,36 @@ extension TextInputModel {
         public var color: UIColor?
         
         public init() {}
+    }
+}
+
+
+extension TextInputModel {
+    
+    public struct Item {
+        
+        public var list: [TextInputItem] = []
+        
+        public var layout: Layout = .horizontal
+        
+        public enum Layout {
+            case horizontal
+        }
+        
+        public mutating func update(_ item: TextInputItem) {
+            guard let index = list.firstIndex(where: { $0.id == item.id }) else { return }
+            list[index] = item
+        }
+        
+        public mutating func replace(itemID: String, with item: TextInputItem) {
+            guard let index = list.firstIndex(where: { $0.id == itemID }) else { return }
+            list[index] = item
+        }
+        
+        public mutating func delete(itemID: String) {
+            guard let index = list.firstIndex(where: { $0.id == itemID }) else { return }
+            list.remove(at: index)
+        }
     }
 }
 

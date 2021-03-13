@@ -1,9 +1,11 @@
-import UIKit
+import SwiftUI
 
 
-public final class TextInputTagItem: TextInputItem, Hashable {
+public struct TextInputTagItem: TextInputItem {
     
     public let id: String
+    
+    public var type: TextInputItemType { .tag(self) }
     
     /// The name of the tag.
     public var text: String
@@ -29,7 +31,7 @@ public final class TextInputTagItem: TextInputItem, Hashable {
     ///   - image: The leading image of the tag.
     ///   - foreground: The foreground color of the tag.
     ///   - background: The background color of the tag.
-    ///   - action: An action to perform when tapped. The provided value is the item's index.
+    ///   - action: An action to perform when tapped.
     public init(
         id: String = UUID().uuidString,
         text: String,
@@ -44,21 +46,5 @@ public final class TextInputTagItem: TextInputItem, Hashable {
         self.foreground = foreground
         self.background = background
         self.action = action
-    }
-    
-    public static func == (lhs: TextInputTagItem, rhs: TextInputTagItem) -> Bool {
-        return lhs.id == rhs.id
-            && lhs.text == rhs.text
-            && lhs.image == rhs.image
-            && lhs.foreground == rhs.foreground
-            && lhs.background == rhs.background
-    }
-    
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
-        hasher.combine(text)
-        hasher.combine(image)
-        hasher.combine(foreground)
-        hasher.combine(background)
     }
 }

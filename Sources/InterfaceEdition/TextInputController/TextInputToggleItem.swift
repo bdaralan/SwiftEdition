@@ -1,55 +1,48 @@
 import UIKit
 
 
-public final class TextInputToggleItem: TextInputItem, Hashable {
+public struct TextInputToggleItem: TextInputItem {
+    
+    public typealias StateValue<Value> = (active: Value, inactive: Value)
     
     public let id: String
+    
+    public var type: TextInputItemType { .toggle(self) }
     
     /// The state of the toggle.
     public var active: Bool
     
-    /// The text of the toggle.
-    public var text = Property<String>(active: "", inactive: "")
+    /// The text of the toggle's current state.
+    public var text: String { active ? texts.active : texts.inactive }
     
-    /// The image of the toggle.
-    public var image = Property<UIImage?>(active: nil, inactive: nil)
+    /// The image of the toggle's current state.
+    public var image: UIImage? { active ? images.active : images.inactive }
     
-    /// The foreground of the toggle.
-    public var foreground = Property<UIColor?>(active: nil, inactive: nil)
+    /// The foreground of the toggle's current state.
+    public var foreground: UIColor? { active ? foregrounds.active : foregrounds.inactive }
     
-    /// The background of the toggle.
+    /// The background of the toggle's current state.
+    public var background: UIColor? { active ? backgrounds.active : backgrounds.inactive }
+    
+    /// The active & inactive texts of the toggle.
+    public var texts: StateValue<String> = ("", "")
+    
+    /// The active & inactive images of the toggle.
+    public var images: StateValue<UIImage?> = (nil, nil)
+    
+    /// The active & inactive foregrounds of the toggle.
+    public var foregrounds: StateValue<UIColor?> = (nil, nil)
+    
+    /// The active & inactive backgrounds of the toggle.
     ///
-    /// If need to match the default background style, use 0.1 opacity.
-    public var background = Property<UIColor?>(active: nil, inactive: nil)
+    /// If need to match the *SwiftEdition's* appearance, use 0.1 opacity. :]
+    public var backgrounds: StateValue<UIColor?> = (nil, nil)
     
     let action: (TextInputToggleItem) -> Void
-    
-    public struct Property<Value>: Equatable, Hashable where Value: Equatable & Hashable {
-        public var active: Value
-        public var inactive: Value
-    }
     
     public init(id: String = UUID().uuidString, active: Bool, action: @escaping (TextInputToggleItem) -> Void) {
         self.id = id
         self.active = active
         self.action = action
-    }
-    
-    public static func == (lhs: TextInputToggleItem, rhs: TextInputToggleItem) -> Bool {
-        return lhs.id == rhs.id
-            && lhs.active == rhs.active
-            && lhs.text == rhs.text
-            && lhs.image == rhs.image
-            && lhs.foreground == rhs.foreground
-            && lhs.background == rhs.background
-    }
-    
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
-        hasher.combine(active)
-        hasher.combine(text)
-        hasher.combine(image)
-        hasher.combine(foreground)
-        hasher.combine(background)
     }
 }
