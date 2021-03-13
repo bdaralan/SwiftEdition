@@ -9,13 +9,14 @@ struct TextInputItemView: View {
     
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            LazyHGrid(rows: rows, spacing: 12) {
+            LazyHGrid(rows: rows, alignment: .top, spacing: 12) {
                 ForEach(model.item.list, id: \.id) { item in
                     ItemViewFactory(itemKind: item.type)
                         .environmentObject(model)
                 }
             }
             .padding(.horizontal, 20)
+            .padding(.bottom, 40)
         }
     }
 }
