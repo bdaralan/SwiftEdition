@@ -9,28 +9,28 @@ public struct TextInputToggleItem: TextInputItem {
     
     public var type: TextInputItemType { .toggle(self) }
     
-    /// The state of the toggle.
+    /// The state of the item.
     public var active: Bool
     
-    /// The text of the toggle's current state.
+    /// The text of the item's current state.
     public var text: String {
         get { active ? textState.active : textState.inactive }
         set { active ? (textState.active = newValue) : (textState.inactive = newValue) }
     }
     
-    /// The image of the toggle's current state.
+    /// The image of the item's current state.
     public var image: UIImage? {
         get { active ? imageState.active : imageState.inactive }
         set { active ? (imageState.active = newValue) : (imageState.inactive = newValue) }
     }
     
-    /// The foreground of the toggle's current state.
+    /// The foreground of the item's current state.
     public var foreground: UIColor? {
         get { active ? foregroundState.active : foregroundState.inactive }
         set { active ? (foregroundState.active = newValue) : (foregroundState.inactive = newValue) }
     }
     
-    /// The background of the toggle's current state.
+    /// The background of the item's current state.
     public var background: UIColor? {
         get { active ? backgroundState.active : backgroundState.inactive }
         set { active ? (backgroundState.active = newValue) : (backgroundState.inactive = newValue) }
