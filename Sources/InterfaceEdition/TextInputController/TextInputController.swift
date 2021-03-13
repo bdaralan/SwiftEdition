@@ -235,10 +235,10 @@ struct TextInputViewController_Previews: PreviewProvider {
             var secure = TextInputToggleItem(active: false) { item in
                 model.field.isSecureEntry = item.active
             }
-            secure.images.active = UIImage(systemName: "eye")
-            secure.images.inactive = UIImage(systemName: "eye.slash")
-            secure.backgrounds.active = UIColor.systemRed.withAlphaComponent(0.1)
-            secure.backgrounds.inactive = UIColor.systemGreen.withAlphaComponent(0.1)
+            secure.imageState.active = UIImage(systemName: "eye")
+            secure.imageState.inactive = UIImage(systemName: "eye.slash")
+            secure.backgroundState.active = UIColor.systemRed.withAlphaComponent(0.1)
+            secure.backgroundState.inactive = UIColor.systemGreen.withAlphaComponent(0.1)
 
             model.item.list = [delete, noAction, shake, secure]
             
