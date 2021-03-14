@@ -1,4 +1,5 @@
 import UIKit
+import Combine
 
 
 /// A state model used to managed `TextInputController`.
@@ -13,15 +14,11 @@ public final class TextInputModel: ObservableObject {
     
     @Published public var item = Item()
     
-    @Published private(set) var action: Action?
+    public let action = Action()
     
     public var handler = Handler()
     
     public init() {}
-    
-    public func sendAction(_ action: Action) {
-        self.action = action
-    }
 }
 
 
@@ -88,7 +85,7 @@ extension TextInputModel {
     
     public struct Item {
         
-        public var list: [TextInputItem] = []
+        public var items: [TextInputItem] = []
         
         public var layout: Layout = .horizontal
         
@@ -97,18 +94,18 @@ extension TextInputModel {
         }
         
         public mutating func update(_ item: TextInputItem) {
-            guard let index = list.firstIndex(where: { $0.id == item.id }) else { return }
-            list[index] = item
+            guard let index = items.firstIndex(where: { $0.id == item.id }) else { return }
+            items[index] = item
         }
         
         public mutating func replace(itemID: String, with item: TextInputItem) {
-            guard let index = list.firstIndex(where: { $0.id == itemID }) else { return }
-            list[index] = item
+            guard let index = items.firstIndex(where: { $0.id == itemID }) else { return }
+            items[index] = item
         }
         
         public mutating func delete(itemID: String) {
-            guard let index = list.firstIndex(where: { $0.id == itemID }) else { return }
-            list.remove(at: index)
+            guard let index = items.firstIndex(where: { $0.id == itemID }) else { return }
+            items.remove(at: index)
         }
     }
 }
@@ -135,11 +132,26 @@ extension TextInputModel {
 
 extension TextInputModel {
     
-    public enum Action {
+    public struct Action {
         
-        /// An action that will shake the text field horizontally.
-        ///
-        /// This can be used to indicate invalid input.
-        case shakeTextField
+        let publisher: AnyPublisher<ActionType, Never>
+        
+        private let subject = PassthroughSubject<ActionType, Never>()
+        
+        public init() {
+            publisher = subject.eraseToAnyPublisher()
+        }
+        
+        public func perform(_ actionType: ActionType) {
+            subject.send(actionType)
+        }
+        
+        public enum ActionType {
+            
+            /// An action that will shake the text field horizontally.
+            ///
+            /// This can be used to indicate invalid input.
+            case shakeTextField
+        }
     }
 }

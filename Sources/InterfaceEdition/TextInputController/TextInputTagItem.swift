@@ -18,7 +18,7 @@ public struct TextInputTagItem: TextInputItem {
     
     /// The background color of the tag.
     ///
-    /// If need to match the default background style, use 0.1 opacity.
+    /// If need to match the default background appearance, use 0.1 opacity.
     public var background: UIColor?
     
     let action: ((TextInputTagItem) -> Void)?

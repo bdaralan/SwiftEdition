@@ -55,8 +55,8 @@ public final class TextInputController: UIViewController {
             this.update(with: prompt)
         }
         
-        model.$action.sink(weak: self, storeIn: &bindings) { this, action in
-            this.handleAction(action)
+        model.action.publisher.sink(weak: self, storeIn: &bindings) { this, actionType in
+            this.handleAction(type: actionType)
         }
     }
     
@@ -181,9 +181,8 @@ extension TextInputController {
         promptLabel.superview?.isHidden = text.isEmpty
     }
     
-    private func handleAction(_ action: TextInputModel.Action?) {
-        switch action {
-        case .none: break
+    private func handleAction(type: TextInputModel.Action.ActionType) {
+        switch type {
         case .shakeTextField: shakeTextField()
         }
     }
@@ -225,10 +224,10 @@ struct TextInputViewController_Previews: PreviewProvider {
         delete.foreground = .systemRed
         delete.background = delete.foreground?.withAlphaComponent(0.1)
         
-        let noAction = TextInputTagItem(text: "No Action")
+        var noAction = TextInputTagItem(text: "No Action")
         
         let shake = TextInputTagItem(text: "Shake") { item in
-            model.sendAction(.shakeTextField)
+            model.action.perform(.shakeTextField)
         }
         
         var secure = TextInputToggleItem(active: false) { item in
@@ -239,7 +238,7 @@ struct TextInputViewController_Previews: PreviewProvider {
         secure.backgroundState.active = UIColor.systemRed.withAlphaComponent(0.1)
         secure.backgroundState.inactive = UIColor.systemGreen.withAlphaComponent(0.1)
 
-        model.item.list = [delete, noAction, shake, secure]
+        model.item.items = [delete, noAction, shake, secure]
         return model
     }()
     static var previews: some View {

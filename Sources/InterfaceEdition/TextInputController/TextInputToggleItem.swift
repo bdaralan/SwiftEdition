@@ -3,7 +3,7 @@ import UIKit
 
 public struct TextInputToggleItem: TextInputItem {
     
-    public typealias StateValue<Value> = (active: Value, inactive: Value)
+    public typealias StateValue<Active, Inactive> = (active: Active, inactive: Inactive)
     
     public let id: String
     
@@ -11,6 +11,11 @@ public struct TextInputToggleItem: TextInputItem {
     
     /// The state of the item.
     public var active: Bool
+    
+    /// A value indicates that the `active` property is updated automatically.
+    ///
+    /// To manually update the `active` property, set this value to `false`. The default value is `true`.
+    public var updatesActiveStateAutomatically = true
     
     /// The text of the item's current state.
     public var text: String {
@@ -31,24 +36,24 @@ public struct TextInputToggleItem: TextInputItem {
     }
     
     /// The background of the item's current state.
+    ///
+    /// If need to match the default background appearance, use 0.1 opacity.
     public var background: UIColor? {
         get { active ? backgroundState.active : backgroundState.inactive }
         set { active ? (backgroundState.active = newValue) : (backgroundState.inactive = newValue) }
     }
     
     /// The active & inactive texts of the toggle.
-    public var textState: StateValue<String> = ("", "")
+    public var textState: StateValue<String, String> = ("", "")
     
     /// The active & inactive images of the toggle.
-    public var imageState: StateValue<UIImage?> = (nil, nil)
+    public var imageState: StateValue<UIImage?, UIImage?> = (nil, nil)
     
     /// The active & inactive foregrounds of the toggle.
-    public var foregroundState: StateValue<UIColor?> = (nil, nil)
+    public var foregroundState: StateValue<UIColor?, UIColor?> = (nil, nil)
     
     /// The active & inactive backgrounds of the toggle.
-    ///
-    /// If need to match the *SwiftEdition's* appearance, use 0.1 opacity. :]
-    public var backgroundState: StateValue<UIColor?> = (nil, nil)
+    public var backgroundState: StateValue<UIColor?, UIColor?> = (nil, nil)
     
     let action: (TextInputToggleItem) -> Void
     

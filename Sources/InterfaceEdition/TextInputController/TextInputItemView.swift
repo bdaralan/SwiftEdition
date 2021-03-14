@@ -10,14 +10,15 @@ struct TextInputItemView: View {
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             LazyHGrid(rows: rows, alignment: .top, spacing: 12) {
-                ForEach(model.item.list, id: \.id) { item in
+                ForEach(model.item.items, id: \.id) { item in
                     ItemView(item: item)
                 }
             }
             .padding(.horizontal, 20)
             .padding(.bottom, 40)
-            .environmentObject(model)
+            .animation(.spring())
         }
+        .environmentObject(model)
     }
 }
 
@@ -46,6 +47,8 @@ extension TextInputItemView {
         
         let item: TextInputTagItem
         
+        @State private var scale: CGFloat = 1
+        
         var body: some View {
             HStack {
                 Render(mapped: image) { image in
@@ -61,6 +64,7 @@ extension TextInputItemView {
             .padding(.vertical, 12)
             .background(background)
             .cornerRadius(10)
+            .scaleEffect(scale, anchor: .center)
             .onTapGesture(perform: handleTapped)
         }
         
@@ -76,12 +80,27 @@ extension TextInputItemView {
         }
         
         private var background: Color {
-            guard let color = item.background else { return Color.accentColor.opacity(0.1) }
-            return Color(color)
+            if let color = item.background {
+                return Color(color)
+            }
+            let color = item.action == nil ? Color.secondary : .accentColor
+            return color.opacity(0.1)
         }
         
         private func handleTapped() {
-            item.action?(item)
+            guard let action = item.action else { return }
+            animateTapAnimation()
+            action(item)
+        }
+        
+        private func animateTapAnimation() {
+            let animation = Animation.spring()
+            withAnimation(animation) {
+                scale = 0.5
+                DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(100)) {
+                    withAnimation(animation) { scale = 1 }
+                }
+            }
         }
     }
 }
@@ -96,6 +115,8 @@ extension TextInputItemView {
         @EnvironmentObject private var model: TextInputModel
         
         let item: TextInputToggleItem
+        
+        @State private var scale: CGFloat = 1
         
         var body: some View {
             HStack {
@@ -112,6 +133,7 @@ extension TextInputItemView {
             .padding(.vertical, 12)
             .background(background)
             .cornerRadius(10)
+            .scaleEffect(scale, anchor: .center)
             .onTapGesture(perform: handleTapped)
         }
         
@@ -132,10 +154,25 @@ extension TextInputItemView {
         }
         
         private func handleTapped() {
-            var item = self.item
-            item.active.toggle()
-            model.item.update(item)
-            item.action(item)
+            animateTapAnimation()
+            if item.updatesActiveStateAutomatically {
+                var updatedItem = self.item
+                updatedItem.active.toggle()
+                model.item.update(updatedItem)
+                updatedItem.action(updatedItem)
+            } else {
+                item.action(item)
+            }
+        }
+        
+        private func animateTapAnimation() {
+            let animation = Animation.spring()
+            withAnimation(animation) {
+                scale = 0.5
+                DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(100)) {
+                    withAnimation(animation) { scale = 1 }
+                }
+            }
         }
     }
 }
