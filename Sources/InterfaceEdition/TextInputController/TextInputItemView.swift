@@ -181,7 +181,45 @@ extension TextInputItemView {
 // MARK: - Preview
 
 struct TextInputItemView_Previews: PreviewProvider {
-    static let model = TextInputViewController_Previews.model
+    static let model: TextInputModel = {
+        let model = TextInputModel()
+        model.header.title = "Text Input"
+        model.field.text = "Password"
+        model.field.placeholder = "Placeholder"
+        model.prompt.text = "Prompt"
+        
+        var delete = TextInputTagItem(text: "Delete") { item in
+            model.item.delete(itemID: item.id)
+        }
+        delete.image = UIImage(systemName: "trash")
+        delete.foreground = .systemRed
+        delete.background = delete.foreground?.withAlphaComponent(0.1)
+        
+        var noAction = TextInputTagItem(text: "No Action")
+        
+        let action = TextInputTagItem(text: "Action") { item in
+            model.action.perform(.shakeTextField)
+        }
+        
+        var toggle = TextInputToggleItem(active: false) { item in
+            model.field.isSecureEntry = item.active
+        }
+        toggle.imageValue.active = UIImage(systemName: "eye")
+        toggle.imageValue.inactive = UIImage(systemName: "eye.slash")
+        toggle.backgroundValue.active = UIColor.systemRed.withAlphaComponent(0.1)
+        toggle.backgroundValue.inactive = UIColor.systemGreen.withAlphaComponent(0.1)
+        
+        var toggle2 = TextInputToggleItem(active: true) { item in
+            var item = item
+            item.active.toggle()
+            model.item.update(item)
+        }
+        toggle2.updatesActiveStateAutomatically = false
+        toggle2.textValue = ("On", "Off")
+
+        model.item.items = [delete, noAction, action, toggle, toggle2]
+        return model
+    }()
     static var previews: some View {
         TextInputItemView(model: model)
     }
