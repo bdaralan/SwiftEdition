@@ -11,25 +11,25 @@ struct TextInputItemView: View {
         ScrollView(.horizontal, showsIndicators: false) {
             LazyHGrid(rows: rows, alignment: .top, spacing: 12) {
                 ForEach(model.item.list, id: \.id) { item in
-                    ItemViewFactory(itemKind: item.type)
-                        .environmentObject(model)
+                    ItemView(item: item)
                 }
             }
             .padding(.horizontal, 20)
             .padding(.bottom, 40)
+            .environmentObject(model)
         }
     }
 }
 
 
-// MARK: - ItemViewFactory
+// MARK: - ItemView
 
 extension TextInputItemView {
     
-    struct ItemViewFactory: View {
-        let itemKind: TextInputItemType
+    struct ItemView: View {
+        let item: TextInputItem
         var body: some View {
-            switch itemKind {
+            switch item.type {
             case let .tag(item): TextInputItemView.TagItemView(item: item)
             case let .toggle(item): TextInputItemView.ToggleItemView(item: item)
             }
@@ -43,8 +43,6 @@ extension TextInputItemView {
 extension TextInputItemView {
     
     struct TagItemView: View {
-        
-        @EnvironmentObject private var model: TextInputModel
         
         let item: TextInputTagItem
         
@@ -66,18 +64,18 @@ extension TextInputItemView {
             .onTapGesture(perform: handleTapped)
         }
         
-        var image: UIImage? {
+        private var image: UIImage? {
             guard let image = item.image else { return nil }
             guard image.renderingMode == .automatic else { return image }
             return image.withRenderingMode(.alwaysTemplate)
         }
         
-        var foreground: Color {
+        private var foreground: Color {
             guard let color = item.foreground else { return .secondary }
             return Color(color)
         }
         
-        var background: Color {
+        private var background: Color {
             guard let color = item.background else { return Color.accentColor.opacity(0.1) }
             return Color(color)
         }

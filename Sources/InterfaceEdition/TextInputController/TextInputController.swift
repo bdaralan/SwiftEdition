@@ -211,37 +211,39 @@ extension TextInputController {
 // MARK: - Preview
 
 struct TextInputViewController_Previews: PreviewProvider {
-    static let model = TextInputModel()
+    static let model: TextInputModel = {
+        let model = TextInputModel()
+        model.header.title = "Text Input"
+        model.field.text = "Password"
+        model.field.placeholder = "Placeholder"
+        model.prompt.text = "Prompt"
+        
+        var delete = TextInputTagItem(text: "Delete") { item in
+            model.item.delete(itemID: item.id)
+        }
+        delete.image = UIImage(systemName: "trash")
+        delete.foreground = .systemRed
+        delete.background = delete.foreground?.withAlphaComponent(0.1)
+        
+        let noAction = TextInputTagItem(text: "No Action")
+        
+        let shake = TextInputTagItem(text: "Shake") { item in
+            model.sendAction(.shakeTextField)
+        }
+        
+        var secure = TextInputToggleItem(active: false) { item in
+            model.field.isSecureEntry = item.active
+        }
+        secure.imageState.active = UIImage(systemName: "eye")
+        secure.imageState.inactive = UIImage(systemName: "eye.slash")
+        secure.backgroundState.active = UIColor.systemRed.withAlphaComponent(0.1)
+        secure.backgroundState.inactive = UIColor.systemGreen.withAlphaComponent(0.1)
+
+        model.item.list = [delete, noAction, shake, secure]
+        return model
+    }()
     static var previews: some View {
         UIViewControllerWrapper {
-            model.header.title = "Text Input"
-            model.field.text = "Password"
-            model.field.placeholder = "Placeholder"
-            model.prompt.text = "Prompt"
-            
-            var delete = TextInputTagItem(text: "Delete") { item in
-                model.item.delete(itemID: item.id)
-            }
-            delete.image = UIImage(systemName: "trash")
-            delete.foreground = .systemRed
-            delete.background = delete.foreground?.withAlphaComponent(0.1)
-            
-            let noAction = TextInputTagItem(text: "No Action")
-            
-            let shake = TextInputTagItem(text: "Shake") { item in
-                model.sendAction(.shakeTextField)
-            }
-            
-            var secure = TextInputToggleItem(active: false) { item in
-                model.field.isSecureEntry = item.active
-            }
-            secure.imageState.active = UIImage(systemName: "eye")
-            secure.imageState.inactive = UIImage(systemName: "eye.slash")
-            secure.backgroundState.active = UIColor.systemRed.withAlphaComponent(0.1)
-            secure.backgroundState.inactive = UIColor.systemGreen.withAlphaComponent(0.1)
-
-            model.item.list = [delete, noAction, shake, secure]
-            
             let controller = TextInputController(model: model)
             controller.view.backgroundColor = .systemGroupedBackground
             return controller
