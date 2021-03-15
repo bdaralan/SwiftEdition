@@ -9,7 +9,7 @@ public struct Render<Content, Value>: View where Content: View {
     private let mapContent: ((Value) -> Content)?
     private let mapContentValue: Value?
     
-    public init(mapped value: Value?, content: @escaping (Value) -> Content) {
+    public init(mapped value: Value?, @ViewBuilder content: @escaping (Value) -> Content) {
         mapContent = content
         mapContentValue = value
         ifContent = nil
@@ -29,7 +29,7 @@ public struct Render<Content, Value>: View where Content: View {
 
 extension Render where Value == Never {
     
-    public init(if condition: Bool, content: @escaping () -> Content) {
+    public init(if condition: Bool, @ViewBuilder content: @escaping () -> Content) {
         ifContentCondition = condition
         ifContent = content
         mapContent = nil
