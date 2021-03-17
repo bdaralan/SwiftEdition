@@ -1,11 +1,11 @@
 import SwiftUI
 
 
-struct TextEditorView: View {
+public struct TextEditorView: View {
     
     let model: TextEditorModel
     
-    var body: some View {
+    public var body: some View {
         VStack(spacing: 20) {
             HeaderView()
             CounterDivider()
@@ -13,6 +13,7 @@ struct TextEditorView: View {
             Spacer()
         }
         .padding(.horizontal, 20)
+        .padding(.top, 24)
         .environmentObject(model)
     }
 }
@@ -159,13 +160,13 @@ extension TextEditorView {
 
 // MARK: - ViewController
 
-class TextEditorViewController: UIViewController {
+public class TextEditorViewController: UIViewController {
     
-    let model: TextEditorModel
+    public let model: TextEditorModel
     
     private let content: UIHostingController<TextEditorView>
     
-    init(model: TextEditorModel) {
+    public init(model: TextEditorModel) {
         self.model = model
         self.content = .init(rootView: .init(model: model))
         super.init(nibName: nil, bundle: nil)
@@ -175,7 +176,7 @@ class TextEditorViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         addChild(content)
         view.addAutoLayoutSubview(content.view)

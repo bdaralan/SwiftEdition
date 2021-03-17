@@ -2,9 +2,9 @@ import UIKit
 import Combine
 
 
-/// A state model used to managed `TextInputController`.
+/// A state model used to managed `TextFieldView`.
 ///
-public final class TextInputModel: ObservableObject {
+public final class TextFieldModel: ObservableObject {
     
     @Published public var header = Header()
     
@@ -24,7 +24,7 @@ public final class TextInputModel: ObservableObject {
 
 // MARK: - Header
 
-extension TextInputModel {
+extension TextFieldModel {
     
     public struct Header {
         
@@ -39,7 +39,7 @@ extension TextInputModel {
 
 // MARK: - Field
 
-extension TextInputModel {
+extension TextFieldModel {
     
     public struct Field {
         
@@ -54,10 +54,9 @@ extension TextInputModel {
         
         public var returnKey: UIReturnKeyType = .done
         
-        public var isSecureEntry: Bool = false
+        public var clearButtonMode: UITextField.ViewMode = .whileEditing
         
-        /// Use this to format text when text changed.
-        public var formatter: ((String) -> String)?
+        public var isSecureEntry: Bool = false
         
         public var divider: UIColor?
         
@@ -68,7 +67,7 @@ extension TextInputModel {
 
 // MARK: - Prompt
 
-extension TextInputModel {
+extension TextFieldModel {
     
     public struct Prompt {
         
@@ -81,28 +80,39 @@ extension TextInputModel {
 }
 
 
-extension TextInputModel {
+extension TextFieldModel {
     
     public struct Item {
         
-        public var items: [TextInputItem] = []
+        public var items: [TextFieldItem] = []
         
-        public var layout: Layout = .horizontal
+        public var layout: Layout = .default
         
         public enum Layout {
-            case horizontal
+            case `default`
         }
         
-        public mutating func update(_ item: TextInputItem) {
+        /// Update the item with same ID with the new item.
+        ///
+        /// - Parameter item: The new item.
+        public mutating func update(_ item: TextFieldItem) {
             guard let index = items.firstIndex(where: { $0.id == item.id }) else { return }
             items[index] = item
         }
         
-        public mutating func replace(itemID: String, with item: TextInputItem) {
+        /// Replace the item with the specified ID with the new item.
+        ///
+        /// - Parameters:
+        ///   - itemID: The ID of the item to be replaced.
+        ///   - item: The replacement item.
+        public mutating func replace(itemID: String, with item: TextFieldItem) {
             guard let index = items.firstIndex(where: { $0.id == itemID }) else { return }
             items[index] = item
         }
         
+        /// Delete the item with the specified ID.
+        ///
+        /// - Parameter itemID: The ID of the item to be deleted.
         public mutating func delete(itemID: String) {
             guard let index = items.firstIndex(where: { $0.id == itemID }) else { return }
             items.remove(at: index)
@@ -113,7 +123,7 @@ extension TextInputModel {
 
 // MARK: - Handler
 
-extension TextInputModel {
+extension TextFieldModel {
     
     public struct Handler {
         
@@ -123,6 +133,9 @@ extension TextInputModel {
         /// An action for keyboard return key.
         public var onCommit: (() -> Void)?
         
+        /// Use this to format text when text changed.
+        public var onTextChange: ((String) -> String)?
+        
         public init() {}
     }
 }
@@ -130,7 +143,7 @@ extension TextInputModel {
 
 // MARK: - Action
 
-extension TextInputModel {
+extension TextFieldModel {
     
     public struct Action {
         

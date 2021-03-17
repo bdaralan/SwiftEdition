@@ -1,11 +1,11 @@
 import SwiftUI
 
 
-public struct TextInputTagItem: TextInputItem {
+public struct TextFieldTagItem: TextFieldItem {
     
     public let id: String
     
-    public var type: TextInputItemType { .tag(self) }
+    public var type: TextFieldItemType { .tag(self) }
     
     /// The name of the tag.
     public var text: String
@@ -21,7 +21,7 @@ public struct TextInputTagItem: TextInputItem {
     /// If need to match the default background appearance, use 0.1 opacity.
     public var background: UIColor?
     
-    let action: ((TextInputTagItem) -> Void)?
+    let action: ((TextFieldTagItem) -> Void)?
     
     /// Create a tag item.
     ///
@@ -38,7 +38,7 @@ public struct TextInputTagItem: TextInputItem {
         image: UIImage? = nil,
         foreground: UIColor? = nil,
         background: UIColor? = nil,
-        action: ((TextInputTagItem) -> Void)? = nil
+        action: ((TextFieldTagItem) -> Void)? = nil
     ) {
         self.id = id
         self.text = text
