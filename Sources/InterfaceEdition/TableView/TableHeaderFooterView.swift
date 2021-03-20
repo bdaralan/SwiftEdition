@@ -1,24 +1,21 @@
 import UIKit
 
 
-open class TableHeaderFooterView: UITableViewHeaderFooterView {
+open class TableHeaderFooterView: UITableViewHeaderFooterView, ContentContainer {
     
-    public let contentContainer = UIStackView()
+    public let container = ContainerView()
     
     override public init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
-        setupContentContainer()
+        setupContainer()
     }
     
     required public init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    open func setupContentContainer() {
-        contentView.addAutoLayoutSubview(contentContainer)
-        contentContainer.constraint(fill: contentView)
+    open func setupContainer() {
+        contentView.addAutoLayoutSubview(container)
+        container.constraint(fill: contentView)
     }
 }
-
-
-extension TableHeaderFooterView: TableCollectionContentContainer {}

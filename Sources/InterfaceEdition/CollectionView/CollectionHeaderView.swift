@@ -1,24 +1,21 @@
 import UIKit
 
 
-open class CollectionHeaderView: UICollectionReusableView {
+open class CollectionHeaderView: UICollectionReusableView, ContentContainer {
     
-    public let contentContainer = UIStackView()
+    public let container = ContainerView()
     
     override public init(frame: CGRect) {
         super.init(frame: frame)
-        setupContentContainer()
+        setupContainer()
     }
     
     required public init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    open func setupContentContainer() {
-        addAutoLayoutSubview(contentContainer)
-        contentContainer.constraint(fill: self)
+    open func setupContainer() {
+        addAutoLayoutSubview(container)
+        container.constraint(fill: self)
     }
 }
-
-
-extension CollectionHeaderView: TableCollectionContentContainer {}
