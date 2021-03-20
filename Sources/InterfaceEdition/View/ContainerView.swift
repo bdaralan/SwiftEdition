@@ -87,7 +87,7 @@ final public class ContainerView<Content>: UIView where Content: UIView {
 }
 
 
-struct SwiftUIView_Previews: PreviewProvider {
+struct ContainerView_Previews: PreviewProvider {
     static var previews: some View {
         UIViewControllerWrapper {
             let controller = UIViewController()
