@@ -1,9 +1,9 @@
 import UIKit
 
 
-open class CollectionHeaderView: UICollectionReusableView, ContentContainer {
+open class CollectionHeaderView: UICollectionReusableView {
     
-    public let container = ContainerView(alignment: .fill)
+    public let container = ViewContainer(alignment: .fill)
     
     override public init(frame: CGRect) {
         super.init(frame: frame)

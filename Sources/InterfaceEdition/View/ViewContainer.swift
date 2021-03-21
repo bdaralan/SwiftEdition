@@ -2,10 +2,10 @@ import SwiftUI
 
 
 /// A container view that supports alignment and padding.
-final public class ContainerView<Content>: UIView where Content: UIView {
+final public class ViewContainer: UIView {
     
     /// The content view.
-    public var content: Content? {
+    public var content: UIView? {
         didSet { setContent(content) }
     }
     
@@ -27,7 +27,7 @@ final public class ContainerView<Content>: UIView where Content: UIView {
     private let verticalContainer = UIStackView(.vertical)
     private let horizontalContainer = UIStackView(.horizontal)
     
-    public init(alignment: Alignment = .center, content: Content? = nil) {
+    public init(alignment: Alignment = .center, content: UIView? = nil) {
         self.alignment = alignment
         self.content = content
         super.init(frame: .zero)
@@ -40,7 +40,7 @@ final public class ContainerView<Content>: UIView where Content: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setContent(_ content: Content?) {
+    private func setContent(_ content: UIView?) {
         if let content = content {
             guard container.arrangedSubviews.contains(content) == false else { return }
             container.setArrangedSubviews(content)
@@ -64,7 +64,7 @@ final public class ContainerView<Content>: UIView where Content: UIView {
 }
 
 
-extension ContainerView {
+extension ViewContainer {
     
     public enum Alignment {
         case center
@@ -109,19 +109,31 @@ extension ContainerView {
 
 
 struct ContainerView_Previews: PreviewProvider {
+    static let alignments1: [ViewContainer.Alignment] = [
+        .center, .top, .bottom, .leading, .trailing,
+        .topLeading, .topTrailing,
+        .bottomLeading, .bottomTrailing
+    ]
+    static let alignments2: [ViewContainer.Alignment] = [
+        .fill, .fillVertically, .fillHorizontally,
+        .fillVerticallyLeading, .fillVerticallyTrailing,
+        .fillHorizontallyTop, .fillHorizontallyBottom
+    ]
     static var previews: some View {
-        UIViewControllerWrapper {
-            let controller = UIViewController()
-            let label = UILabel(text: "Label")
-            label.backgroundColor = .red
-            
-            let container = ContainerView(alignment: .center, content: label)
-            container.contentContainer.backgroundColor = .systemFill
-            container.padding = .init(vertical: 10, horizontal: 20)
-            
-            controller.view.addAutoLayoutSubview(container)
-            container.constraint(fill: controller.view)
-            return controller
+        ForEach(alignments1, id: \.self) { alignment in
+            UIViewControllerWrapper {
+                let controller = UIViewController()
+                let label = UILabel(text: "\(alignment)")
+                label.backgroundColor = .systemFill
+                
+                let container = ViewContainer(alignment: alignment, content: label)
+                container.contentContainer.backgroundColor = .secondarySystemBackground
+                container.padding = .init(vertical: 10, horizontal: 20)
+                
+                controller.view.addAutoLayoutSubview(container)
+                container.constraint(fill: controller.view)
+                return controller
+            }
         }
     }
 }

@@ -1,9 +1,9 @@
 import UIKit
 
 
-open class TableCell: UITableViewCell, ContentContainer {
+open class TableCell: UITableViewCell {
     
-    public let container = ContainerView(alignment: .fill)
+    public let container = ViewContainer(alignment: .fill)
     
     override public init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)

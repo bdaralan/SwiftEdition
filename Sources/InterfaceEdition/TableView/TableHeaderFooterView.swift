@@ -1,9 +1,9 @@
 import UIKit
 
 
-open class TableHeaderFooterView: UITableViewHeaderFooterView, ContentContainer {
+open class TableHeaderFooterView: UITableViewHeaderFooterView {
     
-    public let container = ContainerView(alignment: .fill)
+    public let container = ViewContainer(alignment: .fill)
     
     override public init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
