@@ -6,8 +6,7 @@ final public class ContainerView<Content>: UIView where Content: UIView {
     
     /// The content view.
     public var content: Content? {
-        get { container.arrangedSubviews.first as? Content }
-        set { setContent(newValue) }
+        didSet { setContent(content) }
     }
     
     /// The `content`'s container.
@@ -21,27 +20,16 @@ final public class ContainerView<Content>: UIView where Content: UIView {
     
     /// The alignment of the `content`.
     public var alignment: Alignment {
-        willSet { setContentAlignment(newValue) }
+        didSet { setContentAlignment(alignment) }
     }
     
     private let container = UIStackView()
     private let verticalContainer = UIStackView(.vertical)
     private let horizontalContainer = UIStackView(.horizontal)
     
-    public enum Alignment {
-        case top
-        case bottom
-        case leading
-        case trailing
-        case center
-        case topLeading
-        case topTrailing
-        case bottomLeading
-        case bottomTrailing
-    }
-    
     public init(alignment: Alignment = .center, content: Content? = nil) {
         self.alignment = alignment
+        self.content = content
         super.init(frame: .zero)
         setup()
         setContent(content)
@@ -54,7 +42,7 @@ final public class ContainerView<Content>: UIView where Content: UIView {
     
     private func setContent(_ content: Content?) {
         if let content = content {
-            guard content !== self.content else { return }
+            guard container.arrangedSubviews.contains(content) == false else { return }
             container.setArrangedSubviews(content)
         } else {
             container.removeArrangedSubviews()
@@ -62,20 +50,9 @@ final public class ContainerView<Content>: UIView where Content: UIView {
     }
     
     private func setContentAlignment(_ alignment: Alignment) {
-        let alignments: (vertical: UIStackView.Alignment, horizontal: UIStackView.Alignment)
-        switch alignment {
-        case .top: alignments = (.top, .center)
-        case .bottom: alignments = (.bottom, .center)
-        case .leading: alignments = (.center, .leading)
-        case .trailing: alignments = (.center, .trailing)
-        case .center: alignments = (.center, .center)
-        case .topLeading: alignments = (.top, .leading)
-        case .topTrailing: alignments = (.top, .trailing)
-        case .bottomLeading: alignments = (.bottom, .leading)
-        case .bottomTrailing: alignments = (.bottom, .trailing)
-        }
-        verticalContainer.alignment = alignments.horizontal
-        horizontalContainer.alignment = alignments.vertical
+        let containerAlignments = alignment.containerAlignments
+        verticalContainer.alignment = containerAlignments.horizontal
+        horizontalContainer.alignment = containerAlignments.vertical
     }
     
     private func setup() {
@@ -83,6 +60,50 @@ final public class ContainerView<Content>: UIView where Content: UIView {
         verticalContainer.setArrangedSubviews(horizontalContainer)
         addAutoLayoutSubview(verticalContainer)
         verticalContainer.constraint(fill: self)
+    }
+}
+
+
+extension ContainerView {
+    
+    public enum Alignment {
+        case center
+        case top
+        case bottom
+        case leading
+        case trailing
+        case topLeading
+        case topTrailing
+        case bottomLeading
+        case bottomTrailing
+        case fill
+        case fillVertically
+        case fillHorizontally
+        case fillVerticallyLeading
+        case fillVerticallyTrailing
+        case fillHorizontallyTop
+        case fillHorizontallyBottom
+        
+        fileprivate var containerAlignments: (vertical: UIStackView.Alignment, horizontal: UIStackView.Alignment) {
+            switch self {
+            case .center: return (.center, .center)
+            case .top: return (.top, .center)
+            case .bottom: return (.bottom, .center)
+            case .leading: return (.center, .leading)
+            case .trailing: return (.center, .trailing)
+            case .topLeading: return (.top, .leading)
+            case .topTrailing: return (.top, .trailing)
+            case .bottomLeading: return (.bottom, .leading)
+            case .bottomTrailing: return (.bottom, .trailing)
+            case .fill: return (.fill, .fill)
+            case .fillVertically: return (.fill, .center)
+            case .fillHorizontally: return (.center, .fill)
+            case .fillVerticallyLeading: return (.fill, .leading)
+            case .fillVerticallyTrailing: return (.fill, .trailing)
+            case .fillHorizontallyTop: return (.top, .fill)
+            case .fillHorizontallyBottom: return (.bottom, .fill)
+            }
+        }
     }
 }
 

@@ -3,7 +3,7 @@ import UIKit
 
 open class CollectionHeaderView: UICollectionReusableView, ContentContainer {
     
-    public let container = ContainerView()
+    public let container = ContainerView(alignment: .fill)
     
     override public init(frame: CGRect) {
         super.init(frame: frame)

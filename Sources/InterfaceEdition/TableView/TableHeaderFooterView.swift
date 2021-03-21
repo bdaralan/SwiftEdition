@@ -3,7 +3,7 @@ import UIKit
 
 open class TableHeaderFooterView: UITableViewHeaderFooterView, ContentContainer {
     
-    public let container = ContainerView()
+    public let container = ContainerView(alignment: .fill)
     
     override public init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)

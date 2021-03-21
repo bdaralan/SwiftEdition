@@ -3,7 +3,7 @@ import UIKit
 
 open class TableCell: UITableViewCell, ContentContainer {
     
-    public let container = ContainerView()
+    public let container = ContainerView(alignment: .fill)
     
     override public init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
