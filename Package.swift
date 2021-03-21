@@ -9,13 +9,13 @@ let package = Package(
     products: [
         .library(name: "CombineEdition", targets: ["CombineEdition"]),
         .library(name: "InterfaceEdition", targets: ["InterfaceEdition"]),
-        .library(name: "UtilityEdition", targets: ["UtilityEdition"])
+        .library(name: "SyntacticEdition", targets: ["SyntacticEdition"])
     ],
     targets: [
         .target(name: "CombineEdition"),
-        .target(name: "InterfaceEdition", dependencies: ["CombineEdition", "UtilityEdition"]),
-        .target(name: "UtilityEdition"),
-        .testTarget(name: "UtilityEditionTests", dependencies: ["UtilityEdition"]),
+        .target(name: "InterfaceEdition", dependencies: ["CombineEdition", "SyntacticEdition"]),
+        .target(name: "SyntacticEdition"),
+        .testTarget(name: "SyntacticEditionTests", dependencies: ["SyntacticEdition"]),
         .testTarget(name: "InterfaceEditionTests", dependencies: ["InterfaceEdition"]),
     ]
 )

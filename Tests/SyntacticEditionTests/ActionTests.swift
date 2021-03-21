@@ -1,5 +1,5 @@
 import XCTest
-@testable import UtilityEdition
+@testable import SyntacticEdition
 
 
 final class ActionTests: XCTestCase {
