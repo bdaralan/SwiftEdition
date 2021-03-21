@@ -5,6 +5,10 @@ public struct TextEditorView: View {
     
     let model: TextEditorModel
     
+    public init(model: TextEditorModel) {
+        self.model = model
+    }
+    
     public var body: some View {
         VStack(spacing: 20) {
             HeaderView()

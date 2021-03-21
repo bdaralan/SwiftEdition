@@ -3,7 +3,11 @@ import SwiftUI
 
 public struct TextFieldView: View {
     
-    @ObservedObject var model: TextFieldModel
+    let model: TextFieldModel
+    
+    public init(model: TextFieldModel) {
+        self.model = model
+    }
     
     public var body: some View {
         VStack(spacing: 40) {
