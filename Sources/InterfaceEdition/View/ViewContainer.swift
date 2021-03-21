@@ -4,59 +4,59 @@ import SwiftUI
 /// A container view that supports alignment and padding.
 final public class ViewContainer: UIView {
     
-    /// The content view.
-    public var content: UIView? {
-        didSet { setContent(content) }
+    /// The view that the container will manage.
+    public var view: UIView? {
+        didSet { setView(view) }
     }
     
-    /// The `content`'s container.
-    public var contentContainer: UIView { container }
+    /// The container view used to layout the `view`.
+    public var contentView: UIView { viewContainer }
     
-    /// The padding of `content` within the `contentContainer`.
-    public var padding: NSDirectionalEdgeInsets {
-        get { container.padding }
-        set { container.padding = newValue }
-    }
-    
-    /// The alignment of the `content`.
+    /// The alignment of the `view`.
     public var alignment: Alignment {
-        didSet { setContentAlignment(alignment) }
+        didSet { setViewAlignment(alignment) }
     }
     
-    private let container = UIStackView()
+    /// The padding of `view` within the `contentView`.
+    public var padding: NSDirectionalEdgeInsets {
+        get { viewContainer.padding }
+        set { viewContainer.padding = newValue }
+    }
+    
+    private let viewContainer = UIStackView()
     private let verticalContainer = UIStackView(.vertical)
     private let horizontalContainer = UIStackView(.horizontal)
     
-    public init(alignment: Alignment = .center, content: UIView? = nil) {
+    public init(alignment: Alignment = .center, view: UIView? = nil) {
         self.alignment = alignment
-        self.content = content
+        self.view = view
         super.init(frame: .zero)
         setup()
-        setContent(content)
-        setContentAlignment(alignment)
+        setView(view)
+        setViewAlignment(alignment)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setContent(_ content: UIView?) {
-        if let content = content {
-            guard container.arrangedSubviews.contains(content) == false else { return }
-            container.setArrangedSubviews(content)
+    private func setView(_ view: UIView?) {
+        if let view = view {
+            guard viewContainer.arrangedSubviews.contains(view) == false else { return }
+            viewContainer.setArrangedSubviews(view)
         } else {
-            container.removeArrangedSubviews()
+            viewContainer.removeArrangedSubviews()
         }
     }
     
-    private func setContentAlignment(_ alignment: Alignment) {
-        let containerAlignments = alignment.containerAlignments
-        verticalContainer.alignment = containerAlignments.horizontal
-        horizontalContainer.alignment = containerAlignments.vertical
+    private func setViewAlignment(_ alignment: Alignment) {
+        let alignments = alignment.viewAlignments
+        verticalContainer.alignment = alignments.horizontal
+        horizontalContainer.alignment = alignments.vertical
     }
     
     private func setup() {
-        horizontalContainer.setArrangedSubviews(container)
+        horizontalContainer.setArrangedSubviews(viewContainer)
         verticalContainer.setArrangedSubviews(horizontalContainer)
         addAutoLayoutSubview(verticalContainer)
         verticalContainer.constraint(fill: self)
@@ -84,7 +84,7 @@ extension ViewContainer {
         case fillHorizontallyTop
         case fillHorizontallyBottom
         
-        fileprivate var containerAlignments: (vertical: UIStackView.Alignment, horizontal: UIStackView.Alignment) {
+        fileprivate var viewAlignments: (vertical: UIStackView.Alignment, horizontal: UIStackView.Alignment) {
             switch self {
             case .center: return (.center, .center)
             case .top: return (.top, .center)
@@ -126,8 +126,8 @@ struct ContainerView_Previews: PreviewProvider {
                 let label = UILabel(text: "\(alignment)")
                 label.backgroundColor = .systemFill
                 
-                let container = ViewContainer(alignment: alignment, content: label)
-                container.contentContainer.backgroundColor = .secondarySystemBackground
+                let container = ViewContainer(alignment: alignment, view: label)
+                container.contentView.backgroundColor = .secondarySystemBackground
                 container.padding = .init(vertical: 10, horizontal: 20)
                 
                 controller.view.addAutoLayoutSubview(container)
