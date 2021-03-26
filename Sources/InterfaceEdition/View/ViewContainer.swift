@@ -58,7 +58,7 @@ final public class ViewContainer: UIView {
     private func setup() {
         horizontalContainer.setArrangedSubviews(viewContainer)
         verticalContainer.setArrangedSubviews(horizontalContainer)
-        addAutoLayoutSubview(verticalContainer)
+        addSubview(verticalContainer)
         verticalContainer.constraint(fill: self)
     }
 }
@@ -130,7 +130,7 @@ struct ContainerView_Previews: PreviewProvider {
                 container.contentView.backgroundColor = .secondarySystemBackground
                 container.padding = .init(vertical: 10, horizontal: 20)
                 
-                controller.view.addAutoLayoutSubview(container)
+                controller.view.addSubview(container)
                 container.constraint(fill: controller.view)
                 return controller
             }

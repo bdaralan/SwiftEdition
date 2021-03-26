@@ -15,7 +15,7 @@ open class CollectionFooterView: UICollectionReusableView {
     }
     
     open func setupContainer() {
-        addAutoLayoutSubview(container)
+        addSubview(container)
         container.constraint(fill: self)
     }
 }

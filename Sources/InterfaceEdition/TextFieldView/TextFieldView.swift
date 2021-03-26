@@ -166,7 +166,7 @@ public class TextFieldViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         addChild(content)
-        view.addAutoLayoutSubview(content.view)
+        view.addSubview(content.view)
         content.view.constraint(fill: view)
         content.didMove(toParent: self)
     }

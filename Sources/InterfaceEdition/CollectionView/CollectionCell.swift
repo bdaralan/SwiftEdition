@@ -15,7 +15,7 @@ open class CollectionCell: UICollectionViewCell {
     }
     
     open func setupContainer() {
-        contentView.addAutoLayoutSubview(container)
+        contentView.addSubview(container)
         container.constraint(fill: contentView)
     }
 }
