@@ -1,7 +1,7 @@
 import UIKit
 
 
-public struct ConstraintLayoutAnchor {
+public struct ConstraintAnchor {
     
     public let view: UIView
     
@@ -36,7 +36,7 @@ public struct ConstraintLayoutAnchor {
 
 // MARK: - Anchor
 
-extension ConstraintLayoutAnchor {
+extension ConstraintAnchor {
     
     public enum XAxisAnchor {
         case leading
@@ -64,10 +64,11 @@ extension ConstraintLayoutAnchor {
         fileprivate let properties = Properties()
         
         fileprivate class Properties {
-            var constraint: NSLayoutConstraint?
+            fileprivate var constraint: NSLayoutConstraint?
         }
         
         fileprivate func activate(_ constraint: NSLayoutConstraint) {
+            view.translatesAutoresizingMaskIntoConstraints = false
             constraint.isActive = true
             properties.constraint = constraint
         }
@@ -97,7 +98,7 @@ extension ConstraintLayoutAnchor {
 
 // MARK: - XAxisAnchor
 
-extension ConstraintLayoutAnchor.Anchor where AnchorType == ConstraintLayoutAnchor.XAxisAnchor {
+extension ConstraintAnchor.Anchor where AnchorType == ConstraintAnchor.XAxisAnchor {
     
     @discardableResult
     public func padding(_ padding: CGFloat) -> Self {
@@ -113,8 +114,8 @@ extension ConstraintLayoutAnchor.Anchor where AnchorType == ConstraintLayoutAnch
     public func equalTo(_ view: UIView) -> Self {
         switch type {
         case .leading: activate(self.view.leadingAnchor.constraint(equalTo: view.leadingAnchor))
-        case .trailing: activate(self.view.trailingAnchor.constraint(equalTo: view.leadingAnchor))
-        case .centerX: activate(self.view.centerXAnchor.constraint(equalTo: view.leadingAnchor))
+        case .trailing: activate(self.view.trailingAnchor.constraint(equalTo: view.trailingAnchor))
+        case .centerX: activate(self.view.centerXAnchor.constraint(equalTo: view.centerXAnchor))
         }
         return self
     }
@@ -123,8 +124,8 @@ extension ConstraintLayoutAnchor.Anchor where AnchorType == ConstraintLayoutAnch
     public func equalTo(_ guide: UILayoutGuide) -> Self {
         switch type {
         case .leading: activate(view.leadingAnchor.constraint(equalTo: guide.leadingAnchor))
-        case .trailing: activate(view.trailingAnchor.constraint(equalTo: guide.leadingAnchor))
-        case .centerX: activate(view.centerXAnchor.constraint(equalTo: guide.leadingAnchor))
+        case .trailing: activate(view.trailingAnchor.constraint(equalTo: guide.trailingAnchor))
+        case .centerX: activate(view.centerXAnchor.constraint(equalTo: guide.centerXAnchor))
         }
         return self
     }
@@ -227,7 +228,7 @@ extension ConstraintLayoutAnchor.Anchor where AnchorType == ConstraintLayoutAnch
 
 // MARK: - YAxisAnchor
 
-extension ConstraintLayoutAnchor.Anchor where AnchorType == ConstraintLayoutAnchor.YAxisAnchor {
+extension ConstraintAnchor.Anchor where AnchorType == ConstraintAnchor.YAxisAnchor {
     
     @discardableResult
     public func padding(_ padding: CGFloat) -> Self {
@@ -420,7 +421,7 @@ extension ConstraintLayoutAnchor.Anchor where AnchorType == ConstraintLayoutAnch
 
 // MARK: - DimensionAnchor
 
-extension ConstraintLayoutAnchor.Anchor where AnchorType == ConstraintLayoutAnchor.DimensionAnchor {
+extension ConstraintAnchor.Anchor where AnchorType == ConstraintAnchor.DimensionAnchor {
     
     @discardableResult
     public func multiplier(_ multiplier: CGFloat) -> Self {
@@ -529,9 +530,9 @@ extension ConstraintLayoutAnchor.Anchor where AnchorType == ConstraintLayoutAnch
 
 extension UIView {
     
-    public var anchor: ConstraintLayoutAnchor { .init(view: self) }
+    public var anchor: ConstraintAnchor { .init(view: self) }
     
-    public func constraint(anchor: (ConstraintLayoutAnchor) -> Void) {
+    public func constraint(anchor: (ConstraintAnchor) -> Void) {
         anchor(self.anchor)
     }
     
@@ -555,5 +556,23 @@ extension UIView {
         let trailing = trailingAnchor.constraint(equalTo: guide.trailingAnchor, constant: -padding.trailing)
         NSLayoutConstraint.activate([leading, trailing, top, bottom])
         return (top, leading, bottom, trailing)
+    }
+    
+    @discardableResult
+    public func constraint(center view: UIView) -> (centerX: NSLayoutConstraint, centerY: NSLayoutConstraint) {
+        translatesAutoresizingMaskIntoConstraints = false
+        let centerX = centerXAnchor.constraint(equalTo: view.centerXAnchor)
+        let centerY = centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        NSLayoutConstraint.activate([centerX, centerY])
+        return (centerX, centerY)
+    }
+    
+    @discardableResult
+    public func constraint(center guide: UILayoutGuide) -> (centerX: NSLayoutConstraint, centerY: NSLayoutConstraint) {
+        translatesAutoresizingMaskIntoConstraints = false
+        let centerX = centerXAnchor.constraint(equalTo: guide.centerXAnchor)
+        let centerY = centerYAnchor.constraint(equalTo: guide.centerYAnchor)
+        NSLayoutConstraint.activate([centerX, centerY])
+        return (centerX, centerY)
     }
 }
