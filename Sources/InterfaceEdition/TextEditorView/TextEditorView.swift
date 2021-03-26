@@ -1,4 +1,5 @@
 import SwiftUI
+import AutoLayoutEdition
 
 
 public struct TextEditorView: View {
@@ -184,7 +185,7 @@ public class TextEditorViewController: UIViewController {
         super.viewDidLoad()
         addChild(content)
         view.addSubview(content.view)
-        content.view.constraint(fill: view)
+        content.view.anchor.pinTo(view)
         content.view.backgroundColor = .clear
         content.didMove(toParent: self)
     }

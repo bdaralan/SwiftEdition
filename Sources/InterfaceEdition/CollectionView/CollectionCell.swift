@@ -1,4 +1,5 @@
 import UIKit
+import AutoLayoutEdition
 
 
 open class CollectionCell: UICollectionViewCell {
@@ -16,6 +17,6 @@ open class CollectionCell: UICollectionViewCell {
     
     open func setupContainer() {
         contentView.addSubview(container)
-        container.constraint(fill: contentView)
+        container.anchor.pinTo(contentView)
     }
 }

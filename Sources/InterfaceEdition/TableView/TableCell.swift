@@ -1,4 +1,5 @@
 import UIKit
+import AutoLayoutEdition
 
 
 open class TableCell: UITableViewCell {
@@ -16,6 +17,6 @@ open class TableCell: UITableViewCell {
     
     open func setupContainer() {
         contentView.addSubview(container)
-        container.constraint(fill: contentView)
+        container.anchor.pinTo(contentView)
     }
 }

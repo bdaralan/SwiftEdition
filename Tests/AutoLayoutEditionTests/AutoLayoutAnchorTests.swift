@@ -1,8 +1,8 @@
 import XCTest
-@testable import InterfaceEdition
+@testable import AutoLayoutEdition
 
 
-final class ConstraintTests: XCTestCase {
+final class AutoLayoutAnchorTests: XCTestCase {
     
     var superview = UIView()
     var subview = UIView()
@@ -14,16 +14,39 @@ final class ConstraintTests: XCTestCase {
         superview.addSubview(subview)
     }
     
-    func testConstraintFillSuperview() {
-        subview.constraint(fill: superview)
+    func testAnchorPinToSuperview() {
+        subview.anchor.pinTo(superview)
         
         superview.layoutIfNeeded()
         
         XCTAssertEqual(subview.bounds, superview.bounds)
     }
     
+    func testCallAnchorPinToSuperviewAndCallAnchorPaddingDoesNotWork() {
+        subview.anchor.pinTo(superview)
+        subview.anchor.leading.padding(10)
+        
+        superview.layoutIfNeeded()
+        
+        XCTAssertFalse(subview.bounds.width < superview.bounds.width)
+        XCTAssertEqual(subview.bounds, superview.bounds)
+    }
+    
+    func testAnchorPinToSuperviewPadding() {
+        subview.anchor { anchor in
+            anchor.pinTo(superview)
+            anchor.leading.padding(10)
+        }
+        
+        superview.layoutIfNeeded()
+        
+        XCTAssertTrue(subview.bounds.width < superview.bounds.width)
+        XCTAssertTrue(subview.bounds.width == superview.bounds.width - 10)
+        XCTAssertEqual(subview.bounds.height, superview.bounds.height)
+    }
+    
     func testConstraintFillGuide() {
-        subview.constraint(fill: superview.safeAreaLayoutGuide)
+        subview.anchor.pinTo(superview.safeAreaLayoutGuide)
         
         superview.layoutIfNeeded()
         
@@ -31,7 +54,7 @@ final class ConstraintTests: XCTestCase {
     }
     
     func testConstraintCenterSuperview() {
-        subview.constraint(center: superview)
+        subview.anchor.centerTo(superview)
         
         superview.layoutIfNeeded()
         
@@ -39,7 +62,7 @@ final class ConstraintTests: XCTestCase {
     }
     
     func testConstraintCenterGuide() {
-        subview.constraint(center: superview.safeAreaLayoutGuide)
+        subview.anchor.centerTo(superview.safeAreaLayoutGuide)
         
         superview.layoutIfNeeded()
         
@@ -66,20 +89,23 @@ final class ConstraintTests: XCTestCase {
         XCTAssertEqual(subview.bounds, superview.bounds)
     }
     
-    func testAnchorWidthHeightPaddingSuperview() {
-        subview.anchor.width.equalTo(superview).padding(10)
-        subview.anchor.height.equalTo(superview).padding(10)
+    func testAnchorCenterWidthHeightAddSubtractSuperview() {
+        subview.anchor.centerX.equalTo(superview)
+        subview.anchor.centerY.equalTo(superview)
+        subview.anchor.width.equalTo(superview).subtract(50).add(40).subtract(10).subtract(20).add(10).add(10)
+        subview.anchor.height.equalTo(superview).subtract(60).add(50).subtract(20).subtract(30).add(20).add(20)
         
         superview.layoutIfNeeded()
         
         XCTAssertNotEqual(subview.frame, superview.frame)
+        XCTAssertEqual(subview.center, superview.center)
         XCTAssertEqual(subview.bounds.width, superview.bounds.width - 20)
         XCTAssertEqual(subview.bounds.height, superview.bounds.height - 20)
     }
     
     func testAnchorWidthHeightMultiplierPaddingSuperview() {
-        subview.anchor.width.equalTo(superview).multiplier(1/2).padding(10)
-        subview.anchor.height.equalTo(superview).multiplier(1/2).padding(10)
+        subview.anchor.width.equalTo(superview).multiplier(1/2).subtract(10 * 2)
+        subview.anchor.height.equalTo(superview).multiplier(1/2).subtract(10 * 2)
         
         superview.layoutIfNeeded()
         
@@ -119,8 +145,8 @@ final class ConstraintTests: XCTestCase {
     }
     
     func testAnchorWidthHeightPaddingAnchor() {
-        subview.anchor.width.equalTo(superview.anchor.width).padding(10)
-        subview.anchor.height.equalTo(superview.anchor.height).padding(10)
+        subview.anchor.width.equalTo(superview.anchor.width).subtract(20)
+        subview.anchor.height.equalTo(superview.anchor.height).subtract(20)
         
         superview.layoutIfNeeded()
         
@@ -140,7 +166,7 @@ final class ConstraintTests: XCTestCase {
     }
     
     func testConstraintAnchorTopBottomLeadingTrailingSuperview() {
-        subview.constraint { anchor in
+        subview.anchor { anchor in
             anchor.top.equalTo(superview)
             anchor.bottom.equalTo(superview)
             anchor.leading.equalTo(superview)
@@ -153,7 +179,7 @@ final class ConstraintTests: XCTestCase {
     }
     
     func testConstraintAnchorTopBottomLeadingTrailingAnchor() {
-        subview.constraint { anchor in
+        subview.anchor { anchor in
             anchor.top.equalTo(superview.anchor.top)
             anchor.bottom.equalTo(superview.anchor.bottom)
             anchor.leading.equalTo(superview.anchor.leading)

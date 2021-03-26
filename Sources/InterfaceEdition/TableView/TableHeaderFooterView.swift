@@ -16,6 +16,6 @@ open class TableHeaderFooterView: UITableViewHeaderFooterView {
     
     open func setupContainer() {
         contentView.addSubview(container)
-        container.constraint(fill: contentView)
+        container.anchor.pinTo(contentView)
     }
 }

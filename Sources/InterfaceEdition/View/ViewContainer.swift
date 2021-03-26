@@ -1,4 +1,5 @@
 import SwiftUI
+import AutoLayoutEdition
 
 
 /// A container view that supports alignment and padding.
@@ -10,7 +11,7 @@ final public class ViewContainer: UIView {
     }
     
     /// The container view used to layout the `view`.
-    public var contentView: UIView { viewContainer }
+    public var viewContainer: UIView { contentContainer }
     
     /// The alignment of the `view`.
     public var alignment: Alignment {
@@ -19,11 +20,11 @@ final public class ViewContainer: UIView {
     
     /// The padding of `view` within the `contentView`.
     public var padding: NSDirectionalEdgeInsets {
-        get { viewContainer.padding }
-        set { viewContainer.padding = newValue }
+        get { contentContainer.padding }
+        set { contentContainer.padding = newValue }
     }
     
-    private let viewContainer = UIStackView()
+    private let contentContainer = UIStackView()
     private let verticalContainer = UIStackView(.vertical)
     private let horizontalContainer = UIStackView(.horizontal)
     
@@ -42,10 +43,10 @@ final public class ViewContainer: UIView {
     
     private func setView(_ view: UIView?) {
         if let view = view {
-            guard viewContainer.arrangedSubviews.contains(view) == false else { return }
-            viewContainer.setArrangedSubviews(view)
+            guard contentContainer.arrangedSubviews.contains(view) == false else { return }
+            contentContainer.setArrangedSubviews(view)
         } else {
-            viewContainer.removeArrangedSubviews()
+            contentContainer.removeArrangedSubviews()
         }
     }
     
@@ -56,10 +57,10 @@ final public class ViewContainer: UIView {
     }
     
     private func setup() {
-        horizontalContainer.setArrangedSubviews(viewContainer)
+        horizontalContainer.setArrangedSubviews(contentContainer)
         verticalContainer.setArrangedSubviews(horizontalContainer)
         addSubview(verticalContainer)
-        verticalContainer.constraint(fill: self)
+        verticalContainer.anchor.pinTo(self)
     }
 }
 
@@ -127,11 +128,11 @@ struct ContainerView_Previews: PreviewProvider {
                 label.backgroundColor = .systemFill
                 
                 let container = ViewContainer(alignment: alignment, view: label)
-                container.contentView.backgroundColor = .secondarySystemBackground
+                container.viewContainer.backgroundColor = .secondarySystemBackground
                 container.padding = .init(vertical: 10, horizontal: 20)
                 
                 controller.view.addSubview(container)
-                container.constraint(fill: controller.view)
+                container.anchor.pinTo(controller.view)
                 return controller
             }
         }

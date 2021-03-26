@@ -16,6 +16,6 @@ open class CollectionFooterView: UICollectionReusableView {
     
     open func setupContainer() {
         addSubview(container)
-        container.constraint(fill: self)
+        container.anchor.pinTo(self)
     }
 }

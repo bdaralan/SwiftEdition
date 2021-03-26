@@ -1,4 +1,5 @@
 import SwiftUI
+import AutoLayoutEdition
 
 
 public struct TextFieldView: View {
@@ -167,7 +168,7 @@ public class TextFieldViewController: UIViewController {
         super.viewDidLoad()
         addChild(content)
         view.addSubview(content.view)
-        content.view.constraint(fill: view)
+        content.view.anchor.pinTo(view)
         content.didMove(toParent: self)
     }
 }
