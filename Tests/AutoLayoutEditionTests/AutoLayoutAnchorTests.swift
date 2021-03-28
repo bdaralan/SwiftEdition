@@ -1,193 +1,429 @@
 import XCTest
+import SwiftUI
 @testable import AutoLayoutEdition
 
 
 final class AutoLayoutAnchorTests: XCTestCase {
     
-    var superview = UIView()
-    var subview = UIView()
+    var controller = UIViewController()
+    var canvas: UIView { controller.view }
+    var view1 = UIView()
+    var view2 = UIView()
+    var view3 = UIView()
+    var view4 = UIView()
     
     override func setUp() {
         super.setUp()
-        superview = UIView(frame: CGRect(x: 0, y: 0, width: 900, height: 400))
-        subview = UIView()
-        superview.addSubview(subview)
+        controller = UIViewController()
+        view1 = UIView()
+        view2 = UIView()
+        view3 = UIView()
+        view4 = UIView()
+        
+        canvas.addSubview(view1)
+        canvas.addSubview(view2)
+        canvas.addSubview(view3)
+        canvas.addSubview(view4)
     }
     
-    func testAnchorPinToSuperview() {
-        subview.anchor.pinTo(superview)
+    func testStoreInVariable() {
+        var leading: NSLayoutConstraint!
         
-        superview.layoutIfNeeded()
+        view1.anchor.leading.equalTo(canvas).storeIn(&leading)
         
-        XCTAssertEqual(subview.bounds, superview.bounds)
+        XCTAssertNotNil(leading)
     }
     
-    func testCallAnchorPinToSuperviewAndCallAnchorPaddingDoesNotWork() {
-        subview.anchor.pinTo(superview)
-        subview.anchor.leading.padding(10)
+    func testStoreInArray() {
+        var constraints: [NSLayoutConstraint] = []
         
-        superview.layoutIfNeeded()
+        view1.anchor.leading.equalTo(canvas).storeIn(&constraints)
+        view2.anchor.leading.equalTo(canvas).storeIn(&constraints)
+        view3.anchor.leading.equalTo(canvas).storeIn(&constraints)
+        view4.anchor.leading.equalTo(canvas).storeIn(&constraints)
         
-        XCTAssertFalse(subview.bounds.width < superview.bounds.width)
-        XCTAssertEqual(subview.bounds, superview.bounds)
+        XCTAssertEqual(constraints.count, 4)
+        XCTAssertTrue(constraints[0] !== constraints[1])
+        XCTAssertTrue(constraints[1] !== constraints[2])
+        XCTAssertTrue(constraints[2] !== constraints[3])
     }
     
-    func testAnchorPinToSuperviewPadding() {
-        subview.anchor { anchor in
-            anchor.pinTo(superview)
-            anchor.leading.padding(10)
+    func testPriority() {
+        var constraints: [NSLayoutConstraint] = []
+        
+        view1.anchor.leading.equalTo(canvas).priority(.defaultLow).storeIn(&constraints)
+        view2.anchor.leading.equalTo(canvas).priority(.defaultHigh).storeIn(&constraints)
+        view3.anchor.leading.equalTo(canvas).priority(.required).storeIn(&constraints)
+        view4.anchor.leading.equalTo(canvas).storeIn(&constraints)
+        
+        XCTAssertEqual(constraints.count, 4)
+        XCTAssertTrue(constraints[0].priority == .defaultLow)
+        XCTAssertTrue(constraints[1].priority == .defaultHigh)
+        XCTAssertTrue(constraints[2].priority == .required)
+        XCTAssertTrue(constraints[3].priority == .required)
+    }
+    
+    func testTopBottomLeadingTrailingToView() {
+        view1.anchor.top.equalTo(canvas)
+        view2.anchor.bottom.equalTo(canvas)
+        view3.anchor.leading.equalTo(canvas)
+        view4.anchor.trailing.equalTo(canvas)
+        
+        canvas.layoutIfNeeded()
+        
+        XCTAssertEqual(view1.frame.minY, canvas.frame.minY)
+        XCTAssertEqual(view2.frame.maxY, canvas.frame.maxY)
+        XCTAssertEqual(view3.frame.minX, canvas.frame.minX)
+        XCTAssertEqual(view4.frame.maxX, canvas.frame.maxX)
+    }
+    
+    func testTopBottomLeadingTrailingToViewPadding() {
+        view1.anchor.top.equalTo(canvas).padding(10)
+        view2.anchor.bottom.equalTo(canvas).padding(10).padding(10)
+        view3.anchor.leading.equalTo(canvas).padding(30)
+        view4.anchor.trailing.equalTo(canvas).padding(40).padding(-40)
+        
+        canvas.layoutIfNeeded()
+        
+        XCTAssertEqual(view1.frame.minY, canvas.frame.minY + 10)
+        XCTAssertEqual(view2.frame.maxY, canvas.frame.maxY - 20)
+        XCTAssertEqual(view3.frame.minX, canvas.frame.minX + 30)
+        XCTAssertEqual(view4.frame.maxX, canvas.frame.maxX)
+    }
+    
+    func testTopBottomLeadingTrailingToGuide() {
+        view1.anchor.top.equalTo(canvas.safeAreaLayoutGuide)
+        view2.anchor.bottom.equalTo(canvas.safeAreaLayoutGuide)
+        view3.anchor.leading.equalTo(canvas.safeAreaLayoutGuide)
+        view4.anchor.trailing.equalTo(canvas.safeAreaLayoutGuide)
+        
+        canvas.layoutIfNeeded()
+        
+        XCTAssertEqual(view1.frame.minY, canvas.frame.minY)
+        XCTAssertEqual(view2.frame.maxY, canvas.frame.maxY)
+        XCTAssertEqual(view3.frame.minX, canvas.frame.minX)
+        XCTAssertEqual(view4.frame.maxX, canvas.frame.maxX)
+    }
+    
+    func testTopBottomLeadingTrailingToGuidePadding() {
+        view1.anchor.top.equalTo(canvas.safeAreaLayoutGuide).padding(10)
+        view2.anchor.bottom.equalTo(canvas.safeAreaLayoutGuide).padding(10).padding(10)
+        view3.anchor.leading.equalTo(canvas.safeAreaLayoutGuide).padding(30)
+        view4.anchor.trailing.equalTo(canvas.safeAreaLayoutGuide).padding(40).padding(-40)
+        
+        canvas.layoutIfNeeded()
+        
+        XCTAssertEqual(view1.frame.minY, canvas.frame.minY + 10)
+        XCTAssertEqual(view2.frame.maxY, canvas.frame.maxY - 20)
+        XCTAssertEqual(view3.frame.minX, canvas.frame.minX + 30)
+        XCTAssertEqual(view4.frame.maxX, canvas.frame.maxX)
+    }
+    
+    func testCenterXYToView() {
+        view1.anchor.centerX.equalTo(canvas)
+        view1.anchor.centerY.equalTo(canvas)
+        view2.anchor.centerX.equalTo(canvas)
+        view2.anchor.centerY.equalTo(canvas)
+        
+        canvas.layoutIfNeeded()
+        
+        XCTAssertEqual(view1.center, view2.center)
+    }
+    
+    func testCenterXYToViewPadding() {
+        view1.anchor.centerX.equalTo(canvas).padding(10)
+        view1.anchor.centerY.equalTo(canvas).padding(20)
+        view2.anchor.centerX.equalTo(canvas).padding(10)
+        view2.anchor.centerY.equalTo(canvas).padding(20)
+        
+        canvas.layoutIfNeeded()
+        
+        XCTAssertEqual(view1.center, view2.center)
+    }
+    
+    func testCenterXYToGuide() {
+        view1.anchor.centerX.equalTo(canvas.safeAreaLayoutGuide)
+        view1.anchor.centerY.equalTo(canvas.safeAreaLayoutGuide)
+        view2.anchor.centerX.equalTo(canvas.safeAreaLayoutGuide)
+        view2.anchor.centerY.equalTo(canvas.safeAreaLayoutGuide)
+        
+        canvas.layoutIfNeeded()
+        
+        XCTAssertEqual(view1.center, view2.center)
+    }
+    
+    func testCenterXYToGuidePadding() {
+        view1.anchor.centerX.equalTo(canvas.safeAreaLayoutGuide).padding(10)
+        view1.anchor.centerY.equalTo(canvas.safeAreaLayoutGuide).padding(20)
+        view2.anchor.centerX.equalTo(canvas.safeAreaLayoutGuide).padding(10)
+        view2.anchor.centerY.equalTo(canvas.safeAreaLayoutGuide).padding(20)
+        
+        canvas.layoutIfNeeded()
+        
+        XCTAssertEqual(view1.center, view2.center)
+    }
+    
+    func testWidthHeightToView() {
+        view1.anchor.width.equalTo(canvas)
+        view1.anchor.height.equalTo(canvas)
+        
+        canvas.layoutIfNeeded()
+        
+        XCTAssertEqual(view1.bounds.width, canvas.bounds.width)
+        XCTAssertEqual(view1.bounds.height, canvas.bounds.height)
+    }
+    
+    func testWidthHeightToViewAddSubtract() {
+        view1.anchor.width.equalTo(canvas).add(10)
+        view1.anchor.height.equalTo(canvas).subtract(10)
+        
+        canvas.layoutIfNeeded()
+        
+        XCTAssertEqual(view1.bounds.width, canvas.bounds.width + 10)
+        XCTAssertEqual(view1.bounds.height, canvas.bounds.height - 10)
+    }
+    
+    func testWidthHeightToGuide() {
+        view1.anchor.width.equalTo(canvas.safeAreaLayoutGuide)
+        view1.anchor.height.equalTo(canvas.safeAreaLayoutGuide)
+        
+        canvas.layoutIfNeeded()
+        
+        XCTAssertEqual(view1.bounds.width, canvas.bounds.width)
+        XCTAssertEqual(view1.bounds.height, canvas.bounds.height)
+    }
+    
+    func testWidthHeightToGuideAddSubtract() {
+        view1.anchor.width.equalTo(canvas.safeAreaLayoutGuide).add(10)
+        view1.anchor.height.equalTo(canvas.safeAreaLayoutGuide).subtract(10)
+        
+        canvas.layoutIfNeeded()
+        
+        XCTAssertEqual(view1.bounds.width, canvas.bounds.width + 10)
+        XCTAssertEqual(view1.bounds.height, canvas.bounds.height - 10)
+    }
+    
+    func testWidthHeightToConstant() {
+        view1.anchor.width.equalTo(400)
+        view1.anchor.height.equalTo(400)
+        
+        canvas.layoutIfNeeded()
+        
+        XCTAssertEqual(view1.bounds.width, 400)
+        XCTAssertEqual(view1.bounds.height, 400)
+    }
+    
+    func testWidthHeightConstantAddSubtract() {
+        view1.anchor.width.equalTo(400).add(10).add(10)
+        view1.anchor.height.equalTo(400).add(10).subtract(20).add(10)
+        
+        canvas.layoutIfNeeded()
+        
+        XCTAssertEqual(view1.bounds.width, 420)
+        XCTAssertEqual(view1.bounds.height, 400)
+    }
+    
+    func testWidthHeightMultiplier() {
+        view1.anchor.width.equalTo(400)
+        view1.anchor.height.equalTo(400)
+        
+        view2.anchor.width.equalTo(view1).multiplier(1/2)
+        view2.anchor.height.equalTo(view1).multiplier(1/4)
+        
+        canvas.layoutIfNeeded()
+        
+        XCTAssertEqual(view1.bounds.width, 400)
+        XCTAssertEqual(view1.bounds.height, 400)
+        
+        XCTAssertEqual(view2.bounds.width, 200)
+        XCTAssertEqual(view2.bounds.height, 100)
+    }
+    
+    func testWidthHeightMultiplierAddSubtract() {
+        view1.anchor.width.equalTo(400)
+        view1.anchor.height.equalTo(400)
+        
+        view2.anchor.width.equalTo(view1).multiplier(1/2).add(10)
+        view2.anchor.height.equalTo(view1).multiplier(1/4).subtract(20)
+        
+        canvas.layoutIfNeeded()
+        
+        XCTAssertEqual(view1.bounds.width, 400)
+        XCTAssertEqual(view1.bounds.height, 400)
+        
+        XCTAssertEqual(view2.bounds.width, 210)
+        XCTAssertEqual(view2.bounds.height, 80)
+    }
+    
+    func testPinToView() {
+        view1.anchor.pinTo(canvas)
+        
+        canvas.layoutIfNeeded()
+        
+        XCTAssertEqual(view1.bounds, canvas.bounds)
+    }
+    
+    func testPinToViewPadding() {
+        view1.anchor.pinTo(canvas).padding(top: 10)
+        view2.anchor.pinTo(canvas).padding(bottom: 10)
+        view3.anchor.pinTo(canvas).leading.padding(10)
+        view4.anchor.pinTo(canvas).trailing.padding(10)
+        
+        canvas.layoutIfNeeded()
+        
+        XCTAssertTrue(view1.bounds.height < canvas.bounds.height)
+        XCTAssertTrue(view2.bounds.height < canvas.bounds.height)
+        XCTAssertTrue(view3.bounds.width < canvas.bounds.width)
+        XCTAssertTrue(view4.bounds.width < canvas.bounds.width)
+        
+        XCTAssertEqual(view1.frame.minY - 10, canvas.frame.minY)
+        XCTAssertEqual(view2.frame.maxY + 10, canvas.frame.maxY)
+        XCTAssertEqual(view3.frame.minX - 10, canvas.frame.minX)
+        XCTAssertEqual(view4.frame.maxX + 10, canvas.frame.maxX)
+    }
+    
+    func testPinToGuide() {
+        view1.anchor.pinTo(canvas.safeAreaLayoutGuide)
+        
+        canvas.layoutIfNeeded()
+        
+        XCTAssertEqual(view1.frame, canvas.frame)
+    }
+    
+    func testPinToGuidePadding() {
+        view1.anchor.pinTo(canvas.safeAreaLayoutGuide).padding(top: 10)
+        view2.anchor.pinTo(canvas.safeAreaLayoutGuide).padding(bottom: 10)
+        view3.anchor.pinTo(canvas.safeAreaLayoutGuide).padding(leading: 10)
+        view4.anchor.pinTo(canvas.safeAreaLayoutGuide).padding(trailing: 10)
+        
+        canvas.layoutIfNeeded()
+        
+        XCTAssertTrue(view1.bounds.height < canvas.bounds.height)
+        XCTAssertTrue(view2.bounds.height < canvas.bounds.height)
+        XCTAssertTrue(view3.bounds.width < canvas.bounds.width)
+        XCTAssertTrue(view4.bounds.width < canvas.bounds.width)
+        
+        XCTAssertEqual(view1.frame.minY - 10, canvas.frame.minY)
+        XCTAssertEqual(view2.frame.maxY + 10, canvas.frame.maxY)
+        XCTAssertEqual(view3.frame.minX - 10, canvas.frame.minX)
+        XCTAssertEqual(view4.frame.maxX + 10, canvas.frame.maxX)
+    }
+    
+    func testSizeToView() {
+        view1.anchor.sizeTo(canvas)
+        
+        canvas.layoutIfNeeded()
+        
+        XCTAssertEqual(view1.bounds.width, canvas.bounds.width)
+        XCTAssertEqual(view1.bounds.height, canvas.bounds.height)
+    }
+    
+    func testSizeToViewAddSubtract() {
+        view1.anchor.sizeTo(canvas).add(width: 20, height: 20)
+        view2.anchor.sizeTo(canvas).subtract(width: 20, height: 20)
+        
+        view3.anchor { anchor in
+            anchor.sizeTo(canvas)
+            anchor.width.add(10).subtract(20).add(10)
+            anchor.height.add(10).add(10).subtract(20)
         }
         
-        superview.layoutIfNeeded()
+        canvas.layoutIfNeeded()
         
-        XCTAssertTrue(subview.bounds.width < superview.bounds.width)
-        XCTAssertTrue(subview.bounds.width == superview.bounds.width - 10)
-        XCTAssertEqual(subview.bounds.height, superview.bounds.height)
+        XCTAssertEqual(view1.bounds.width, canvas.bounds.width + 20)
+        XCTAssertEqual(view1.bounds.height, canvas.bounds.height + 20)
+        
+        XCTAssertEqual(view2.bounds.width, canvas.bounds.width - 20)
+        XCTAssertEqual(view2.bounds.height, canvas.bounds.height - 20)
+        
+        XCTAssertEqual(view3.bounds.width, canvas.bounds.width)
+        XCTAssertEqual(view3.bounds.height, canvas.bounds.height)
     }
     
-    func testConstraintFillGuide() {
-        subview.anchor.pinTo(superview.safeAreaLayoutGuide)
+    func testSizeToGuide() {
+        view1.anchor.sizeTo(canvas.safeAreaLayoutGuide)
         
-        superview.layoutIfNeeded()
+        canvas.layoutIfNeeded()
         
-        XCTAssertEqual(subview.frame, superview.frame)
+        XCTAssertEqual(view1.bounds.width, canvas.bounds.width)
+        XCTAssertEqual(view1.bounds.height, canvas.bounds.height)
     }
     
-    func testConstraintCenterSuperview() {
-        subview.anchor.centerTo(superview)
+    func testSizeToGuideAddSubtract() {
+        view1.anchor.sizeTo(canvas.safeAreaLayoutGuide).add(width: 20, height: 20)
+        view2.anchor.sizeTo(canvas.safeAreaLayoutGuide).subtract(width: 20, height: 20)
         
-        superview.layoutIfNeeded()
-        
-        XCTAssertEqual(subview.center, superview.center)
-    }
-    
-    func testConstraintCenterGuide() {
-        subview.anchor.centerTo(superview.safeAreaLayoutGuide)
-        
-        superview.layoutIfNeeded()
-        
-        XCTAssertEqual(subview.center, superview.center)
-    }
-    
-    func testAnchorTopBottomLeadingTrailingSuperview() {
-        subview.anchor.top.equalTo(superview)
-        subview.anchor.bottom.equalTo(superview)
-        subview.anchor.leading.equalTo(superview)
-        subview.anchor.trailing.equalTo(superview)
-        
-        superview.layoutIfNeeded()
-        
-        XCTAssertEqual(subview.frame, superview.frame)
-    }
-    
-    func testAnchorWidthHeightSuperview() {
-        subview.anchor.width.equalTo(superview)
-        subview.anchor.height.equalTo(superview)
-        
-        superview.layoutIfNeeded()
-        
-        XCTAssertEqual(subview.bounds, superview.bounds)
-    }
-    
-    func testAnchorCenterWidthHeightAddSubtractSuperview() {
-        subview.anchor.centerX.equalTo(superview)
-        subview.anchor.centerY.equalTo(superview)
-        subview.anchor.width.equalTo(superview).subtract(50).add(40).subtract(10).subtract(20).add(10).add(10)
-        subview.anchor.height.equalTo(superview).subtract(60).add(50).subtract(20).subtract(30).add(20).add(20)
-        
-        superview.layoutIfNeeded()
-        
-        XCTAssertNotEqual(subview.frame, superview.frame)
-        XCTAssertEqual(subview.center, superview.center)
-        XCTAssertEqual(subview.bounds.width, superview.bounds.width - 20)
-        XCTAssertEqual(subview.bounds.height, superview.bounds.height - 20)
-    }
-    
-    func testAnchorWidthHeightMultiplierPaddingSuperview() {
-        subview.anchor.width.equalTo(superview).multiplier(1/2).subtract(10 * 2)
-        subview.anchor.height.equalTo(superview).multiplier(1/2).subtract(10 * 2)
-        
-        superview.layoutIfNeeded()
-        
-        XCTAssertNotEqual(subview.frame, superview.frame)
-        XCTAssertEqual(subview.bounds.width, superview.bounds.width / 2 - 20)
-        XCTAssertEqual(subview.bounds.height, superview.bounds.height / 2 - 20)
-    }
-    
-    func testAnchorCenterXYSuperview() {
-        subview.anchor.centerX.equalTo(superview)
-        subview.anchor.centerY.equalTo(superview)
-        
-        superview.layoutIfNeeded()
-        
-        XCTAssertNotEqual(subview.frame, superview.frame)
-        XCTAssertEqual(subview.center, superview.center)
-    }
-    
-    func testAnchorTopBottomLeadingTrailingAnchor() {
-        subview.anchor.top.equalTo(superview.anchor.top)
-        subview.anchor.bottom.equalTo(superview.anchor.bottom)
-        subview.anchor.leading.equalTo(superview.anchor.leading)
-        subview.anchor.trailing.equalTo(superview.anchor.trailing)
-        
-        superview.layoutIfNeeded()
-        
-        XCTAssertEqual(subview.frame, superview.frame)
-    }
-    
-    func testAnchorWidthHeightAnchor() {
-        subview.anchor.width.equalTo(superview.anchor.width)
-        subview.anchor.height.equalTo(superview.anchor.height)
-        
-        superview.layoutIfNeeded()
-        
-        XCTAssertEqual(subview.bounds, superview.bounds)
-    }
-    
-    func testAnchorWidthHeightPaddingAnchor() {
-        subview.anchor.width.equalTo(superview.anchor.width).subtract(20)
-        subview.anchor.height.equalTo(superview.anchor.height).subtract(20)
-        
-        superview.layoutIfNeeded()
-        
-        XCTAssertNotEqual(subview.frame, superview.frame)
-        XCTAssertEqual(subview.bounds.width, superview.bounds.width - 20)
-        XCTAssertEqual(subview.bounds.height, superview.bounds.height - 20)
-    }
-    
-    func testAnchorCenterXYAnchor() {
-        subview.anchor.centerX.equalTo(superview.anchor.centerX)
-        subview.anchor.centerY.equalTo(superview.anchor.centerY)
-        
-        superview.layoutIfNeeded()
-        
-        XCTAssertNotEqual(subview.frame, superview.frame)
-        XCTAssertEqual(subview.center, superview.center)
-    }
-    
-    func testConstraintAnchorTopBottomLeadingTrailingSuperview() {
-        subview.anchor { anchor in
-            anchor.top.equalTo(superview)
-            anchor.bottom.equalTo(superview)
-            anchor.leading.equalTo(superview)
-            anchor.trailing.equalTo(superview)
+        view3.anchor { anchor in
+            anchor.sizeTo(canvas.safeAreaLayoutGuide)
+            anchor.width.add(10).subtract(20).add(10)
+            anchor.height.add(10).add(10).subtract(20)
         }
         
-        superview.layoutIfNeeded()
+        canvas.layoutIfNeeded()
         
-        XCTAssertEqual(subview.frame, superview.frame)
+        XCTAssertEqual(view1.bounds.width, canvas.bounds.width + 20)
+        XCTAssertEqual(view1.bounds.height, canvas.bounds.height + 20)
+        
+        XCTAssertEqual(view2.bounds.width, canvas.bounds.width - 20)
+        XCTAssertEqual(view2.bounds.height, canvas.bounds.height - 20)
+        
+        XCTAssertEqual(view3.bounds.width, canvas.bounds.width)
+        XCTAssertEqual(view3.bounds.height, canvas.bounds.height)
     }
     
-    func testConstraintAnchorTopBottomLeadingTrailingAnchor() {
-        subview.anchor { anchor in
-            anchor.top.equalTo(superview.anchor.top)
-            anchor.bottom.equalTo(superview.anchor.bottom)
-            anchor.leading.equalTo(superview.anchor.leading)
-            anchor.trailing.equalTo(superview.anchor.trailing)
-        }
+    func testCenterToView() {
+        view1.anchor.centerTo(canvas)
+        view1.anchor.width.equalTo(100)
+        view1.anchor.height.equalTo(100)
         
-        superview.layoutIfNeeded()
+        view2.anchor.centerTo(canvas)
+        view2.anchor.width.equalTo(100)
+        view2.anchor.height.equalTo(100)
         
-        XCTAssertEqual(subview.frame, superview.frame)
+        canvas.layoutIfNeeded()
+        
+        XCTAssertEqual(view1.center, view2.center)
+    }
+    
+    func testCenterToViewPadding() {
+        view1.anchor.centerTo(canvas).padding(centerX: 10, centerY: 10)
+        view1.anchor.width.equalTo(100)
+        view1.anchor.height.equalTo(100)
+        
+        view2.anchor.centerTo(canvas).padding(centerX: 10, centerY: 10)
+        view2.anchor.width.equalTo(100)
+        view2.anchor.height.equalTo(100)
+        
+        canvas.layoutIfNeeded()
+        
+        XCTAssertEqual(view1.center, view2.center)
+    }
+    
+    func testCenterToGuide() {
+        view1.anchor.centerTo(canvas.safeAreaLayoutGuide)
+        view1.anchor.width.equalTo(100)
+        view1.anchor.height.equalTo(100)
+        
+        view2.anchor.centerTo(canvas.safeAreaLayoutGuide)
+        view2.anchor.width.equalTo(100)
+        view2.anchor.height.equalTo(100)
+        
+        canvas.layoutIfNeeded()
+        
+        XCTAssertEqual(view1.center, view2.center)
+    }
+    
+    func testCenterToGuidePadding() {
+        view1.anchor.centerTo(canvas.safeAreaLayoutGuide).padding(centerX: 10, centerY: 10)
+        view1.anchor.width.equalTo(100)
+        view1.anchor.height.equalTo(100)
+        
+        view2.anchor.centerTo(canvas.safeAreaLayoutGuide).padding(centerX: 10, centerY: 10)
+        view2.anchor.width.equalTo(100)
+        view2.anchor.height.equalTo(100)
+        
+        canvas.layoutIfNeeded()
+        
+        XCTAssertEqual(view1.center, view2.center)
     }
 }

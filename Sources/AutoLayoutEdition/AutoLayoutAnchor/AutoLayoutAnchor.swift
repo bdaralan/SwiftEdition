@@ -100,6 +100,47 @@ public struct AutoLayoutAnchor {
         height.equalTo(guide)
         return self
     }
+    
+    /// Set edges' padding after `pinTo(_:)`.
+    @discardableResult
+    public func padding(top: CGFloat = 0, leading: CGFloat = 0, bottom: CGFloat = 0, trailing: CGFloat = 0) -> Self {
+        self.top.padding(top)
+        self.bottom.padding(bottom)
+        self.leading.padding(leading)
+        self.trailing.padding(trailing)
+        return self
+    }
+    
+    /// Set edges' padding after `pinTo(_:)`.
+    @discardableResult
+    public func padding(edges: CGFloat = 0) -> Self {
+        padding(top: edges, leading: edges, bottom: edges, trailing: edges)
+        return self
+    }
+    
+    /// Set center's padding after `centerTo(_:)`.
+    @discardableResult
+    public func padding(centerX: CGFloat = 0, centerY: CGFloat = 0) -> Self {
+        self.centerX.padding(centerX)
+        self.centerY.padding(centerY)
+        return self
+    }
+    
+    /// Add dimension after `sizeTo(_:)`.
+    @discardableResult
+    public func add(width: CGFloat = 0, height: CGFloat = 0) -> Self {
+        self.width.add(width)
+        self.height.add(height)
+        return self
+    }
+    
+    /// Subtract dimension after `sizeTo(_:)`.
+    @discardableResult
+    public func subtract(width: CGFloat = 0, height: CGFloat = 0) -> Self {
+        self.width.subtract(width)
+        self.height.subtract(height)
+        return self
+    }
 }
 
 
@@ -109,8 +150,8 @@ extension UIView {
     
     /// An anchor object use as a reference to setup constraints.
     ///
-    /// The property is intended to be use as a reference to setup anchor within `anchor(activate:)` method
-    /// or setup individual anchor. To access anchor's stored values create local instance or use the method.
+    /// The property is intended to be use as a reference to setup anchor within `anchor(activate:)` method or setup individual anchor.
+    /// To access anchor's stored values, create a local instance or use the method.
     ///
     /// - Note: Accessing this property always returns a new anchor object with no stored values.
     public var anchor: AutoLayoutAnchor { .init(view: self) }

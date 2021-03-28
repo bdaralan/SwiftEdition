@@ -21,21 +21,52 @@ extension AutoLayoutAnchor {
             constraint.isActive = true
         }
         
+        /// Set priority for the constraint.
         @discardableResult
         public func priority(_ priority: UILayoutPriority) -> Self {
             properties.constraint?.priority = priority
             return self
         }
         
+        /// Store the constraint in a variable.
+        ///
+        /// ```
+        ///     var variable: NSLayoutConstraint!
+        ///
+        ///     // CORRECT
+        ///     subview.anchor.leading.equalTo(superview).storeIn(&variable)
+        ///
+        ///     // CORRECT
+        ///     subview.anchor.pinTo(superview).leading.storeIn(&variable)
+        ///
+        ///     // INCORRECT
+        ///     // because .anchor always give a new instance (see anchor's documentation)
+        ///     subview.anchor.pinTo(superview)
+        ///     subview.anchor.leading.storeIn(&variable)
+        ///
+        ///     // CORRECT
+        ///     // because anchor in the block is a copied instance
+        ///     subview.anchor { anchor in
+        ///         anchor.pinTo(superview)
+        ///         anchor.leading.storeIn(&variable)
+        ///     }
+        /// ```
+        ///
+        /// - Parameter variable: The variable to store the constraint object.
         @discardableResult
-        public func store(in variable: inout NSLayoutConstraint?) -> Self {
+        public func storeIn(_ variable: inout NSLayoutConstraint?) -> Self {
             guard let constraint = properties.constraint else { return self }
             variable = constraint
             return self
         }
         
+        /// Store constraint in array.
+        ///
+        /// For more details, see `storeIn(_ variable:)` method's documentation.
+        ///
+        /// - Parameter array: The array to store the constraint object.
         @discardableResult
-        public func store(in array: inout [NSLayoutConstraint]) -> Self {
+        public func storeIn(_ array: inout [NSLayoutConstraint]) -> Self {
             guard let constraint = properties.constraint else { return self }
             array.append(constraint)
             return self
@@ -71,8 +102,8 @@ extension AutoLayoutAnchor.Anchor where AnchorType == AutoLayoutAnchor.XAxisAnch
     public func padding(_ padding: CGFloat) -> Self {
         guard let constraint = properties.constraint else { return self }
         switch type {
-        case .leading, .centerX: constraint.constant = padding
-        case .trailing: constraint.constant = -padding
+        case .leading, .centerX: constraint.constant += padding
+        case .trailing: constraint.constant -= padding
         }
         return self
     }
@@ -201,8 +232,8 @@ extension AutoLayoutAnchor.Anchor where AnchorType == AutoLayoutAnchor.YAxisAnch
     public func padding(_ padding: CGFloat) -> Self {
         guard let constraint = properties.constraint else { return self }
         switch type {
-        case .top, .centerY, .firstBaseline: constraint.constant = padding
-        case .bottom, .lastBaseline: constraint.constant = -padding
+        case .top, .centerY, .firstBaseline: constraint.constant += padding
+        case .bottom, .lastBaseline: constraint.constant -= padding
         }
         return self
     }
