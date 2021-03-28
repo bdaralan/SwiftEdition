@@ -6,6 +6,8 @@ import SwiftUI
 /// The wrapper injects an environment object, `Coordinator`, to the root view.
 /// The root view can use this object to access the wrapped navigation and root controller.
 ///
+/// - Tag: UINavigationControllerWrapper
+///
 public struct UINavigationControllerWrapper: UIViewControllerRepresentable {
     
     private let onMakeRootController: (Coordinator) -> UIViewController

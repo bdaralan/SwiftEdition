@@ -2,6 +2,8 @@ import SwiftUI
 import AutoLayoutEdition
 
 
+/// - Tag: TextEditorView
+///
 public struct TextEditorView: View {
     
     let model: TextEditorModel
@@ -165,6 +167,8 @@ extension TextEditorView {
 
 // MARK: - ViewController
 
+/// - Tag: TextEditorViewController
+///
 public class TextEditorViewController: UIViewController {
     
     public let model: TextEditorModel

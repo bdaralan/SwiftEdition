@@ -1,6 +1,8 @@
 import UIKit
 
 
+/// - Tag: TextFieldToggleItem
+///
 public struct TextFieldToggleItem: TextFieldItem {
     
     public typealias StateValue<Active, Inactive> = (active: Active, inactive: Inactive)

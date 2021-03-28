@@ -2,10 +2,13 @@ import Foundation
 
 
 /// A convenient object used to create closure that handle weak capture.
-public enum Action {}
+///
+/// - Tag: Closure
+///
+public enum Closure {}
 
 
-extension Action {
+extension Closure {
     
     /// Create a closure that capture weak object.
     /// - Parameters:
@@ -21,7 +24,7 @@ extension Action {
 }
 
 
-extension Action {
+extension Closure {
     
     /// Create a closure that capture weak object.
     /// - Parameters:

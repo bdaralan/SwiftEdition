@@ -1,6 +1,8 @@
 import UIKit
 
 
+/// - Tag: CollectionHeaderView
+///
 open class CollectionHeaderView: UICollectionReusableView {
     
     public let container = ViewContainer(alignment: .fill)

@@ -1,8 +1,8 @@
 import XCTest
-@testable import SyntacticEdition
+@testable import ClosureEdition
 
 
-final class ActionTests: XCTestCase {
+final class ClosureTests: XCTestCase {
     
     class Pokemon {
         
@@ -43,7 +43,7 @@ final class ActionTests: XCTestCase {
     }
     
     func testGuardWithoutArgument() {
-        let giveEverStone = Action.weak(trainer) { trainer in
+        let giveEverStone = Closure.weak(trainer) { trainer in
             for pokemon in trainer.pokemons {
                 trainer.give(item: "EverStone", to: pokemon)
             }
@@ -68,7 +68,7 @@ final class ActionTests: XCTestCase {
     }
     
     func testGuardWithArgument() {
-        let levelUp = Action.weak(trainer) { trainer, pokemon in
+        let levelUp = Closure.weak(trainer) { trainer, pokemon in
             trainer.levelUp(pokemon: pokemon)
         }
         
@@ -88,7 +88,7 @@ final class ActionTests: XCTestCase {
     func testGuardWithTupleArgument() {
         let argumentType = (item: String?, pokemon: Pokemon).self
         
-        let giveItem = Action.weak(trainer, argument: argumentType) { trainer, argument in
+        let giveItem = Closure.weak(trainer, argument: argumentType) { trainer, argument in
             trainer.give(item: argument.item, to: argument.pokemon)
         }
         

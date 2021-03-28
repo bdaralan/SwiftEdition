@@ -2,6 +2,8 @@ import UIKit
 import AutoLayoutEdition
 
 
+/// - Tag: CollectionCell
+///
 open class CollectionCell: UICollectionViewCell {
     
     public let container = ViewContainer(alignment: .fill)

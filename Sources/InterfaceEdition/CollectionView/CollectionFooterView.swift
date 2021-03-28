@@ -1,6 +1,8 @@
 import UIKit
 
 
+/// - Tag: CollectionFooterView
+///
 open class CollectionFooterView: UICollectionReusableView {
     
     public let container = ViewContainer(alignment: .fill)

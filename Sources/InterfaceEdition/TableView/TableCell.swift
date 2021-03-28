@@ -2,6 +2,8 @@ import UIKit
 import AutoLayoutEdition
 
 
+/// - Tag: TableCell
+///
 open class TableCell: UITableViewCell {
     
     public let container = ViewContainer(alignment: .fill)

@@ -1,6 +1,10 @@
 import UIKit
 
 
+/// An object used to setup auto layout constraints.
+/// 
+/// - Tag: AutoLayoutAnchor
+///
 public struct AutoLayoutAnchor {
     
     public let view: UIView

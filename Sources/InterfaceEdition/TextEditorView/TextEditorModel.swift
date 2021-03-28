@@ -1,6 +1,8 @@
 import UIKit
 
 
+/// - Tag: TextEditorModel
+///
 public class TextEditorModel: ObservableObject {
     
     @Published public var header = Header()

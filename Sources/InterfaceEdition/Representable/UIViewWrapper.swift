@@ -1,6 +1,8 @@
 import SwiftUI
 
 
+/// - Tag: UIViewWrapper
+///
 public struct UIViewWrapper<View>: UIViewRepresentable where View: UIView {
     
     private let onMake: () -> View

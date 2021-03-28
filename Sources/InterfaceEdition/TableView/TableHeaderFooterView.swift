@@ -1,6 +1,8 @@
 import UIKit
 
 
+/// - Tag: TableHeaderFooterView
+///
 open class TableHeaderFooterView: UITableViewHeaderFooterView {
     
     public let container = ViewContainer(alignment: .fill)
