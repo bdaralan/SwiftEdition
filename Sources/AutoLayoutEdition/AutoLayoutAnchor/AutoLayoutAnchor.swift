@@ -32,36 +32,31 @@ public struct AutoLayoutAnchor {
         height = .init(view: view, type: .height)
     }
     
-    /// Pin edges to the view's edges.
+    /// Pin the specified edges to the view's edges.
     ///
-    /// - Parameter view: The reference view.
+    /// - Parameters:
+    ///   - view The reference view.
+    ///   - edges: The edges to pin. The default is all edges.
     @discardableResult
-    public func pinTo(_ view: UIView) -> Self {
-        top.equalTo(view)
-        bottom.equalTo(view)
-        leading.equalTo(view)
-        trailing.equalTo(view)
+    public func pinTo(_ view: UIView, _ edges: Set<XYAxisEdgeAnchor> = [.top, .bottom, .leading, .trailing]) -> Self {
+        if edges.contains(.top) { top.equalTo(view) }
+        if edges.contains(.bottom) { bottom.equalTo(view) }
+        if edges.contains(.leading) { leading.equalTo(view) }
+        if edges.contains(.trailing) { trailing.equalTo(view) }
         return self
     }
     
-    @discardableResult
-    public func pinTo(_ anchors: [Anchor<Any>], _ view: UIView) -> Self {
-        top.equalTo(view)
-        bottom.equalTo(view)
-        leading.equalTo(view)
-        trailing.equalTo(view)
-        return self
-    }
-    
-    /// Pin edges to the guide's edges.
+    /// Pin the specified edges to the guide's edges.
     ///
-    /// - Parameter view: The reference guide.
+    /// - Parameters:
+    ///   - guide The reference guide.
+    ///   - edges: The edges to pin. The default is all edges.
     @discardableResult
-    public func pinTo(_ guide: UILayoutGuide) -> Self {
-        top.equalTo(guide)
-        bottom.equalTo(guide)
-        leading.equalTo(guide)
-        trailing.equalTo(guide)
+    public func pinTo(_ guide: UILayoutGuide, _ edges: Set<XYAxisEdgeAnchor> = [.top, .bottom, .leading, .trailing]) -> Self {
+        if edges.contains(.top) { top.equalTo(guide) }
+        if edges.contains(.bottom) { bottom.equalTo(guide) }
+        if edges.contains(.leading) { leading.equalTo(guide) }
+        if edges.contains(.trailing) { trailing.equalTo(guide) }
         return self
     }
     
@@ -75,7 +70,7 @@ public struct AutoLayoutAnchor {
     }
     
     /// Center to the guide's center.
-    /// - Parameter view: The reference guide.
+    /// - Parameter guide: The reference guide.
     @discardableResult
     public func centerTo(_ guide: UILayoutGuide) -> Self {
         centerX.equalTo(guide)
@@ -93,7 +88,7 @@ public struct AutoLayoutAnchor {
     }
     
     /// Size to the guide's size.
-    /// - Parameter view: The reference view.
+    /// - Parameter guide: The reference view.
     @discardableResult
     public func sizeTo(_ guide: UILayoutGuide) -> Self {
         width.equalTo(guide)
@@ -101,7 +96,7 @@ public struct AutoLayoutAnchor {
         return self
     }
     
-    /// Set edges' padding after `pinTo(_:)`.
+    /// Set edges' padding after`pinTo(_:)`.
     @discardableResult
     public func padding(top: CGFloat = 0, leading: CGFloat = 0, bottom: CGFloat = 0, trailing: CGFloat = 0) -> Self {
         self.top.padding(top)
@@ -111,14 +106,14 @@ public struct AutoLayoutAnchor {
         return self
     }
     
-    /// Set edges' padding after `pinTo(_:)`.
+    /// Set edges' padding after pinTo(_:)`.
     @discardableResult
-    public func padding(edges: CGFloat = 0) -> Self {
+    public func padding(edges: CGFloat) -> Self {
         padding(top: edges, leading: edges, bottom: edges, trailing: edges)
         return self
     }
     
-    /// Set center's padding after `centerTo(_:)`.
+    /// Set center's padding after centerTo(_:)`.
     @discardableResult
     public func padding(centerX: CGFloat = 0, centerY: CGFloat = 0) -> Self {
         self.centerX.padding(centerX)
@@ -126,7 +121,7 @@ public struct AutoLayoutAnchor {
         return self
     }
     
-    /// Add dimension after `sizeTo(_:)`.
+    /// Add dimension after`sizeTo(_:)`.
     @discardableResult
     public func add(width: CGFloat = 0, height: CGFloat = 0) -> Self {
         self.width.add(width)
@@ -134,7 +129,7 @@ public struct AutoLayoutAnchor {
         return self
     }
     
-    /// Subtract dimension after `sizeTo(_:)`.
+    /// Subtract dimension after`sizeTo(_:)`.
     @discardableResult
     public func subtract(width: CGFloat = 0, height: CGFloat = 0) -> Self {
         self.width.subtract(width)
@@ -154,6 +149,8 @@ extension UIView {
     /// To access anchor's stored values, create a local instance or use the method.
     ///
     /// - Note: Accessing this property always returns a new anchor object with no stored values.
+    ///
+    /// - See [storeIn(_:)](x-source-tag://Anchor.storeIn) method's documentation for examples.
     public var anchor: AutoLayoutAnchor { .init(view: self) }
     
     /// A method used to setup constraint anchor.

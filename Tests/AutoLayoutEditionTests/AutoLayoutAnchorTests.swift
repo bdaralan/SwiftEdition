@@ -1,5 +1,4 @@
 import XCTest
-import SwiftUI
 @testable import AutoLayoutEdition
 
 
@@ -307,6 +306,110 @@ final class AutoLayoutAnchorTests: XCTestCase {
         XCTAssertEqual(view2.frame.maxY + 10, canvas.frame.maxY)
         XCTAssertEqual(view3.frame.minX - 10, canvas.frame.minX)
         XCTAssertEqual(view4.frame.maxX + 10, canvas.frame.maxX)
+    }
+    
+    func testPinToViewEdges() {
+        view1.anchor.pinTo(canvas, [.top, .bottom, .leading, .trailing])
+        view2.anchor.pinTo(canvas, [.top, .leading, .trailing])
+        view3.anchor.pinTo(canvas, [.bottom, .leading])
+        
+        canvas.layoutIfNeeded()
+        
+        XCTAssertEqual(view1.frame, canvas.frame)
+
+        XCTAssertEqual(view2.frame.minY, canvas.frame.minY)
+        XCTAssertEqual(view2.frame.minX, canvas.frame.minX)
+        XCTAssertEqual(view2.frame.maxX, canvas.frame.maxX)
+        XCTAssertNotEqual(view2.frame.maxY, canvas.frame.maxY)
+        
+        XCTAssertEqual(view3.frame.maxY, canvas.frame.maxY)
+        XCTAssertEqual(view3.frame.minX, canvas.frame.minX)
+        XCTAssertNotEqual(view3.frame.minY, canvas.frame.minY)
+        XCTAssertNotEqual(view3.frame.maxX, canvas.frame.maxX)
+    }
+    
+    func testPinToViewEdgesPadding() {
+        view1.anchor.pinTo(canvas, [.top, .bottom, .leading, .trailing]).padding(edges: 10)
+        view2.anchor.pinTo(canvas, [.top, .leading, .trailing]).padding(edges: 20)
+        view3.anchor.pinTo(canvas, [.bottom, .leading]).padding(edges: 30)
+        
+        canvas.layoutIfNeeded()
+        
+        XCTAssertNotEqual(view1.frame, canvas.frame)
+        XCTAssertEqual(view1.frame.minY, canvas.frame.minY + 10)
+        XCTAssertEqual(view1.frame.maxY, canvas.frame.maxY - 10)
+        XCTAssertEqual(view1.frame.minX, canvas.frame.minX + 10)
+        XCTAssertEqual(view1.frame.maxX, canvas.frame.maxX - 10)
+        XCTAssertEqual(view1.bounds.width, canvas.bounds.width - 20)
+        XCTAssertEqual(view1.bounds.height, canvas.bounds.height - 20)
+
+        XCTAssertNotEqual(view2.frame, canvas.frame)
+        XCTAssertEqual(view2.frame.minY, canvas.frame.minY + 20)
+        XCTAssertEqual(view2.frame.minX, canvas.frame.minX + 20)
+        XCTAssertEqual(view2.frame.maxX, canvas.frame.maxX - 20)
+        XCTAssertNotEqual(view2.frame.maxY, canvas.frame.maxY - 20)
+        XCTAssertEqual(view2.bounds.width, canvas.bounds.width - 40)
+        XCTAssertNotEqual(view2.bounds.height, canvas.bounds.height - 40)
+        
+        XCTAssertNotEqual(view3.frame, canvas.frame)
+        XCTAssertEqual(view3.frame.maxY, canvas.frame.maxY - 30)
+        XCTAssertEqual(view3.frame.minX, canvas.frame.minX + 30)
+        XCTAssertNotEqual(view3.frame.minY, canvas.frame.minY + 30)
+        XCTAssertNotEqual(view3.frame.maxX, canvas.frame.maxX - 30)
+        XCTAssertNotEqual(view3.bounds.width, canvas.bounds.width - 60)
+        XCTAssertNotEqual(view3.bounds.height, canvas.bounds.height - 60)
+    }
+    
+    func testPinToGuideEdges() {
+        view1.anchor.pinTo(canvas.safeAreaLayoutGuide, [.top, .bottom, .leading, .trailing])
+        view2.anchor.pinTo(canvas.safeAreaLayoutGuide, [.top, .leading, .trailing])
+        view3.anchor.pinTo(canvas.safeAreaLayoutGuide, [.bottom, .leading])
+        
+        canvas.layoutIfNeeded()
+        
+        XCTAssertEqual(view1.frame, canvas.frame)
+
+        XCTAssertEqual(view2.frame.minY, canvas.frame.minY)
+        XCTAssertEqual(view2.frame.minX, canvas.frame.minX)
+        XCTAssertEqual(view2.frame.maxX, canvas.frame.maxX)
+        XCTAssertNotEqual(view2.frame.maxY, canvas.frame.maxY)
+        
+        XCTAssertEqual(view3.frame.maxY, canvas.frame.maxY)
+        XCTAssertEqual(view3.frame.minX, canvas.frame.minX)
+        XCTAssertNotEqual(view3.frame.minY, canvas.frame.minY)
+        XCTAssertNotEqual(view3.frame.maxX, canvas.frame.maxX)
+    }
+    
+    func testPinToGuideEdgesPadding() {
+        view1.anchor.pinTo(canvas.safeAreaLayoutGuide, [.top, .bottom, .leading, .trailing]).padding(edges: 10)
+        view2.anchor.pinTo(canvas.safeAreaLayoutGuide, [.top, .leading, .trailing]).padding(edges: 20)
+        view3.anchor.pinTo(canvas.safeAreaLayoutGuide, [.bottom, .leading]).padding(edges: 30)
+        
+        canvas.layoutIfNeeded()
+        
+        XCTAssertNotEqual(view1.frame, canvas.frame)
+        XCTAssertEqual(view1.frame.minY, canvas.frame.minY + 10)
+        XCTAssertEqual(view1.frame.maxY, canvas.frame.maxY - 10)
+        XCTAssertEqual(view1.frame.minX, canvas.frame.minX + 10)
+        XCTAssertEqual(view1.frame.maxX, canvas.frame.maxX - 10)
+        XCTAssertEqual(view1.bounds.width, canvas.bounds.width - 20)
+        XCTAssertEqual(view1.bounds.height, canvas.bounds.height - 20)
+
+        XCTAssertNotEqual(view2.frame, canvas.frame)
+        XCTAssertEqual(view2.frame.minY, canvas.frame.minY + 20)
+        XCTAssertEqual(view2.frame.minX, canvas.frame.minX + 20)
+        XCTAssertEqual(view2.frame.maxX, canvas.frame.maxX - 20)
+        XCTAssertNotEqual(view2.frame.maxY, canvas.frame.maxY - 20)
+        XCTAssertEqual(view2.bounds.width, canvas.bounds.width - 40)
+        XCTAssertNotEqual(view2.bounds.height, canvas.bounds.height - 40)
+        
+        XCTAssertNotEqual(view3.frame, canvas.frame)
+        XCTAssertEqual(view3.frame.maxY, canvas.frame.maxY - 30)
+        XCTAssertEqual(view3.frame.minX, canvas.frame.minX + 30)
+        XCTAssertNotEqual(view3.frame.minY, canvas.frame.minY + 30)
+        XCTAssertNotEqual(view3.frame.maxX, canvas.frame.maxX - 30)
+        XCTAssertNotEqual(view3.bounds.width, canvas.bounds.width - 60)
+        XCTAssertNotEqual(view3.bounds.height, canvas.bounds.height - 60)
     }
     
     func testSizeToView() {

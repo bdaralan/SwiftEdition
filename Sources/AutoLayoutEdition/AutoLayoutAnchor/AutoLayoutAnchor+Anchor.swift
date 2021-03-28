@@ -39,20 +39,22 @@ extension AutoLayoutAnchor {
         ///     // CORRECT
         ///     subview.anchor.pinTo(superview).leading.storeIn(&variable)
         ///
-        ///     // INCORRECT
-        ///     // because .anchor always give a new instance (see anchor's documentation)
-        ///     subview.anchor.pinTo(superview)
-        ///     subview.anchor.leading.storeIn(&variable)
-        ///
         ///     // CORRECT
-        ///     // because anchor in the block is a copied instance
+        ///     // because using the same copied anchor instance
         ///     subview.anchor { anchor in
         ///         anchor.pinTo(superview)
         ///         anchor.leading.storeIn(&variable)
         ///     }
+        ///
+        ///     // INCORRECT
+        ///     // because .anchor always give a new instance (see anchor's documentation)
+        ///     subview.anchor.pinTo(superview)
+        ///     subview.anchor.leading.storeIn(&variable)
         /// ```
         ///
         /// - Parameter variable: The variable to store the constraint object.
+        ///
+        /// - Tag: Anchor.storeIn
         @discardableResult
         public func storeIn(_ variable: inout NSLayoutConstraint?) -> Self {
             guard let constraint = properties.constraint else { return self }
@@ -62,7 +64,7 @@ extension AutoLayoutAnchor {
         
         /// Store constraint in array.
         ///
-        /// For more details, see `storeIn(_ variable:)` method's documentation.
+        /// See [storeIn(_:)](x-source-tag://Anchor.storeIn) method's documentation for examples.
         ///
         /// - Parameter array: The array to store the constraint object.
         @discardableResult
@@ -90,6 +92,13 @@ extension AutoLayoutAnchor {
     public enum DimensionAnchor {
         case width
         case height
+    }
+    
+    public enum XYAxisEdgeAnchor {
+        case top
+        case bottom
+        case leading
+        case trailing
     }
 }
 
