@@ -9,6 +9,9 @@ import InterfaceEdition
 /// A typealias to [AutoLayoutAnchor](x-source-tag://AutoLayoutAnchor)
 public typealias AutoLayoutAnchor = AutoLayoutEdition.AutoLayoutAnchor
 
+/// A typealias to [AutoLayoutAnchorConstraint](x-source-tag://AutoLayoutAnchorConstraint)
+public typealias AutoLayoutAnchorConstraint = AutoLayoutEdition.AutoLayoutAnchorConstraint
+
 
 // MARK: - ClosureEdition
 

@@ -50,8 +50,8 @@ final class AutoLayoutAnchorTests: XCTestCase {
     func testPriority() {
         var constraints: [NSLayoutConstraint] = []
         
-        view1.anchor.leading.equalTo(canvas).priority(.defaultLow).storeIn(&constraints)
-        view2.anchor.leading.equalTo(canvas).priority(.defaultHigh).storeIn(&constraints)
+        view1.anchor.leading.equalTo(canvas).priority(.low).storeIn(&constraints)
+        view2.anchor.leading.equalTo(canvas).priority(.high).storeIn(&constraints)
         view3.anchor.leading.equalTo(canvas).priority(.required).storeIn(&constraints)
         view4.anchor.leading.equalTo(canvas).storeIn(&constraints)
         

@@ -5,9 +5,11 @@ import UIKit
 
 extension AutoLayoutAnchor {
     
-    public struct Anchor<AnchorType> {
+    public struct Anchor<AnchorType>: AutoLayoutAnchorConstraint {
         public let view: UIView
         public let type: AnchorType
+        
+        public var constraint: NSLayoutConstraint? { properties.constraint }
         
         fileprivate let properties = Properties()
         
@@ -17,44 +19,28 @@ extension AutoLayoutAnchor {
         
         fileprivate func activate(_ constraint: NSLayoutConstraint) {
             view.translatesAutoresizingMaskIntoConstraints = false
+            properties.constraint?.isActive = false
             properties.constraint = constraint
             constraint.isActive = true
         }
         
         /// Set priority for the constraint.
         @discardableResult
-        public func priority(_ priority: UILayoutPriority) -> Self {
-            properties.constraint?.priority = priority
+        public func priority(_ priority: AutoLayoutAnchor.AnchorPriority) -> Self {
+            properties.constraint?.priority = .init(priority.value)
+            return self
+        }
+        
+        /// Set priority for the constraint.
+        @discardableResult
+        public func priority(_ priority: Float) -> Self {
+            properties.constraint?.priority = .init(priority)
             return self
         }
         
         /// Store the constraint in a variable.
         ///
-        /// ```
-        ///     var variable: NSLayoutConstraint!
-        ///
-        ///     // CORRECT
-        ///     subview.anchor.leading.equalTo(superview).storeIn(&variable)
-        ///
-        ///     // CORRECT
-        ///     subview.anchor.pinTo(superview).leading.storeIn(&variable)
-        ///
-        ///     // CORRECT
-        ///     // because using the same copied anchor instance
-        ///     subview.anchor { anchor in
-        ///         anchor.pinTo(superview)
-        ///         anchor.leading.storeIn(&variable)
-        ///     }
-        ///
-        ///     // INCORRECT
-        ///     // because .anchor always give a new instance (see anchor's documentation)
-        ///     subview.anchor.pinTo(superview)
-        ///     subview.anchor.leading.storeIn(&variable)
-        /// ```
-        ///
         /// - Parameter variable: The variable to store the constraint object.
-        ///
-        /// - Tag: Anchor.storeIn
         @discardableResult
         public func storeIn(_ variable: inout NSLayoutConstraint?) -> Self {
             guard let constraint = properties.constraint else { return self }
@@ -64,13 +50,29 @@ extension AutoLayoutAnchor {
         
         /// Store constraint in array.
         ///
-        /// See [storeIn(_:)](x-source-tag://Anchor.storeIn) method's documentation for examples.
-        ///
         /// - Parameter array: The array to store the constraint object.
         @discardableResult
         public func storeIn(_ array: inout [NSLayoutConstraint]) -> Self {
             guard let constraint = properties.constraint else { return self }
             array.append(constraint)
+            return self
+        }
+        
+        /// Store the anchor in a variable.
+        ///
+        /// - Parameter variable: The variable to store the anchor.
+        @discardableResult
+        public func storeIn(_ variable: inout AutoLayoutAnchorConstraint?) -> Self {
+            variable = self
+            return self
+        }
+        
+        /// Store anchor in array.
+        ///
+        /// - Parameter array: The array to store the anchor.
+        @discardableResult
+        public func storeIn(_ array: inout [AutoLayoutAnchorConstraint]) -> Self {
+            array.append(self)
             return self
         }
     }
@@ -99,6 +101,41 @@ extension AutoLayoutAnchor {
         case bottom
         case leading
         case trailing
+    }
+    
+    public struct AnchorPriority {
+        
+        public let value: Float
+        
+        public init(_ value: Float) {
+            self.value = value
+        }
+        
+        init(_ priority: UILayoutPriority) {
+            value = priority.rawValue
+        }
+        
+        static public func +(lhs: Self, rhs: Float) -> Self {
+            .init(lhs.value + rhs)
+        }
+        
+        static public func -(lhs: Self, rhs: Float) -> Self {
+            .init(lhs.value - rhs)
+        }
+        
+        static public let required = AnchorPriority(.required)
+        
+        static public let high = AnchorPriority(.defaultHigh)
+        
+        static public let dragCanResizeScene = AnchorPriority(.dragThatCanResizeScene)
+        
+        static public let sceneSizeStayPut = AnchorPriority(.sceneSizeStayPut)
+        
+        static public let dragCannotResizeScene = AnchorPriority(.dragThatCannotResizeScene)
+        
+        static public let low = AnchorPriority(.defaultLow)
+        
+        static public let fittingSizeLevel = AnchorPriority(.fittingSizeLevel)
     }
 }
 
@@ -438,7 +475,6 @@ extension AutoLayoutAnchor.Anchor where AnchorType == AutoLayoutAnchor.Dimension
             item: view1, attribute: constraint.firstAttribute, relatedBy: constraint.relation,
             toItem: view2, attribute: constraint.secondAttribute, multiplier: multiplier, constant: constraint.constant
         )
-        constraint.isActive = false
         activate(updateConstraint)
         return self
     }
@@ -460,8 +496,8 @@ extension AutoLayoutAnchor.Anchor where AnchorType == AutoLayoutAnchor.Dimension
     @discardableResult
     public func equalTo(_ constant: CGFloat) -> Self {
         switch type {
-        case .width: activate(self.view.widthAnchor.constraint(equalToConstant: constant))
-        case .height: activate(self.view.heightAnchor.constraint(equalToConstant: constant))
+        case .width: activate(view.widthAnchor.constraint(equalToConstant: constant))
+        case .height: activate(view.heightAnchor.constraint(equalToConstant: constant))
         }
         return self
     }
@@ -563,5 +599,26 @@ extension AutoLayoutAnchor.Anchor where AnchorType == AutoLayoutAnchor.Dimension
         case .height: activate(view.heightAnchor.constraint(greaterThanOrEqualTo: anchor.view.heightAnchor))
         }
         return self
+    }
+}
+
+
+/// An anchor type.
+///
+/// - Tag: AutoLayoutAnchorConstraint
+///
+public protocol AutoLayoutAnchorConstraint {
+    var constraint: NSLayoutConstraint? { get }
+}
+
+
+extension Array where Element: AutoLayoutAnchorConstraint {
+    
+    public func activate() {
+        NSLayoutConstraint.activate(compactMap(\.constraint))
+    }
+    
+    public func deactivate() {
+        NSLayoutConstraint.deactivate(compactMap(\.constraint))
     }
 }

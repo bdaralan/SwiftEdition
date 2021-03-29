@@ -1,7 +1,7 @@
 import UIKit
 
 
-/// An object used to setup auto layout constraints.
+/// An object used to setup layout anchor constraints.
 /// 
 /// - Tag: AutoLayoutAnchor
 ///
@@ -22,6 +22,9 @@ public struct AutoLayoutAnchor {
     public let width: Anchor<DimensionAnchor>
     public let height: Anchor<DimensionAnchor>
     
+    /// Create AutoLayoutAnchor.
+    ///
+    /// - Parameter view: The view to anchor.
     init(view: UIView) {
         self.view = view
         leading = .init(view: view, type: .leading)
@@ -65,6 +68,7 @@ public struct AutoLayoutAnchor {
     }
     
     /// Center to the view's center.
+    ///
     /// - Parameter view: The reference view.
     @discardableResult
     public func centerTo(_ view: UIView) -> Self {
@@ -74,6 +78,7 @@ public struct AutoLayoutAnchor {
     }
     
     /// Center to the guide's center.
+    ///
     /// - Parameter guide: The reference guide.
     @discardableResult
     public func centerTo(_ guide: UILayoutGuide) -> Self {
@@ -83,6 +88,7 @@ public struct AutoLayoutAnchor {
     }
     
     /// Size to the view's size.
+    ///
     /// - Parameter view: The reference view.
     @discardableResult
     public func sizeTo(_ view: UIView) -> Self {
@@ -92,6 +98,7 @@ public struct AutoLayoutAnchor {
     }
     
     /// Size to the guide's size.
+    ///
     /// - Parameter guide: The reference view.
     @discardableResult
     public func sizeTo(_ guide: UILayoutGuide) -> Self {
@@ -100,7 +107,7 @@ public struct AutoLayoutAnchor {
         return self
     }
     
-    /// Set edges' padding after`pinTo(_:)`.
+    /// Set edges' padding after `pinTo(_:)`.
     @discardableResult
     public func padding(top: CGFloat = 0, leading: CGFloat = 0, bottom: CGFloat = 0, trailing: CGFloat = 0) -> Self {
         self.top.padding(top)
@@ -110,14 +117,14 @@ public struct AutoLayoutAnchor {
         return self
     }
     
-    /// Set edges' padding after pinTo(_:)`.
+    /// Set edges' padding after `pinTo(_:)`.
     @discardableResult
     public func padding(edges: CGFloat) -> Self {
         padding(top: edges, leading: edges, bottom: edges, trailing: edges)
         return self
     }
     
-    /// Set center's padding after centerTo(_:)`.
+    /// Set center's padding after `centerTo(_:)`.
     @discardableResult
     public func padding(centerX: CGFloat = 0, centerY: CGFloat = 0) -> Self {
         self.centerX.padding(centerX)
@@ -125,7 +132,7 @@ public struct AutoLayoutAnchor {
         return self
     }
     
-    /// Add dimension after`sizeTo(_:)`.
+    /// Add dimension after `sizeTo(_:)`.
     @discardableResult
     public func add(width: CGFloat = 0, height: CGFloat = 0) -> Self {
         self.width.add(width)
@@ -133,7 +140,7 @@ public struct AutoLayoutAnchor {
         return self
     }
     
-    /// Subtract dimension after`sizeTo(_:)`.
+    /// Subtract dimension after `sizeTo(_:)`.
     @discardableResult
     public func subtract(width: CGFloat = 0, height: CGFloat = 0) -> Self {
         self.width.subtract(width)
@@ -149,12 +156,42 @@ extension UIView {
     
     /// An anchor object use as a reference to setup constraints.
     ///
-    /// The property is intended to be use as a reference to setup anchor within `anchor(activate:)` method or setup individual anchor.
-    /// To access anchor's stored values, create a local instance or use the method.
+    /// The property is intended to be use as a reference to setup anchor within the method `anchor(activate:)` or setup individual anchor.
+    /// To access or update anchor's stored values, create a local instance and use it or grab the copied instance in the method.
     ///
     /// - Note: Accessing this property always returns a new anchor object with no stored values.
     ///
-    /// - See [storeIn(_:)](x-source-tag://Anchor.storeIn) method's documentation for examples.
+    /// ```
+    ///     // EXAMPLE: How to store `NSLayoutConstraint` if needed.
+    ///
+    ///     var variable: NSLayoutConstraint!
+    ///
+    ///     // CORRECT
+    ///     subview.anchor.leading.equalTo(superview).storeIn(&variable)
+    ///
+    ///     // CORRECT
+    ///     subview.anchor.pinTo(superview).leading.storeIn(&variable)
+    ///
+    ///     // CORRECT
+    ///     // because using the same copied anchor instance
+    ///     subview.anchor { anchor in
+    ///         anchor.pinTo(superview)
+    ///         anchor.leading.storeIn(&variable)
+    ///     }
+    ///
+    ///     // INCORRECT
+    ///     // because accessing .anchor always give a new instance
+    ///     subview.anchor.pinTo(superview)
+    ///     subview.anchor.leading.storeIn(&variable)
+    ///
+    ///     // CORRECTION
+    ///     // get a copied instance and setup using that one
+    ///     let anchor = subview.anchor
+    ///     anchor.pinTo(superview)
+    ///     anchor.leading.storeIn(&variable)
+    /// ```
+    ///
+    /// - Tag: AutoLayoutAnchor.anchor
     public var anchor: AutoLayoutAnchor { .init(view: self) }
     
     /// A method used to setup constraint anchor.
