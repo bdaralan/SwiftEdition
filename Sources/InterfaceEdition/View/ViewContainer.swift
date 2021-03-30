@@ -133,6 +133,7 @@ struct ContainerView_Previews: PreviewProvider {
                 
                 controller.view.addSubview(container)
                 container.anchor.pinTo(controller.view)
+                container.backgroundColor = .systemGreen
                 return controller
             }
         }

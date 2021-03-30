@@ -39,10 +39,10 @@ public struct AutoLayoutAnchor {
         height = .init(view: view, type: .height)
     }
     
-    /// Pin the specified edges to the view's edges.
+    /// Pin the edges to the view's edges.
     ///
     /// - Parameters:
-    ///   - view The reference view.
+    ///   - view: The reference view.
     ///   - edges: The edges to pin. The default is all edges.
     @discardableResult
     public func pinTo(_ view: UIView, _ edges: Set<XYAxisEdgeAnchor> = [.top, .bottom, .leading, .trailing]) -> Self {
@@ -53,10 +53,10 @@ public struct AutoLayoutAnchor {
         return self
     }
     
-    /// Pin the specified edges to the guide's edges.
+    /// Pin the edges to the guide's edges.
     ///
     /// - Parameters:
-    ///   - guide The reference guide.
+    ///   - guide: The reference guide.
     ///   - edges: The edges to pin. The default is all edges.
     @discardableResult
     public func pinTo(_ guide: UILayoutGuide, _ edges: Set<XYAxisEdgeAnchor> = [.top, .bottom, .leading, .trailing]) -> Self {
