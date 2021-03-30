@@ -78,7 +78,7 @@ final class AutoLayoutAnchorTests: XCTestCase {
     
     func testTopBottomLeadingTrailingToViewPadding() {
         view1.anchor.top.equalTo(canvas).padding(10)
-        view2.anchor.bottom.equalTo(canvas).padding(10).padding(10)
+        view2.anchor.bottom.equalTo(canvas).padding(10).padding(20)
         view3.anchor.leading.equalTo(canvas).padding(30)
         view4.anchor.trailing.equalTo(canvas).padding(40).padding(-40)
         
@@ -87,7 +87,7 @@ final class AutoLayoutAnchorTests: XCTestCase {
         XCTAssertEqual(view1.frame.minY, canvas.frame.minY + 10)
         XCTAssertEqual(view2.frame.maxY, canvas.frame.maxY - 20)
         XCTAssertEqual(view3.frame.minX, canvas.frame.minX + 30)
-        XCTAssertEqual(view4.frame.maxX, canvas.frame.maxX)
+        XCTAssertEqual(view4.frame.maxX, canvas.frame.maxX + 40)
     }
     
     func testTopBottomLeadingTrailingToGuide() {
@@ -106,7 +106,7 @@ final class AutoLayoutAnchorTests: XCTestCase {
     
     func testTopBottomLeadingTrailingToGuidePadding() {
         view1.anchor.top.equalTo(canvas.safeAreaLayoutGuide).padding(10)
-        view2.anchor.bottom.equalTo(canvas.safeAreaLayoutGuide).padding(10).padding(10)
+        view2.anchor.bottom.equalTo(canvas.safeAreaLayoutGuide).padding(10).padding(20)
         view3.anchor.leading.equalTo(canvas.safeAreaLayoutGuide).padding(30)
         view4.anchor.trailing.equalTo(canvas.safeAreaLayoutGuide).padding(40).padding(-40)
         
@@ -115,7 +115,7 @@ final class AutoLayoutAnchorTests: XCTestCase {
         XCTAssertEqual(view1.frame.minY, canvas.frame.minY + 10)
         XCTAssertEqual(view2.frame.maxY, canvas.frame.maxY - 20)
         XCTAssertEqual(view3.frame.minX, canvas.frame.minX + 30)
-        XCTAssertEqual(view4.frame.maxX, canvas.frame.maxX)
+        XCTAssertEqual(view4.frame.maxX, canvas.frame.maxX + 40)
     }
     
     func testCenterXYToView() {

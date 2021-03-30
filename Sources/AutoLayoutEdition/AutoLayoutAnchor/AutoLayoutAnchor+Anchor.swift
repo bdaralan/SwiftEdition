@@ -5,10 +5,15 @@ import UIKit
 
 extension AutoLayoutAnchor {
     
-    public struct Anchor<AnchorType>: AutoLayoutAnchorConstraint {
+    public struct Anchor<AnchorType>: AutoLayoutConstraintAnchor {
+        
+        /// The anchor's receiver view.
         public let view: UIView
+        
+        /// The type of anchor.
         public let type: AnchorType
         
+        /// This value is `nil` if the anchor has not been set.
         public var constraint: NSLayoutConstraint? { properties.constraint }
         
         fileprivate let properties = Properties()
@@ -24,14 +29,14 @@ extension AutoLayoutAnchor {
             constraint.isActive = true
         }
         
-        /// Set priority for the constraint.
+        /// Set priority for the anchor.
         @discardableResult
         public func priority(_ priority: AutoLayoutAnchor.AnchorPriority) -> Self {
             properties.constraint?.priority = .init(priority.value)
             return self
         }
         
-        /// Set priority for the constraint.
+        /// Set priority for the anchor.
         @discardableResult
         public func priority(_ priority: Float) -> Self {
             properties.constraint?.priority = .init(priority)
@@ -62,7 +67,7 @@ extension AutoLayoutAnchor {
         ///
         /// - Parameter variable: The variable to store the anchor.
         @discardableResult
-        public func storeIn(_ variable: inout AutoLayoutAnchorConstraint?) -> Self {
+        public func storeIn(_ variable: inout AutoLayoutConstraintAnchor?) -> Self {
             variable = self
             return self
         }
@@ -71,11 +76,17 @@ extension AutoLayoutAnchor {
         ///
         /// - Parameter array: The array to store the anchor.
         @discardableResult
-        public func storeIn(_ array: inout [AutoLayoutAnchorConstraint]) -> Self {
+        public func storeIn(_ array: inout [AutoLayoutConstraintAnchor]) -> Self {
             array.append(self)
             return self
         }
     }
+}
+
+
+// MARK: - Anchor Type
+
+extension AutoLayoutAnchor {
     
     public enum XAxisAnchor {
         case leading
@@ -144,12 +155,15 @@ extension AutoLayoutAnchor {
 
 extension AutoLayoutAnchor.Anchor where AnchorType == AutoLayoutAnchor.XAxisAnchor {
     
+    /// Add padding to the anchor.
+    ///
+    /// Chaining will not stack up.
     @discardableResult
     public func padding(_ padding: CGFloat) -> Self {
         guard let constraint = properties.constraint else { return self }
         switch type {
-        case .leading, .centerX: constraint.constant += padding
-        case .trailing: constraint.constant -= padding
+        case .leading, .centerX: constraint.constant = padding
+        case .trailing: constraint.constant = -padding
         }
         return self
     }
@@ -274,12 +288,15 @@ extension AutoLayoutAnchor.Anchor where AnchorType == AutoLayoutAnchor.XAxisAnch
 
 extension AutoLayoutAnchor.Anchor where AnchorType == AutoLayoutAnchor.YAxisAnchor {
     
+    /// Add padding to the anchor.
+    ///
+    /// Chaining will not stack up.
     @discardableResult
     public func padding(_ padding: CGFloat) -> Self {
         guard let constraint = properties.constraint else { return self }
         switch type {
-        case .top, .centerY, .firstBaseline: constraint.constant += padding
-        case .bottom, .lastBaseline: constraint.constant -= padding
+        case .top, .centerY, .firstBaseline: constraint.constant = padding
+        case .bottom, .lastBaseline: constraint.constant = -padding
         }
         return self
     }
@@ -479,6 +496,9 @@ extension AutoLayoutAnchor.Anchor where AnchorType == AutoLayoutAnchor.Dimension
         return self
     }
     
+    /// Add a constant to the current value.
+    ///
+    /// Chaining will stack up.
     @discardableResult
     public func add(_ constant: CGFloat) -> Self {
         guard let constraint = properties.constraint else { return self }
@@ -486,6 +506,9 @@ extension AutoLayoutAnchor.Anchor where AnchorType == AutoLayoutAnchor.Dimension
         return self
     }
     
+    /// Subtract a constant from the current value.
+    ///
+    /// Chaining will stack up.
     @discardableResult
     public func subtract(_ constant: CGFloat) -> Self {
         guard let constraint = properties.constraint else { return self }
@@ -603,22 +626,40 @@ extension AutoLayoutAnchor.Anchor where AnchorType == AutoLayoutAnchor.Dimension
 }
 
 
-/// An anchor type.
+// MARK: - Protocol & Extension
+
+/// - Tag: AutoLayoutConstraintAnchor
 ///
-/// - Tag: AutoLayoutAnchorConstraint
-///
-public protocol AutoLayoutAnchorConstraint {
+public protocol AutoLayoutConstraintAnchor {
+    
     var constraint: NSLayoutConstraint? { get }
 }
 
 
-extension Array where Element: AutoLayoutAnchorConstraint {
+extension Array where Element == AutoLayoutConstraintAnchor {
     
+    /// Activate the constraints.
     public func activate() {
         NSLayoutConstraint.activate(compactMap(\.constraint))
     }
     
+    /// Deactivate the constraints.
     public func deactivate() {
         NSLayoutConstraint.deactivate(compactMap(\.constraint))
     }
 }
+
+
+// MARK: - Typealias
+
+/// - Tag: AutoLayoutXAxisAnchor
+///
+public typealias AutoLayoutXAxisAnchor = AutoLayoutAnchor.Anchor<AutoLayoutAnchor.XAxisAnchor>
+
+/// - Tag: AutoLayoutYAxisAnchor
+///
+public typealias AutoLayoutYAxisAnchor = AutoLayoutAnchor.Anchor<AutoLayoutAnchor.YAxisAnchor>
+
+/// - Tag: AutoLayoutDimensionAnchor
+///
+public typealias AutoLayoutDimensionAnchor = AutoLayoutAnchor.Anchor<AutoLayoutAnchor.DimensionAnchor>

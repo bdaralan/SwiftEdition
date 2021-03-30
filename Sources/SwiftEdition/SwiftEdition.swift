@@ -9,8 +9,17 @@ import InterfaceEdition
 /// A typealias to [AutoLayoutAnchor](x-source-tag://AutoLayoutAnchor)
 public typealias AutoLayoutAnchor = AutoLayoutEdition.AutoLayoutAnchor
 
-/// A typealias to [AutoLayoutAnchorConstraint](x-source-tag://AutoLayoutAnchorConstraint)
-public typealias AutoLayoutAnchorConstraint = AutoLayoutEdition.AutoLayoutAnchorConstraint
+/// A typealias to [AutoLayoutConstraintAnchor](x-source-tag://AutoLayoutConstraintAnchor)
+public typealias AutoLayoutConstraintAnchor = AutoLayoutEdition.AutoLayoutConstraintAnchor
+
+/// A typealias to [AutoLayoutXAxisAnchor](x-source-tag://AutoLayoutXAxisAnchor)
+public typealias AutoLayoutXAxisAnchor = AutoLayoutEdition.AutoLayoutXAxisAnchor
+
+/// A typealias to [AutoLayoutYAxisAnchor](x-source-tag://AutoLayoutYAxisAnchor)
+public typealias AutoLayoutYAxisAnchor = AutoLayoutEdition.AutoLayoutYAxisAnchor
+
+/// A typealias to [AutoLayoutDimensionAnchor](x-source-tag://AutoLayoutDimensionAnchor)
+public typealias AutoLayoutDimensionAnchor = AutoLayoutEdition.AutoLayoutDimensionAnchor
 
 
 // MARK: - ClosureEdition

@@ -108,6 +108,8 @@ public struct AutoLayoutAnchor {
     }
     
     /// Set edges' padding after `pinTo(_:)`.
+    ///
+    /// Chaining will not stack.
     @discardableResult
     public func padding(top: CGFloat = 0, leading: CGFloat = 0, bottom: CGFloat = 0, trailing: CGFloat = 0) -> Self {
         self.top.padding(top)
@@ -118,6 +120,8 @@ public struct AutoLayoutAnchor {
     }
     
     /// Set edges' padding after `pinTo(_:)`.
+    ///
+    /// Chaining will not stack.
     @discardableResult
     public func padding(edges: CGFloat) -> Self {
         padding(top: edges, leading: edges, bottom: edges, trailing: edges)
@@ -125,6 +129,8 @@ public struct AutoLayoutAnchor {
     }
     
     /// Set center's padding after `centerTo(_:)`.
+    ///
+    /// Chaining will not stack.
     @discardableResult
     public func padding(centerX: CGFloat = 0, centerY: CGFloat = 0) -> Self {
         self.centerX.padding(centerX)
@@ -133,6 +139,8 @@ public struct AutoLayoutAnchor {
     }
     
     /// Add dimension after `sizeTo(_:)`.
+    ///
+    /// Chaining will stack up.
     @discardableResult
     public func add(width: CGFloat = 0, height: CGFloat = 0) -> Self {
         self.width.add(width)
@@ -141,6 +149,8 @@ public struct AutoLayoutAnchor {
     }
     
     /// Subtract dimension after `sizeTo(_:)`.
+    ///
+    /// Chaining will stack up.
     @discardableResult
     public func subtract(width: CGFloat = 0, height: CGFloat = 0) -> Self {
         self.width.subtract(width)
