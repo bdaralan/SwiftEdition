@@ -42,9 +42,6 @@ public typealias CollectionFooterView = InterfaceEdition.CollectionFooterView
 /// A typealias to [CollectionHeaderView](x-source-tag://CollectionHeaderView)
 public typealias CollectionHeaderView = InterfaceEdition.CollectionHeaderView
 
-/// A typealias to [UINavigationControllerWrapper](x-source-tag://UINavigationControllerWrapper)
-public typealias UINavigationControllerWrapper = InterfaceEdition.UINavigationControllerWrapper
-
 /// A typealias to [UIViewControllerWrapper](x-source-tag://UIViewControllerWrapper)
 public typealias UIViewControllerWrapper = InterfaceEdition.UIViewControllerWrapper
 
