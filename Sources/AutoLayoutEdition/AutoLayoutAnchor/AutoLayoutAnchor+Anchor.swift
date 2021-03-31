@@ -545,9 +545,12 @@ extension AutoLayoutAnchor.Anchor where AnchorType == AutoLayoutAnchor.Dimension
     
     @discardableResult
     public func equalTo(_ anchor: Self) -> Self {
-        switch type {
-        case .width: activate(view.widthAnchor.constraint(equalTo: anchor.view.widthAnchor))
-        case .height: activate(view.heightAnchor.constraint(equalTo: anchor.view.heightAnchor))
+        switch (type, anchor.type) {
+        case (.width, .width): activate(view.widthAnchor.constraint(equalTo: anchor.view.widthAnchor))
+        case (.width, .height): activate(view.widthAnchor.constraint(equalTo: anchor.view.heightAnchor))
+            
+        case (.height, .width): activate(view.heightAnchor.constraint(equalTo: anchor.view.widthAnchor))
+        case (.height, .height): activate(view.heightAnchor.constraint(equalTo: anchor.view.heightAnchor))
         }
         return self
     }
@@ -581,9 +584,12 @@ extension AutoLayoutAnchor.Anchor where AnchorType == AutoLayoutAnchor.Dimension
     
     @discardableResult
     public func lessThanOrEqualTo(_ anchor: Self) -> Self {
-        switch type {
-        case .width: activate(view.widthAnchor.constraint(lessThanOrEqualTo: anchor.view.widthAnchor))
-        case .height: activate(view.heightAnchor.constraint(lessThanOrEqualTo: anchor.view.heightAnchor))
+        switch (type, anchor.type) {
+        case (.width, .width): activate(view.widthAnchor.constraint(lessThanOrEqualTo: anchor.view.widthAnchor))
+        case (.width, .height): activate(view.widthAnchor.constraint(lessThanOrEqualTo: anchor.view.heightAnchor))
+            
+        case (.height, .width): activate(view.heightAnchor.constraint(lessThanOrEqualTo: anchor.view.widthAnchor))
+        case (.height, .height): activate(view.heightAnchor.constraint(lessThanOrEqualTo: anchor.view.heightAnchor))
         }
         return self
     }
@@ -617,9 +623,12 @@ extension AutoLayoutAnchor.Anchor where AnchorType == AutoLayoutAnchor.Dimension
     
     @discardableResult
     public func greaterThanOrEqualTo(_ anchor: Self) -> Self {
-        switch type {
-        case .width: activate(view.widthAnchor.constraint(greaterThanOrEqualTo: anchor.view.widthAnchor))
-        case .height: activate(view.heightAnchor.constraint(greaterThanOrEqualTo: anchor.view.heightAnchor))
+        switch (type, anchor.type) {
+        case (.width, .width): activate(view.widthAnchor.constraint(greaterThanOrEqualTo: anchor.view.widthAnchor))
+        case (.width, .height): activate(view.widthAnchor.constraint(greaterThanOrEqualTo: anchor.view.heightAnchor))
+            
+        case (.height, .width): activate(view.heightAnchor.constraint(greaterThanOrEqualTo: anchor.view.widthAnchor))
+        case (.height, .height): activate(view.heightAnchor.constraint(greaterThanOrEqualTo: anchor.view.heightAnchor))
         }
         return self
     }
