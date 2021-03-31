@@ -169,21 +169,33 @@ extension UIView {
     /// The property is intended to be use as a reference to setup anchor within the method `anchor(activate:)` or setup individual anchor.
     /// To access or update anchor's stored values, create a local instance and use it or grab the copied instance in the method.
     ///
-    /// - Note: Accessing this property always returns a new anchor object with no stored values.
+    /// For normal usage, this behavior does not matter much.
+    /// The behavior matters when trying to store or access the same anchor after setting them up. See example codes.
+    ///
+    /// - Note: Accessing this property always returns a new anchor instance with no stored values.
     ///
     /// ```
-    ///     // EXAMPLE: How to store `NSLayoutConstraint` if needed.
+    ///     // EXAMPLE: Storing individual constraint if needed.
+    ///     // Anchor can be stored using method or assignment.
+    ///     // Below shows how to use storeIn(_:) method.
     ///
     ///     var variable: NSLayoutConstraint!
+    ///     // OTHERS
+    ///     // var variable: AutoLayoutConstraintAnchor!
+    ///     // var variable: AutoLayoutXAxisAnchor!
+    ///     // var variable: AutoLayoutYAxisAnchor!
+    ///     // var variable: AutoLayoutDimensionAnchor!
     ///
     ///     // CORRECT
+    ///     // setup then store the anchor's constraint
     ///     subview.anchor.leading.equalTo(superview).storeIn(&variable)
     ///
     ///     // CORRECT
+    ///     // setup then access the anchor and store it's constraint
     ///     subview.anchor.pinTo(superview).leading.storeIn(&variable)
     ///
     ///     // CORRECT
-    ///     // because using the same copied anchor instance
+    ///     // using the same anchor instance
     ///     subview.anchor { anchor in
     ///         anchor.pinTo(superview)
     ///         anchor.leading.storeIn(&variable)
