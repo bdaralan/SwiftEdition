@@ -43,31 +43,12 @@ extension AutoLayoutAnchor {
             return self
         }
         
-        /// Store the constraint in a variable.
-        ///
-        /// - Parameter variable: The variable to store the constraint object.
-        @discardableResult
-        public func storeIn(_ variable: inout NSLayoutConstraint?) -> Self {
-            guard let constraint = properties.constraint else { return self }
-            variable = constraint
-            return self
-        }
-        
-        /// Store constraint in array.
-        ///
-        /// - Parameter array: The array to store the constraint object.
-        @discardableResult
-        public func storeIn(_ array: inout [NSLayoutConstraint]) -> Self {
-            guard let constraint = properties.constraint else { return self }
-            array.append(constraint)
-            return self
-        }
-        
         /// Store the anchor in a variable.
         ///
         /// - Parameter variable: The variable to store the anchor.
         @discardableResult
         public func storeIn(_ variable: inout AutoLayoutAnchor.Anchor<AnchorType>?) -> Self {
+            guard constraint != nil else { return self }
             variable = self
             return self
         }
@@ -77,7 +58,18 @@ extension AutoLayoutAnchor {
         /// - Parameter array: The array to store the anchor.
         @discardableResult
         public func storeIn(_ array: inout [AutoLayoutAnchor.Anchor<AnchorType>]) -> Self {
+            guard constraint != nil else { return self }
             array.append(self)
+            return self
+        }
+        
+        /// Store the anchor in a variable.
+        ///
+        /// - Parameter variable: The variable to store the anchor.
+        @discardableResult
+        public func storeIn(_ variable: inout AutoLayoutConstraintAnchor?) -> Self {
+            guard constraint != nil else { return self }
+            variable = self
             return self
         }
         
@@ -86,10 +78,17 @@ extension AutoLayoutAnchor {
         /// - Parameter array: The array to store the anchor.
         @discardableResult
         public func storeIn(_ array: inout [AutoLayoutConstraintAnchor]) -> Self {
+            guard constraint != nil else { return self }
             array.append(self)
             return self
         }
     }
+}
+
+func a() {
+    var variable: AutoLayoutConstraintAnchor?
+    var array: [AutoLayoutConstraintAnchor] = []
+    UIView().anchor.width.equalTo(100).storeIn(&variable).storeIn(&array)
 }
 
 
@@ -642,51 +641,3 @@ extension AutoLayoutAnchor.Anchor where AnchorType == AutoLayoutAnchor.Dimension
         return self
     }
 }
-
-
-// MARK: - Protocol & Extension
-
-/// - Tag: AutoLayoutConstraintAnchor
-///
-public protocol AutoLayoutConstraintAnchor {
-    
-    var constraint: NSLayoutConstraint? { get }
-}
-
-
-extension AutoLayoutConstraintAnchor {
-    
-    /// Set the constraint's active state.
-    public func activate(_ active: Bool) {
-        constraint?.isActive = active
-    }
-}
-
-
-extension Array where Element == AutoLayoutConstraintAnchor {
-    
-    /// Set the constraints' active state.
-    public func activate(_ active: Bool) {
-        let constraints = compactMap(\.constraint)
-        if active {
-            NSLayoutConstraint.activate(constraints)
-        } else {
-            NSLayoutConstraint.deactivate(constraints)
-        }
-    }
-}
-
-
-// MARK: - Typealias
-
-/// - Tag: AutoLayoutXAxisAnchor
-///
-public typealias AutoLayoutXAxisAnchor = AutoLayoutAnchor.Anchor<AutoLayoutAnchor.XAxisAnchor>
-
-/// - Tag: AutoLayoutYAxisAnchor
-///
-public typealias AutoLayoutYAxisAnchor = AutoLayoutAnchor.Anchor<AutoLayoutAnchor.YAxisAnchor>
-
-/// - Tag: AutoLayoutDimensionAnchor
-///
-public typealias AutoLayoutDimensionAnchor = AutoLayoutAnchor.Anchor<AutoLayoutAnchor.DimensionAnchor>

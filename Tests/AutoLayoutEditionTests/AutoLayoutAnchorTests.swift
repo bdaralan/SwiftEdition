@@ -26,7 +26,7 @@ final class AutoLayoutAnchorTests: XCTestCase {
     }
     
     func testStoreInVariable() {
-        var leading: NSLayoutConstraint!
+        var leading: AutoLayoutConstraintAnchor!
         
         view1.anchor.leading.equalTo(canvas).storeIn(&leading)
         
@@ -34,7 +34,7 @@ final class AutoLayoutAnchorTests: XCTestCase {
     }
     
     func testStoreInArray() {
-        var constraints: [NSLayoutConstraint] = []
+        var constraints: [AutoLayoutConstraintAnchor] = []
         
         view1.anchor.leading.equalTo(canvas).storeIn(&constraints)
         view2.anchor.leading.equalTo(canvas).storeIn(&constraints)
@@ -42,13 +42,13 @@ final class AutoLayoutAnchorTests: XCTestCase {
         view4.anchor.leading.equalTo(canvas).storeIn(&constraints)
         
         XCTAssertEqual(constraints.count, 4)
-        XCTAssertTrue(constraints[0] !== constraints[1])
-        XCTAssertTrue(constraints[1] !== constraints[2])
-        XCTAssertTrue(constraints[2] !== constraints[3])
+        XCTAssertTrue(constraints[0].constraint !== constraints[1].constraint)
+        XCTAssertTrue(constraints[1].constraint !== constraints[2].constraint)
+        XCTAssertTrue(constraints[2].constraint !== constraints[3].constraint)
     }
     
     func testPriority() {
-        var constraints: [NSLayoutConstraint] = []
+        var constraints: [AutoLayoutConstraintAnchor] = []
         
         view1.anchor.leading.equalTo(canvas).priority(.low).storeIn(&constraints)
         view2.anchor.leading.equalTo(canvas).priority(.high).storeIn(&constraints)
@@ -56,10 +56,10 @@ final class AutoLayoutAnchorTests: XCTestCase {
         view4.anchor.leading.equalTo(canvas).storeIn(&constraints)
         
         XCTAssertEqual(constraints.count, 4)
-        XCTAssertTrue(constraints[0].priority == .defaultLow)
-        XCTAssertTrue(constraints[1].priority == .defaultHigh)
-        XCTAssertTrue(constraints[2].priority == .required)
-        XCTAssertTrue(constraints[3].priority == .required)
+        XCTAssertTrue(constraints[0].constraint?.priority == .defaultLow)
+        XCTAssertTrue(constraints[1].constraint?.priority == .defaultHigh)
+        XCTAssertTrue(constraints[2].constraint?.priority == .required)
+        XCTAssertTrue(constraints[3].constraint?.priority == .required)
     }
     
     func testTopBottomLeadingTrailingToView() {

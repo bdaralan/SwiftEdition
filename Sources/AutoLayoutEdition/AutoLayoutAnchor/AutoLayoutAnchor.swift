@@ -179,19 +179,18 @@ extension UIView {
     ///     // Anchor can be stored using method or assignment.
     ///     // Below shows how to use storeIn(_:) method.
     ///
-    ///     var variable: NSLayoutConstraint!
-    ///     // OTHERS
-    ///     // var variable: AutoLayoutConstraintAnchor!
+    ///     var variable: AutoLayoutConstraintAnchor!
+    ///     // OTHER SPECIFIC ANCHORS
     ///     // var variable: AutoLayoutXAxisAnchor!
     ///     // var variable: AutoLayoutYAxisAnchor!
     ///     // var variable: AutoLayoutDimensionAnchor!
     ///
     ///     // CORRECT
-    ///     // setup then store the anchor's constraint
+    ///     // setup then store the anchor
     ///     subview.anchor.leading.equalTo(superview).storeIn(&variable)
     ///
     ///     // CORRECT
-    ///     // setup then access the anchor and store it's constraint
+    ///     // setup then access the anchor and store it
     ///     subview.anchor.pinTo(superview).leading.storeIn(&variable)
     ///
     ///     // CORRECT
