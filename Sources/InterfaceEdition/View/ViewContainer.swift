@@ -2,7 +2,10 @@ import SwiftUI
 import AutoLayoutEdition
 
 
-/// A container view that supports alignment and padding.
+/// A view container that utilizes stack views to render a view and supports alignment and padding.
+///
+/// By default, the container has an intrinsic content size of the view it manages.
+///
 final public class ViewContainer: UIView {
     
     /// The view that the container will manage.
@@ -18,15 +21,24 @@ final public class ViewContainer: UIView {
         didSet { setViewAlignment(alignment) }
     }
     
-    /// The padding of `view` within the `contentView`.
+    /// The padding of `view` within the `viewContainer`.
     public var padding: NSDirectionalEdgeInsets {
         get { contentContainer.padding }
         set { contentContainer.padding = newValue }
     }
     
+    /// The preferred intrinsic content size. The default is `UIView.layoutFittingCompressedSize`.
+    public var preferredIntrinsicContentSize: CGSize = UIView.layoutFittingCompressedSize {
+        didSet { invalidateIntrinsicContentSize() }
+    }
+    
     private let contentContainer = UIStackView()
     private let verticalContainer = UIStackView(.vertical)
     private let horizontalContainer = UIStackView(.horizontal)
+    
+    public override var intrinsicContentSize: CGSize {
+        preferredIntrinsicContentSize
+    }
     
     public init(alignment: Alignment = .center, view: UIView? = nil) {
         self.alignment = alignment
