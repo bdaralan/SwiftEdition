@@ -85,12 +85,6 @@ extension AutoLayoutAnchor {
     }
 }
 
-func a() {
-    var variable: AutoLayoutConstraintAnchor?
-    var array: [AutoLayoutConstraintAnchor] = []
-    UIView().anchor.width.equalTo(100).storeIn(&variable).storeIn(&array)
-}
-
 
 // MARK: - Anchor Type
 
