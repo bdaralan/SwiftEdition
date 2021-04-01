@@ -67,8 +67,17 @@ extension AutoLayoutAnchor {
         ///
         /// - Parameter variable: The variable to store the anchor.
         @discardableResult
-        public func storeIn(_ variable: inout AutoLayoutConstraintAnchor?) -> Self {
+        public func storeIn(_ variable: inout AutoLayoutAnchor.Anchor<AnchorType>?) -> Self {
             variable = self
+            return self
+        }
+        
+        /// Store anchor in array.
+        ///
+        /// - Parameter array: The array to store the anchor.
+        @discardableResult
+        public func storeIn(_ array: inout [AutoLayoutAnchor.Anchor<AnchorType>]) -> Self {
+            array.append(self)
             return self
         }
         
@@ -645,16 +654,25 @@ public protocol AutoLayoutConstraintAnchor {
 }
 
 
+extension AutoLayoutConstraintAnchor {
+    
+    /// Set the constraint's active state.
+    public func activate(_ active: Bool) {
+        constraint?.isActive = active
+    }
+}
+
+
 extension Array where Element == AutoLayoutConstraintAnchor {
     
-    /// Activate the constraints.
-    public func activate() {
-        NSLayoutConstraint.activate(compactMap(\.constraint))
-    }
-    
-    /// Deactivate the constraints.
-    public func deactivate() {
-        NSLayoutConstraint.deactivate(compactMap(\.constraint))
+    /// Set the constraints' active state.
+    public func activate(_ active: Bool) {
+        let constraints = compactMap(\.constraint)
+        if active {
+            NSLayoutConstraint.activate(constraints)
+        } else {
+            NSLayoutConstraint.deactivate(constraints)
+        }
     }
 }
 
