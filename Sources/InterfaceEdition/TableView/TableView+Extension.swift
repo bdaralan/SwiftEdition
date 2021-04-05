@@ -11,11 +11,11 @@ extension UITableView {
         dequeueReusableCell(withIdentifier: "\(cell.self)", for: indexPath) as! Cell
     }
     
-    public func registerHeaderFooterView<HeaderFooter>(_ view: HeaderFooter.Type) where HeaderFooter: UITableViewHeaderFooterView {
+    public func registerHeaderFooter<HeaderFooter>(_ view: HeaderFooter.Type) where HeaderFooter: UITableViewHeaderFooterView {
         register(view, forHeaderFooterViewReuseIdentifier: "\(view.self)")
     }
     
-    public func dequeueHeaderFooterView<HeaderFooter>(_ view: HeaderFooter.Type) -> HeaderFooter where HeaderFooter: UITableViewHeaderFooterView {
+    public func dequeueHeaderFooter<HeaderFooter>(_ view: HeaderFooter.Type) -> HeaderFooter where HeaderFooter: UITableViewHeaderFooterView {
         dequeueReusableHeaderFooterView(withIdentifier: "\(view.self)") as! HeaderFooter
     }
 }
