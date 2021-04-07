@@ -36,11 +36,8 @@ public typealias Closure = ClosureEdition.Closure
 /// A typealias to [CollectionCell](x-source-tag://CollectionCell)
 public typealias CollectionCell = InterfaceEdition.CollectionCell
 
-/// A typealias to [CollectionFooterView](x-source-tag://CollectionFooterView)
-public typealias CollectionFooterView = InterfaceEdition.CollectionFooterView
-
-/// A typealias to [CollectionHeaderView](x-source-tag://CollectionHeaderView)
-public typealias CollectionHeaderView = InterfaceEdition.CollectionHeaderView
+/// A typealias to [CollectionReusableView](x-source-tag://CollectionReusableView)
+public typealias CollectionReusableView = InterfaceEdition.CollectionReusableView
 
 /// A typealias to [UIViewControllerWrapper](x-source-tag://UIViewControllerWrapper)
 public typealias UIViewControllerWrapper = InterfaceEdition.UIViewControllerWrapper

@@ -2,9 +2,14 @@ import UIKit
 import AutoLayoutEdition
 
 
-/// - Tag: CollectionHeaderView
+/// A `UICollectionReusableView` subclass that use `ViewContainer` as `contentView`.
 ///
-open class CollectionHeaderView: UICollectionReusableView {
+/// General usage is to override `setup()` or `setupContainer()` and call `super`.
+/// Then assign a view to `container.view`.
+///
+/// - Tag: CollectionReusableView
+///
+open class CollectionReusableView: UICollectionReusableView {
     
     public let container = ViewContainer(alignment: .fill)
     

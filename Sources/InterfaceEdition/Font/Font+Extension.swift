@@ -7,12 +7,12 @@ extension UIFont {
         let font = UIFont.preferredFont(forTextStyle: style)
         var descriptor = font.fontDescriptor
         
-        if let traits = traits, let applied = descriptor.withSymbolicTraits(traits) {
-            descriptor = applied
+        if let traits = traits, let update = descriptor.withSymbolicTraits(traits) {
+            descriptor = update
         }
         
-        if let design = design, let applied = descriptor.withDesign(design) {
-            descriptor = applied
+        if let design = design, let update = descriptor.withDesign(design) {
+            descriptor = update
         }
         
         self.init(descriptor: descriptor, size: 0)

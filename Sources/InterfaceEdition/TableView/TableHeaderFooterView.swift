@@ -2,6 +2,11 @@ import UIKit
 import AutoLayoutEdition
 
 
+/// A `UITableViewHeaderFooterView` subclass that use `ViewContainer` as `contentView`.
+///
+/// General usage is to override `setup()` or `setupContainer()` and call `super`.
+/// Then assign a view to `container.view`.
+///
 /// - Tag: TableHeaderFooterView
 ///
 open class TableHeaderFooterView: UITableViewHeaderFooterView {

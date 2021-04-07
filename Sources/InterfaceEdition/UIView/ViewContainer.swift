@@ -136,11 +136,13 @@ struct ContainerView_Previews: PreviewProvider {
         ForEach(alignments1, id: \.self) { alignment in
             UIViewControllerWrapper {
                 let controller = UIViewController()
-                let label = UILabel(text: "\(alignment)")
-                label.backgroundColor = .systemFill
+                let label = UILabel()
+                label.text = "\(alignment)"
+                label.font = .monospacedSystemFont(ofSize: 17, weight: .bold)
+                label.backgroundColor = .systemRed
                 
                 let container = ViewContainer(alignment: alignment, view: label)
-                container.viewContainer.backgroundColor = .secondarySystemBackground
+                container.viewContainer.backgroundColor = .systemBlue
                 container.padding = .init(vertical: 10, horizontal: 20)
                 
                 controller.view.addSubview(container)
@@ -149,5 +151,19 @@ struct ContainerView_Previews: PreviewProvider {
                 return controller
             }
         }
+        .overlay(
+            VStack(alignment: .leading, spacing: 4) {
+                Text("GREEN: ViewContainer")
+                Text("BLUE : ViewContainer.viewContainer")
+                Text("RED  : ViewContainer.view")
+                
+                Text("NOTE : BLUE here has some padding or it has the same bounds as RED")
+                    .padding(.top)
+                    .font(.system(.footnote, design: .monospaced))
+            }
+            .font(.system(.footnote, design: .monospaced))
+            .padding(.horizontal)
+            .offset(y: -100)
+        )
     }
 }
