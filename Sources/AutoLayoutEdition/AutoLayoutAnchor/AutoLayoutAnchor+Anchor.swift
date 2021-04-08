@@ -209,7 +209,7 @@ extension AutoLayoutAnchor.Anchor where AnchorType == AutoLayoutAnchor.XAxisAnch
     }
     
     @discardableResult
-    public func lessThanOrEqualTo(_ view: UIView) -> Self {
+    public func lessOrEqualTo(_ view: UIView) -> Self {
         switch type {
         case .leading: activate(self.view.leadingAnchor.constraint(lessThanOrEqualTo: view.leadingAnchor))
         case .trailing: activate(self.view.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor))
@@ -219,7 +219,7 @@ extension AutoLayoutAnchor.Anchor where AnchorType == AutoLayoutAnchor.XAxisAnch
     }
     
     @discardableResult
-    public func lessThanOrEqualTo(_ guide: UILayoutGuide) -> Self {
+    public func lessOrEqualTo(_ guide: UILayoutGuide) -> Self {
         switch type {
         case .leading: activate(view.leadingAnchor.constraint(lessThanOrEqualTo: guide.leadingAnchor))
         case .trailing: activate(view.trailingAnchor.constraint(lessThanOrEqualTo: guide.trailingAnchor))
@@ -229,7 +229,7 @@ extension AutoLayoutAnchor.Anchor where AnchorType == AutoLayoutAnchor.XAxisAnch
     }
     
     @discardableResult
-    public func lessThanOrEqualTo(_ anchor: Self) -> Self {
+    public func lessOrEqualTo(_ anchor: Self) -> Self {
         switch (type, anchor.type) {
         case (.leading, .leading): activate(view.leadingAnchor.constraint(lessThanOrEqualTo: anchor.view.leadingAnchor))
         case (.leading, .trailing): activate(view.leadingAnchor.constraint(lessThanOrEqualTo: anchor.view.trailingAnchor))
@@ -247,7 +247,7 @@ extension AutoLayoutAnchor.Anchor where AnchorType == AutoLayoutAnchor.XAxisAnch
     }
     
     @discardableResult
-    public func greaterThanOrEqualTo(_ view: UIView) -> Self {
+    public func greaterOrEqualTo(_ view: UIView) -> Self {
         switch type {
         case .leading: activate(self.view.leadingAnchor.constraint(greaterThanOrEqualTo: view.leadingAnchor))
         case .trailing: activate(self.view.trailingAnchor.constraint(greaterThanOrEqualTo: view.trailingAnchor))
@@ -257,7 +257,7 @@ extension AutoLayoutAnchor.Anchor where AnchorType == AutoLayoutAnchor.XAxisAnch
     }
     
     @discardableResult
-    public func greaterThanOrEqualTo(_ guide: UILayoutGuide) -> Self {
+    public func greaterOrEqualTo(_ guide: UILayoutGuide) -> Self {
         switch type {
         case .leading: activate(view.leadingAnchor.constraint(greaterThanOrEqualTo: guide.leadingAnchor))
         case .trailing: activate(view.trailingAnchor.constraint(greaterThanOrEqualTo: guide.trailingAnchor))
@@ -267,7 +267,7 @@ extension AutoLayoutAnchor.Anchor where AnchorType == AutoLayoutAnchor.XAxisAnch
     }
     
     @discardableResult
-    public func greaterThanOrEqualTo(_ anchor: Self) -> Self {
+    public func greaterOrEqualTo(_ anchor: Self) -> Self {
         switch (type, anchor.type) {
         case (.leading, .leading): activate(view.leadingAnchor.constraint(greaterThanOrEqualTo: anchor.view.leadingAnchor))
         case (.leading, .trailing): activate(view.leadingAnchor.constraint(greaterThanOrEqualTo: anchor.view.trailingAnchor))
@@ -363,7 +363,7 @@ extension AutoLayoutAnchor.Anchor where AnchorType == AutoLayoutAnchor.YAxisAnch
     }
     
     @discardableResult
-    public func lessThanOrEqualTo(_ view: UIView) -> Self {
+    public func lessOrEqualTo(_ view: UIView) -> Self {
         switch type {
         case .top: activate(self.view.topAnchor.constraint(lessThanOrEqualTo: view.topAnchor))
         case .bottom: activate(self.view.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor))
@@ -375,18 +375,18 @@ extension AutoLayoutAnchor.Anchor where AnchorType == AutoLayoutAnchor.YAxisAnch
     }
     
     @discardableResult
-    public func lessThanOrEqualTo(_ guide: UILayoutGuide) -> Self {
+    public func lessOrEqualTo(_ guide: UILayoutGuide) -> Self {
         switch type {
         case .top: activate(view.topAnchor.constraint(lessThanOrEqualTo: guide.topAnchor))
         case .bottom: activate(view.bottomAnchor.constraint(lessThanOrEqualTo: guide.bottomAnchor))
         case .centerY: activate(view.centerYAnchor.constraint(lessThanOrEqualTo: guide.centerYAnchor))
-        case .firstBaseline, .lastBaseline: print("⚠️ cannot anchor \(type) using func lessThanOrEqualTo(_ guide: UILayoutGuide) ⚠️")
+        case .firstBaseline, .lastBaseline: print("⚠️ cannot anchor \(type) using func lessOrEqualTo(_ guide: UILayoutGuide) ⚠️")
         }
         return self
     }
     
     @discardableResult
-    public func lessThanOrEqualTo(_ anchor: Self) -> Self {
+    public func lessOrEqualTo(_ anchor: Self) -> Self {
         switch (type, anchor.type) {
         case (.top, .top): activate(view.topAnchor.constraint(lessThanOrEqualTo: anchor.view.topAnchor))
         case (.top, .bottom): activate(view.topAnchor.constraint(lessThanOrEqualTo: anchor.view.bottomAnchor))
@@ -422,7 +422,7 @@ extension AutoLayoutAnchor.Anchor where AnchorType == AutoLayoutAnchor.YAxisAnch
     }
     
     @discardableResult
-    public func greaterThanOrEqualTo(_ view: UIView) -> Self {
+    public func greaterOrEqualTo(_ view: UIView) -> Self {
         switch type {
         case .top: activate(self.view.topAnchor.constraint(greaterThanOrEqualTo: view.topAnchor))
         case .bottom: activate(self.view.bottomAnchor.constraint(greaterThanOrEqualTo: view.bottomAnchor))
@@ -434,18 +434,18 @@ extension AutoLayoutAnchor.Anchor where AnchorType == AutoLayoutAnchor.YAxisAnch
     }
     
     @discardableResult
-    public func greaterThanOrEqualTo(_ guide: UILayoutGuide) -> Self {
+    public func greaterOrEqualTo(_ guide: UILayoutGuide) -> Self {
         switch type {
         case .top: activate(view.topAnchor.constraint(greaterThanOrEqualTo: guide.topAnchor))
         case .bottom: activate(view.bottomAnchor.constraint(greaterThanOrEqualTo: guide.bottomAnchor))
         case .centerY: activate(view.centerYAnchor.constraint(greaterThanOrEqualTo: guide.centerYAnchor))
-        case .firstBaseline, .lastBaseline: print("⚠️ cannot anchor \(type) using func lessThanOrEqualTo(_ guide: UILayoutGuide) ⚠️")
+        case .firstBaseline, .lastBaseline: print("⚠️ cannot anchor \(type) using func lessOrEqualTo(_ guide: UILayoutGuide) ⚠️")
         }
         return self
     }
     
     @discardableResult
-    public func greaterThanOrEqualTo(_ anchor: Self) -> Self {
+    public func greaterOrEqualTo(_ anchor: Self) -> Self {
         switch (type, anchor.type) {
         case (.top, .top): activate(view.topAnchor.constraint(greaterThanOrEqualTo: anchor.view.topAnchor))
         case (.top, .bottom): activate(view.topAnchor.constraint(greaterThanOrEqualTo: anchor.view.bottomAnchor))
@@ -558,7 +558,7 @@ extension AutoLayoutAnchor.Anchor where AnchorType == AutoLayoutAnchor.Dimension
     }
     
     @discardableResult
-    public func lessThanOrEqualTo(_ constant: CGFloat) -> Self {
+    public func lessOrEqualTo(_ constant: CGFloat) -> Self {
         switch type {
         case .width: activate(view.widthAnchor.constraint(lessThanOrEqualToConstant: constant))
         case .height: activate(view.heightAnchor.constraint(lessThanOrEqualToConstant: constant))
@@ -567,7 +567,7 @@ extension AutoLayoutAnchor.Anchor where AnchorType == AutoLayoutAnchor.Dimension
     }
     
     @discardableResult
-    public func lessThanOrEqualTo(_ view: UIView) -> Self {
+    public func lessOrEqualTo(_ view: UIView) -> Self {
         switch type {
         case .width: activate(self.view.widthAnchor.constraint(lessThanOrEqualTo: view.widthAnchor))
         case .height: activate(self.view.heightAnchor.constraint(lessThanOrEqualTo: view.heightAnchor))
@@ -576,7 +576,7 @@ extension AutoLayoutAnchor.Anchor where AnchorType == AutoLayoutAnchor.Dimension
     }
     
     @discardableResult
-    public func lessThanOrEqualTo(_ guide: UILayoutGuide) -> Self {
+    public func lessOrEqualTo(_ guide: UILayoutGuide) -> Self {
         switch type {
         case .width: activate(view.widthAnchor.constraint(lessThanOrEqualTo: guide.widthAnchor))
         case .height: activate(view.heightAnchor.constraint(lessThanOrEqualTo: guide.heightAnchor))
@@ -585,7 +585,7 @@ extension AutoLayoutAnchor.Anchor where AnchorType == AutoLayoutAnchor.Dimension
     }
     
     @discardableResult
-    public func lessThanOrEqualTo(_ anchor: Self) -> Self {
+    public func lessOrEqualTo(_ anchor: Self) -> Self {
         switch (type, anchor.type) {
         case (.width, .width): activate(view.widthAnchor.constraint(lessThanOrEqualTo: anchor.view.widthAnchor))
         case (.width, .height): activate(view.widthAnchor.constraint(lessThanOrEqualTo: anchor.view.heightAnchor))
@@ -597,7 +597,7 @@ extension AutoLayoutAnchor.Anchor where AnchorType == AutoLayoutAnchor.Dimension
     }
     
     @discardableResult
-    public func greaterThanOrEqualTo(_ constant: CGFloat) -> Self {
+    public func greaterOrEqualTo(_ constant: CGFloat) -> Self {
         switch type {
         case .width: activate(view.widthAnchor.constraint(greaterThanOrEqualToConstant: constant))
         case .height: activate(view.heightAnchor.constraint(greaterThanOrEqualToConstant: constant))
@@ -606,7 +606,7 @@ extension AutoLayoutAnchor.Anchor where AnchorType == AutoLayoutAnchor.Dimension
     }
     
     @discardableResult
-    public func greaterThanOrEqualTo(_ view: UIView) -> Self {
+    public func greaterOrEqualTo(_ view: UIView) -> Self {
         switch type {
         case .width: activate(self.view.widthAnchor.constraint(greaterThanOrEqualTo: view.widthAnchor))
         case .height: activate(self.view.heightAnchor.constraint(greaterThanOrEqualTo: view.heightAnchor))
@@ -615,7 +615,7 @@ extension AutoLayoutAnchor.Anchor where AnchorType == AutoLayoutAnchor.Dimension
     }
     
     @discardableResult
-    public func greaterThanOrEqualTo(_ guide: UILayoutGuide) -> Self {
+    public func greaterOrEqualTo(_ guide: UILayoutGuide) -> Self {
         switch type {
         case .width: activate(view.widthAnchor.constraint(greaterThanOrEqualTo: guide.widthAnchor))
         case .height: activate(view.heightAnchor.constraint(greaterThanOrEqualTo: guide.heightAnchor))
@@ -624,7 +624,7 @@ extension AutoLayoutAnchor.Anchor where AnchorType == AutoLayoutAnchor.Dimension
     }
     
     @discardableResult
-    public func greaterThanOrEqualTo(_ anchor: Self) -> Self {
+    public func greaterOrEqualTo(_ anchor: Self) -> Self {
         switch (type, anchor.type) {
         case (.width, .width): activate(view.widthAnchor.constraint(greaterThanOrEqualTo: anchor.view.widthAnchor))
         case (.width, .height): activate(view.widthAnchor.constraint(greaterThanOrEqualTo: anchor.view.heightAnchor))
