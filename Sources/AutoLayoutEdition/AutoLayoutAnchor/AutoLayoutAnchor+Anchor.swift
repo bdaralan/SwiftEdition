@@ -634,4 +634,44 @@ extension AutoLayoutAnchor.Anchor where AnchorType == AutoLayoutAnchor.Dimension
         }
         return self
     }
+    
+    /// Set view's content hugging priority.
+    @discardableResult
+    public func hugging(_ priority: AutoLayoutAnchor.AnchorPriority) -> Self {
+        switch type {
+        case .width: view.setContentHuggingPriority(.init(priority.value), for: .horizontal)
+        case .height: view.setContentHuggingPriority(.init(priority.value), for: .vertical)
+        }
+        return self
+    }
+    
+    /// Set view's content hugging priority.
+    @discardableResult
+    public func hugging(_ priority: Float) -> Self {
+        switch type {
+        case .width: view.setContentHuggingPriority(.init(priority), for: .horizontal)
+        case .height: view.setContentHuggingPriority(.init(priority), for: .vertical)
+        }
+        return self
+    }
+    
+    /// Set view's content compression resistance priority.
+    @discardableResult
+    public func uncompressed(_ priority: AutoLayoutAnchor.AnchorPriority) -> Self {
+        switch type {
+        case .width: view.setContentCompressionResistancePriority(.init(priority.value), for: .horizontal)
+        case .height: view.setContentCompressionResistancePriority(.init(priority.value), for: .vertical)
+        }
+        return self
+    }
+    
+    /// Set view's content compression resistance priority.
+    @discardableResult
+    public func uncompressed(_ priority: Float) -> Self {
+        switch type {
+        case .width: view.setContentCompressionResistancePriority(.init(priority), for: .horizontal)
+        case .height: view.setContentCompressionResistancePriority(.init(priority), for: .vertical)
+        }
+        return self
+    }
 }

@@ -254,6 +254,28 @@ final class AutoLayoutAnchorTests: XCTestCase {
         XCTAssertEqual(view2.bounds.height, 80)
     }
     
+    func testWidthHeightHugging() {
+        view1.anchor.width.hugging(.high)
+        view1.anchor.width.uncompressed(.required)
+        
+        view2.anchor.height.hugging(.low)
+        view2.anchor.height.uncompressed(.high)
+        
+        view3.anchor.width.hugging(100)
+        view3.anchor.height.uncompressed(200)
+        
+        canvas.layoutIfNeeded()
+        
+        XCTAssertEqual(view1.contentHuggingPriority(for: .horizontal), .defaultHigh)
+        XCTAssertEqual(view1.contentCompressionResistancePriority(for: .horizontal), .required)
+        
+        XCTAssertEqual(view2.contentHuggingPriority(for: .vertical), .defaultLow)
+        XCTAssertEqual(view2.contentCompressionResistancePriority(for: .vertical), .defaultHigh)
+        
+        XCTAssertEqual(view3.contentHuggingPriority(for: .horizontal), .init(100))
+        XCTAssertEqual(view3.contentCompressionResistancePriority(for: .vertical), .init(200))
+    }
+    
     func testPinToView() {
         view1.anchor.pinTo(canvas)
         
