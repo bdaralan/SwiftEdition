@@ -16,13 +16,13 @@ extension AutoLayoutAnchor {
         /// This value is `nil` if the anchor has not been set.
         public var constraint: NSLayoutConstraint? { properties.constraint }
         
-        fileprivate let properties = Properties()
+        private let properties = Properties()
         
-        fileprivate class Properties {
-            fileprivate var constraint: NSLayoutConstraint?
+        private class Properties {
+            var constraint: NSLayoutConstraint?
         }
         
-        fileprivate func activate(_ constraint: NSLayoutConstraint) {
+        private func activate(_ constraint: NSLayoutConstraint) {
             view.translatesAutoresizingMaskIntoConstraints = false
             properties.constraint?.isActive = false
             properties.constraint = constraint
