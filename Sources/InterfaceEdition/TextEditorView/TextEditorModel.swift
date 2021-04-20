@@ -3,12 +3,17 @@ import UIKit
 
 /// - Tag: TextEditorModel
 ///
-public class TextEditorModel: ObservableObject {
+public final class TextEditorModel: ObservableObject {
     
     @Published public var header = Header()
+    
     @Published public var field = Field()
+    
     @Published public var counter = Counter()
+    
     public var handler = Handler()
+    
+    public init() {}
 }
 
 

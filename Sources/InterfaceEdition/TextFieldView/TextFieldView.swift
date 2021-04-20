@@ -6,7 +6,7 @@ import AutoLayoutEdition
 ///
 public struct TextFieldView: View {
     
-    let model: TextFieldModel
+    @ObservedObject var model: TextFieldModel
     
     public init(model: TextFieldModel) {
         self.model = model
