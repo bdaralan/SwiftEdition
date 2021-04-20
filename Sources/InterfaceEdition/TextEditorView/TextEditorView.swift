@@ -40,9 +40,9 @@ extension TextEditorView {
                     .font(Font.title3.weight(.bold))
                 Spacer()
                 HStack(spacing: 12) {
-                    Button(LocalizedStringKey(header.cancel), action: handler.onCancel)
+                    Button(LocalizedStringKey(header.cancel), action: handler.onCancel ?? {})
                         .font(.body)
-                    Button(LocalizedStringKey(header.submit), action: handler.onSubmit)
+                    Button(LocalizedStringKey(header.submit), action: handler.onCommit ?? {})
                         .font(Font.body.weight(.bold))
                 }
             }

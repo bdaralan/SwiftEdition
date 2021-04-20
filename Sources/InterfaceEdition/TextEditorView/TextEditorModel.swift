@@ -49,7 +49,7 @@ extension TextEditorModel {
     }
     
     public struct Handler {
-        public var onCancel: () -> Void = {}
-        public var onSubmit: () -> Void = {}
+        public var onCancel: (() -> Void)?
+        public var onCommit: (() -> Void)?
     }
 }
