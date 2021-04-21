@@ -14,8 +14,6 @@ public struct Render<ContentA, ContentB, Value>: View where ContentA: View, Cont
     public var body: some View {
         if ifContentCondition, let content = ifContent {
             content()
-        } else if let contentB = contentB {
-            contentB()
         } else if let value = mapContentValue, let content = mapContent {
             content(value)
         } else if let contentB = contentB {
