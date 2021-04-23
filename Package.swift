@@ -10,6 +10,7 @@ let package = Package(
     products: [
         .library(name: "SwiftEdition", targets: ["SwiftEdition"]),
         .library(name: "AutoLayoutEdition", targets: ["AutoLayoutEdition"]),
+        .library(name: "BuilderEdition", targets: ["BuilderEdition"]),
         .library(name: "ClosureEdition", targets: ["ClosureEdition"]),
         .library(name: "CombineEdition", targets: ["CombineEdition"]),
         .library(name: "InterfaceEdition", targets: ["InterfaceEdition"])
@@ -17,10 +18,12 @@ let package = Package(
     targets: [
         .target(name: "SwiftEdition", dependencies: ["AutoLayoutEdition", "CombineEdition", "InterfaceEdition", "ClosureEdition"]),
         .target(name: "AutoLayoutEdition"),
+        .target(name: "BuilderEdition"),
         .target(name: "ClosureEdition"),
         .target(name: "CombineEdition"),
         .target(name: "InterfaceEdition", dependencies: ["AutoLayoutEdition", "CombineEdition", "ClosureEdition"]),
         .testTarget(name: "AutoLayoutEditionTests", dependencies: ["AutoLayoutEdition"]),
+        .testTarget(name: "BuilderEditionTests", dependencies: ["BuilderEdition"]),
         .testTarget(name: "ClosureEditionTests", dependencies: ["ClosureEdition"]),
         .testTarget(name: "InterfaceEditionTests", dependencies: ["InterfaceEdition"]),
     ]
