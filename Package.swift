@@ -16,12 +16,12 @@ let package = Package(
         .library(name: "InterfaceEdition", targets: ["InterfaceEdition"])
     ],
     targets: [
-        .target(name: "SwiftEdition", dependencies: ["AutoLayoutEdition", "CombineEdition", "InterfaceEdition", "ClosureEdition"]),
+        .target(name: "SwiftEdition", dependencies: ["AutoLayoutEdition", "BuilderEdition", "CombineEdition", "InterfaceEdition", "ClosureEdition"]),
         .target(name: "AutoLayoutEdition"),
         .target(name: "BuilderEdition"),
         .target(name: "ClosureEdition"),
         .target(name: "CombineEdition"),
-        .target(name: "InterfaceEdition", dependencies: ["AutoLayoutEdition", "CombineEdition", "ClosureEdition"]),
+        .target(name: "InterfaceEdition", dependencies: ["AutoLayoutEdition", "BuilderEdition", "CombineEdition", "ClosureEdition"]),
         .testTarget(name: "AutoLayoutEditionTests", dependencies: ["AutoLayoutEdition"]),
         .testTarget(name: "BuilderEditionTests", dependencies: ["BuilderEdition"]),
         .testTarget(name: "ClosureEditionTests", dependencies: ["ClosureEdition"]),

@@ -1,4 +1,5 @@
 import AutoLayoutEdition
+import BuilderEdition
 import ClosureEdition
 import CombineEdition
 import InterfaceEdition
@@ -20,6 +21,12 @@ public typealias AutoLayoutYAxisAnchor = AutoLayoutEdition.AutoLayoutYAxisAnchor
 
 /// A typealias to [AutoLayoutDimensionAnchor](x-source-tag://AutoLayoutDimensionAnchor)
 public typealias AutoLayoutDimensionAnchor = AutoLayoutEdition.AutoLayoutDimensionAnchor
+
+
+// MARK: - AutoLayoutEdition
+
+/// A typealias to [ObjectBuilder](x-source-tag://ObjectBuilder)
+public typealias ObjectBuilder = BuilderEdition.ObjectBuilder
 
 
 // MARK: - ClosureEdition

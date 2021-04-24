@@ -1,6 +1,8 @@
 import Foundation
 
 
+/// - Tag: ObjectBuilder
+///
 @_functionBuilder
 public struct ObjectBuilder {
     
