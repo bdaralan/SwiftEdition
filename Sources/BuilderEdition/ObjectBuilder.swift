@@ -3,7 +3,7 @@ import Foundation
 
 /// - Tag: ObjectBuilder
 ///
-@_functionBuilder
+@resultBuilder
 public struct ObjectBuilder {
     
     public static func buildBlock<Object>() -> [Object] { [] }
