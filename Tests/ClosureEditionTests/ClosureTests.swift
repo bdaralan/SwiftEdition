@@ -86,21 +86,19 @@ final class ClosureTests: XCTestCase {
     }
     
     func testGuardWithTupleArgument() {
-        let argumentType = (item: String?, pokemon: Pokemon).self
-        
-        let giveItem = Closure.weak(trainer, argument: argumentType) { trainer, argument in
-            trainer.give(item: argument.item, to: argument.pokemon)
+        let giveItem: (String?, Pokemon) -> Void = Closure.weak(trainer) { trainer, item, pokemon in
+            trainer.give(item: item, to: pokemon)
         }
         
         XCTAssertNil(pikachu.item)
         
-        giveItem(("ThunderStone", pikachu))
+        giveItem("ThunderStone", pikachu)
         
         XCTAssertEqual(pikachu.item, "ThunderStone")
         
         trainer = nil
         
-        giveItem((nil, pikachu))
+        giveItem(nil, pikachu)
         
         XCTAssertEqual(pikachu.item, "ThunderStone")
     }
