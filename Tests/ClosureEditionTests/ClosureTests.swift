@@ -43,7 +43,7 @@ final class ClosureTests: XCTestCase {
     }
     
     func testGuardWithoutArgument() {
-        let giveEverStone = Closure.weak(trainer) { trainer in
+        let giveEverStone = weak(trainer) { trainer in
             for pokemon in trainer.pokemons {
                 trainer.give(item: "EverStone", to: pokemon)
             }
@@ -68,7 +68,7 @@ final class ClosureTests: XCTestCase {
     }
     
     func testGuardWithArgument() {
-        let levelUp = Closure.weak(trainer) { trainer, pokemon in
+        let levelUp = weak(trainer) { trainer, pokemon in
             trainer.levelUp(pokemon: pokemon)
         }
         
@@ -86,7 +86,7 @@ final class ClosureTests: XCTestCase {
     }
     
     func testGuardWithTupleArgument() {
-        let giveItem: (String?, Pokemon) -> Void = Closure.weak(trainer) { trainer, item, pokemon in
+        let giveItem: (String?, Pokemon) -> Void = weak(trainer) { trainer, item, pokemon in
             trainer.give(item: item, to: pokemon)
         }
         

@@ -31,9 +31,6 @@ public typealias ObjectBuilder = BuilderEdition.ObjectBuilder
 
 // MARK: - ClosureEdition
 
-/// A typealias to [Closure](x-source-tag://Closure)
-public typealias Closure = ClosureEdition.Closure
-
 
 // MARK: - CombineEdition
 
