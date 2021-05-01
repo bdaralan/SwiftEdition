@@ -4,7 +4,7 @@ import BuilderEdition
 
 extension Text {
 
-    public static func build(@ObjectBuilder builder: () -> [Text]) -> Text {
+    public static func concatenate(@ResultBuilder builder: () -> [Text]) -> Text {
         builder().reduce(Text(""), +)
     }
 }
@@ -12,7 +12,7 @@ extension Text {
 
 struct TextBuilder_Previews: PreviewProvider {
     static var previews: some View {
-        Text.build {
+        Text.concatenate {
             Text("Hello").foregroundColor(.red)
             Text(" ").foregroundColor(.blue)
             Text("World").foregroundColor(.green)

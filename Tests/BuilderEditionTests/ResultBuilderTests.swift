@@ -2,10 +2,10 @@ import XCTest
 @testable import BuilderEdition
 
 
-final class ObjectBuilderTests: XCTestCase {
+final class ResultBuilderTests: XCTestCase {
     
     func testArrayMethod() {
-        let array = ObjectBuilder.array {
+        let array = ResultBuilder.array {
             "A"
             "B"
             "C"
@@ -14,7 +14,7 @@ final class ObjectBuilderTests: XCTestCase {
     }
     
     func testSetMethod() {
-        let set = ObjectBuilder.set {
+        let set = ResultBuilder.set {
             "A"
             "B"
             "C"

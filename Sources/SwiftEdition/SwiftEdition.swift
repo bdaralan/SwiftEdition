@@ -25,8 +25,8 @@ public typealias AutoLayoutDimensionAnchor = AutoLayoutEdition.AutoLayoutDimensi
 
 // MARK: - AutoLayoutEdition
 
-/// A typealias to [ObjectBuilder](x-source-tag://ObjectBuilder)
-public typealias ObjectBuilder = BuilderEdition.ObjectBuilder
+/// A typealias to [ResultBuilder](x-source-tag://ResultBuilder)
+public typealias ResultBuilder = BuilderEdition.ResultBuilder
 
 
 // MARK: - ClosureEdition
