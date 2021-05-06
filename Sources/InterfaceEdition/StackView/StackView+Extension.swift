@@ -3,17 +3,19 @@ import UIKit
 
 extension UIStackView {
     
-    public convenience init(_ axis: NSLayoutConstraint.Axis, spacing: CGFloat = 0, views: [UIView]) {
+    public convenience init(_ axis: NSLayoutConstraint.Axis, alignment: UIStackView.Alignment = .fill, spacing: CGFloat = 0, views: [UIView]) {
         self.init()
         self.axis = axis
         self.spacing = spacing
+        self.alignment = alignment
         views.forEach(addArrangedSubview)
     }
     
-    public convenience init(_ axis: NSLayoutConstraint.Axis, spacing: CGFloat = 0, views: UIView...) {
+    public convenience init(_ axis: NSLayoutConstraint.Axis, alignment: UIStackView.Alignment = .fill, spacing: CGFloat = 0, views: UIView...) {
         self.init()
         self.axis = axis
         self.spacing = spacing
+        self.alignment = alignment
         views.forEach(addArrangedSubview)
     }
 }

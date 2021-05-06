@@ -8,7 +8,6 @@ let package = Package(
     name: "SwiftEdition",
     platforms: [.iOS(.v14)],
     products: [
-        .library(name: "SwiftEdition", targets: ["SwiftEdition"]),
         .library(name: "AutoLayoutEdition", targets: ["AutoLayoutEdition"]),
         .library(name: "BuilderEdition", targets: ["BuilderEdition"]),
         .library(name: "ClosureEdition", targets: ["ClosureEdition"]),
@@ -16,7 +15,6 @@ let package = Package(
         .library(name: "InterfaceEdition", targets: ["InterfaceEdition"])
     ],
     targets: [
-        .target(name: "SwiftEdition", dependencies: ["AutoLayoutEdition", "BuilderEdition", "CombineEdition", "InterfaceEdition", "ClosureEdition"]),
         .target(name: "AutoLayoutEdition"),
         .target(name: "BuilderEdition"),
         .target(name: "ClosureEdition"),

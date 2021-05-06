@@ -217,6 +217,8 @@ extension UIView {
     
     /// A method used to setup constraint anchor.
     ///
+    /// For sample codes see documentation on anchor property.
+    ///
     /// - Parameter activate: The given anchor is the receiver's anchor.
     public func anchor(activate: (AutoLayoutAnchor) -> Void) {
         activate(anchor)

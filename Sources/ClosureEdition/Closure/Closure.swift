@@ -1,7 +1,4 @@
-import Foundation
-
-
-/// Create a closure that capture weak object.
+/// Create a closure that captures weak object.
 ///
 /// - Parameters:
 ///   - object: The object to capture.
@@ -14,7 +11,7 @@ public func weak<Object>(_ object: Object, perform: @escaping (Object) -> Void) 
     }
 }
 
-/// Create a closure that capture weak object.
+/// Create a closure that captures weak object.
 ///
 /// - Parameters:
 ///   - object: The object to capture.
@@ -27,7 +24,7 @@ public func weak<Object, Value>(_ object: Object, perform: @escaping (Object, Va
     }
 }
 
-/// Create a closure that capture weak object.
+/// Create a closure that captures weak object.
 ///
 /// - Parameters:
 ///   - object: The object to capture.
@@ -40,7 +37,7 @@ public func weak<Object, Value1, Value2>(_ object: Object, perform: @escaping (O
     }
 }
 
-/// Create a closure that capture weak object.
+/// Create a closure that captures weak object.
 ///
 /// - Parameters:
 ///   - object: The object to capture.
@@ -53,7 +50,7 @@ public func weak<Object, Value1, Value2, Value3>(_ object: Object, perform: @esc
     }
 }
 
-/// Create a closure that capture weak object.
+/// Create a closure that captures weak object.
 ///
 /// - Parameters:
 ///   - object: The object to capture.
