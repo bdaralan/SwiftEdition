@@ -8,7 +8,7 @@ extension View {
         onReceive(publisher, perform: { binding.wrappedValue = $0 })
     }
     
-    public func onChange<Value>(_ value: Value, assignTo binding: Binding<Value>) -> some View where Value: Equatable {
+    public func onChange<Value>(of value: Value, assignTo binding: Binding<Value>) -> some View where Value: Equatable {
         onChange(of: value, perform: { binding.wrappedValue = $0 })
     }
 }
