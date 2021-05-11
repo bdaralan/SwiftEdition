@@ -1,8 +1,6 @@
 import Foundation
 
 
-/// - Tag: ResultBuilder
-///
 @resultBuilder
 public struct ResultBuilder {
     

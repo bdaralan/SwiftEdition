@@ -2,8 +2,6 @@ import UIKit
 
 
 /// An object used to setup layout anchor constraints.
-/// 
-/// - Tag: AutoLayoutAnchor
 ///
 public struct AutoLayoutAnchor {
     
@@ -211,8 +209,6 @@ extension UIView {
     ///     anchor.pinTo(superview)
     ///     anchor.leading.storeIn(&variable)
     /// ```
-    ///
-    /// - Tag: AutoLayoutAnchor.anchor
     public var anchor: AutoLayoutAnchor { .init(view: self) }
     
     /// A method used to setup constraint anchor.

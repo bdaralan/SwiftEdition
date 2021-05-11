@@ -1,8 +1,6 @@
 import SwiftUI
 
 
-/// - Tag: TextFieldTagItem
-///
 public struct TextFieldTagItem: TextFieldItem {
     
     public let id: String

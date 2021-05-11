@@ -4,8 +4,6 @@ import Combine
 
 /// A state model used to managed `TextFieldView`.
 ///
-/// - Tag: TextFieldModel
-///
 public final class TextFieldModel: ObservableObject {
     
     @Published public var header = Header()

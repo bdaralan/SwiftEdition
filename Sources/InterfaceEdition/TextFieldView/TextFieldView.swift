@@ -2,8 +2,6 @@ import SwiftUI
 import AutoLayoutEdition
 
 
-/// - Tag: TextFieldView
-///
 public struct TextFieldView: View {
     
     @ObservedObject var model: TextFieldModel
@@ -150,8 +148,6 @@ extension TextFieldView {
 }
 
 
-/// - Tag: TextFieldViewController
-///
 public class TextFieldViewController: UIViewController {
     
     public let model: TextFieldModel

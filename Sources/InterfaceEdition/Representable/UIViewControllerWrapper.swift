@@ -1,8 +1,6 @@
 import SwiftUI
 
 
-/// - Tag: UIViewControllerWrapper
-///
 public struct UIViewControllerWrapper<ViewController>: UIViewControllerRepresentable where ViewController: UIViewController {
     
     private let onMake: () -> ViewController

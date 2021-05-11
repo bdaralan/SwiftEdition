@@ -7,8 +7,6 @@ import AutoLayoutEdition
 /// General usage is to override `setup()` or `setupContainer()` and call `super`.
 /// Then assign a view to `container.view`.
 ///
-/// - Tag: CollectionCell
-///
 open class CollectionCell: UICollectionViewCell {
     
     public let container = ViewContainer(alignment: .fill)

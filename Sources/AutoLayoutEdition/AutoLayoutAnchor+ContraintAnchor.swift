@@ -3,8 +3,6 @@ import UIKit
 
 // MARK: - Protocol & Extension
 
-/// - Tag: AutoLayoutConstraintAnchor
-///
 public protocol AutoLayoutConstraintAnchor {
     
     var constraint: NSLayoutConstraint? { get }
@@ -36,14 +34,8 @@ extension Array where Element == AutoLayoutConstraintAnchor {
 
 // MARK: - Typealias
 
-/// - Tag: AutoLayoutXAxisAnchor
-///
 public typealias AutoLayoutXAxisAnchor = AutoLayoutAnchor.Anchor<AutoLayoutAnchor.XAxisAnchor>
 
-/// - Tag: AutoLayoutYAxisAnchor
-///
 public typealias AutoLayoutYAxisAnchor = AutoLayoutAnchor.Anchor<AutoLayoutAnchor.YAxisAnchor>
 
-/// - Tag: AutoLayoutDimensionAnchor
-///
 public typealias AutoLayoutDimensionAnchor = AutoLayoutAnchor.Anchor<AutoLayoutAnchor.DimensionAnchor>
