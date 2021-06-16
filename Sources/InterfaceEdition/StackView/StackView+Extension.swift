@@ -57,15 +57,7 @@ extension NSDirectionalEdgeInsets {
         self.init(top: vertical, leading: horizontal, bottom: vertical, trailing: horizontal)
     }
     
-    public init(_ all: CGFloat) {
-        self.init(top: all, leading: all, bottom: all, trailing: all)
-    }
-    
-    public init(top: CGFloat, bottom: CGFloat) {
-        self.init(top: top, leading: 0, bottom: bottom, trailing: 0)
-    }
-    
-    public init(leading: CGFloat, trailing: CGFloat) {
-        self.init(top: 0, leading: leading, bottom: 0, trailing: trailing)
+    public init(_ edges: CGFloat) {
+        self.init(top: edges, leading: edges, bottom: edges, trailing: edges)
     }
 }
