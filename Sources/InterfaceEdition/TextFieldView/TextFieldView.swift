@@ -1,52 +1,57 @@
 import SwiftUI
-import AutoLayoutEdition
 
 
+/// A text field view used to take input from keyboard.
+///
+/// The view supports header, field, prompt, and a list of action items.
 public struct TextFieldView: View {
     
-    @ObservedObject var model: TextFieldModel
+    @Binding var model: TextFieldViewModel
+    private let items: [TextFieldViewItem]
     
-    public init(model: TextFieldModel) {
-        self.model = model
+    private let delegate = Delegate()
+    
+    /// Create the view without items.
+    public init(model: Binding<TextFieldViewModel>) {
+        _model = model
+        self.items = []
+    }
+    
+    /// Create the view with items.
+    public init(model: Binding<TextFieldViewModel>, @TextFieldViewItemBuilder items: @escaping () -> [TextFieldViewItem] ) {
+        _model = model
+        self.items = items()
     }
     
     public var body: some View {
         VStack(spacing: 40) {
-            HeaderView()
-            TextField()
+            HeaderView(header: $model.header, delegate: delegate)
+            TextFieldWrapper(model: $model, delegate: delegate)
             Render(if: !model.prompt.text.isEmpty) {
-                PromptView()
+                PromptView(prompt: $model.prompt)
             }
-            ItemGridView().padding(.horizontal, -20)
+            ItemGridView(items: items).padding(.horizontal, -20)
             Spacer()
         }
         .padding(.horizontal, 20)
         .padding(.top, 24)
-        .environmentObject(model)
     }
 }
 
 
-extension TextFieldView.TextField {
-    
-    struct Components {
-        let textField = UITextField()
-    }
-}
-
+// MARK: HeaderView
 
 extension TextFieldView {
     
     struct HeaderView: View {
-        @EnvironmentObject private var model: TextFieldModel
-        private var header: TextFieldModel.Header { model.header }
-        private var handler: TextFieldModel.Handler { model.handler }
+        @Binding var header: TextFieldViewModel.Header
+        let delegate: Delegate
         var body: some View {
             HStack {
                 Text(LocalizedStringKey(header.title))
-                    .font(Font.title3.weight(.bold))
+                    .font(.title3.weight(.bold))
                 Spacer()
-                Button(LocalizedStringKey(header.cancel), action: handler.onCancel ?? {})
+                Button(LocalizedStringKey(header.cancel), action: delegate.onCancel ?? {})
                     .font(.body)
             }
         }
@@ -54,26 +59,33 @@ extension TextFieldView {
 }
 
 
+// MARK: TextField
+
 extension TextFieldView {
     
-    struct TextField: View {
-        @EnvironmentObject private var model: TextFieldModel
-        private var field: TextFieldModel.Field { model.field }
-        private var handler: TextFieldModel.Handler { model.handler }
+    struct TextFieldWrapper: View {
+        @Binding var model: TextFieldViewModel
+        let delegate: Delegate
         @State private var components = Components()
+        private var textField: UITextField { components.textField }
         var body: some View {
             VStack(spacing: 16) {
                 UIViewWrapper(onMake: makeTextField)
+                    .fixedSize(horizontal: false, vertical: true)
                 Rectangle()
-                    .fill(Color(model.field.divider ?? .opaqueSeparator))
+                    .fill(model.field.divider ?? Color(.opaqueSeparator))
                     .frame(height: 0.5)
             }
-            .onReceive(model.$field, perform: update)
-            .onReceive(model.action.publisher, perform: handleAction)
+            .onAppear(perform: setup)
+            .onChange(of: model.field, perform: updateTextField)
+            .onReceive(model.action, perform: handleAction)
+        }
+        
+        private func setup() {
+            updateTextField(with: model.field)
         }
         
         private func makeTextField() -> UITextField {
-            let textField = components.textField
             textField.setContentHuggingPriority(.required, for: .vertical)
             textField.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
             textField.adjustsFontForContentSizeCategory = true
@@ -86,8 +98,7 @@ extension TextFieldView {
             return textField
         }
         
-        private func update(with field: TextFieldModel.Field) {
-            let textField = components.textField
+        private func updateTextField(with field: TextFieldViewModel.Field) {
             if textField.text != field.text {
                 textField.text = field.text
             }
@@ -99,114 +110,216 @@ extension TextFieldView {
         }
         
         private func handleTextChanged() {
-            let textField = components.textField
-            if let formattedText = model.handler.onTextChange {
-                let text = formattedText(textField.text!)
-                textField.text = text
-                model.field.text = text
+            let text = textField.text ?? ""
+            if let replacement = delegate.onTextWillChange {
+                let replacement = replacement(text)
+                textField.text = replacement
+                model.field.text = replacement
             } else {
-                model.field.text = textField.text!
+                model.field.text = text
             }
         }
         
         private func handleReturnKey() {
-            model.handler.onCommit?()
+            delegate.onCommit?()
         }
         
-        private func handleAction(_ actionType: TextFieldModel.Action.ActionType) {
-            switch actionType {
+        private func handleAction(_ request: TextFieldViewModel.Action) {
+            switch request {
             case .shakeTextField: shakeTextField()
             }
         }
         
         private func shakeTextField() {
             let animation = CAKeyframeAnimation(keyPath: "transform.translation.x")
+            let values = [1, -3, -6, -3, 1, 3, 6, 3, 1]
+            animation.values = values
             animation.duration = 0.25
-            animation.values = [1, -3, -6, -3, 1, 3, 6, 3, 1]
             animation.repeatCount = 2
-            components.textField.layer.add(animation, forKey: nil)
-            
+            textField.layer.add(animation, forKey: nil)
+
             let feedback = UINotificationFeedbackGenerator()
             feedback.notificationOccurred(.error)
+        }
+        
+        struct Components {
+            let textField = UITextField()
         }
     }
 }
 
+
+// MARK: PromptView
 
 extension TextFieldView {
     
     struct PromptView: View {
-        @EnvironmentObject private var model: TextFieldModel
-        private var prompt: TextFieldModel.Prompt { model.prompt }
+        @Binding var prompt: TextFieldViewModel.Prompt
         var body: some View {
             Text(LocalizedStringKey(prompt.text))
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .font(.footnote)
-                .foregroundColor(Color(prompt.color ?? .secondaryLabel))
+                .foregroundColor(prompt.color ?? Color(.secondaryLabel))
         }
     }
 }
 
 
-public class TextFieldViewController: UIViewController {
+// MARK: - ItemGridView
+
+extension TextFieldView {
     
-    public let model: TextFieldModel
-    
-    private let content: UIHostingController<TextFieldView>
-    
-    public init(model: TextFieldModel) {
-        self.model = model
-        content = .init(rootView: .init(model: model))
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    public override func viewDidLoad() {
-        super.viewDidLoad()
-        addChild(content)
-        view.addSubview(content.view)
-        content.view.anchor.pinTo(view)
-        content.didMove(toParent: self)
+    struct ItemGridView: View {
+        let items: [TextFieldViewItem]
+        private let rows = [GridItem(.flexible(minimum: 10))]
+        var body: some View {
+            ScrollView(.horizontal, showsIndicators: false) {
+                LazyHGrid(rows: rows, alignment: .top, spacing: 12) {
+                    ForEach(items, id: \.id) { item in
+                        switch item {
+                        case is TextFieldViewButtonItem:
+                            TextFieldView.ButtonItemView(item: item as! TextFieldViewButtonItem)
+                        default: EmptyView()
+                        }
+                    }
+                }
+                .padding(.horizontal, 20)
+                .padding(.bottom, 20)
+                .animation(.spring())
+            }
+        }
     }
 }
 
+
+// MARK: - ButtonItemView
+
+extension TextFieldView {
+    
+    struct ButtonItemView: View {
+        
+        let item: TextFieldViewButtonItem
+        
+        @State private var scale: CGFloat = 1
+        
+        var foreground: Color { item.foreground ?? .accentColor }
+        var background: Color { item.background ?? foreground.opacity(0.1) }
+        
+        var body: some View {
+            ZStack {
+                Text(" ").hidden()
+                HStack(spacing: 8) {
+                    item.icon
+                    Render(if: !item.text.isEmpty) {
+                        Text(LocalizedStringKey(item.text))
+                    }
+                }
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
+            .foregroundColor(foreground)
+            .background(background.cornerRadius(9))
+            .font(.body)
+            .scaleEffect(scale, anchor: .center)
+            .onTapGesture(perform: handleTapGesture)
+        }
+        
+        private func handleTapGesture() {
+            animateTap()
+            item.action()
+        }
+        
+        private func animateTap() {
+            let animation = Animation.spring()
+            $scale.animation(animation).wrappedValue = 0.9
+            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(100)) {
+                $scale.animation(animation).wrappedValue = 1
+            }
+        }
+    }
+}
+
+
+// MARK: Delegate
+
+extension TextFieldView {
+    
+    class Delegate {
+        var onCommit: (() -> Void)?
+        var onCancel: (() -> Void)?
+        var onTextWillChange: ((String) -> String)?
+    }
+    
+    /// An action to perform on commit.
+    public func onCommit(perform action: @escaping () -> Void) -> Self {
+        delegate.onCommit = action
+        return self
+    }
+    
+    /// An action to perform on cancel.
+    public func onCancel(perform action: @escaping () -> Void) -> Self {
+        delegate.onCancel = action
+        return self
+    }
+    
+    /// Implement this method to replace the current text.
+    ///
+    /// This is a good place to do text formatting.
+    public func onTextWillChange(perform action: @escaping (String) -> String) -> Self {
+        delegate.onTextWillChange = action
+        return self
+    }
+}
+
+
+// MARK: - Preview
 
 struct TextFieldView_Previews: PreviewProvider {
-    static let model: TextFieldModel = {
-        let model = TextFieldModel()
-        model.header.title = "Text Input"
-        model.field.text = "Password"
-        model.field.placeholder = "Placeholder"
-        model.prompt.text = "Prompt"
-        
-        var delete = TextFieldTagItem(text: "Delete") { item in
-            model.item.delete(itemID: item.id)
+    struct PreviewContent: View {
+        @State private var model = TextFieldViewModel()
+        @State private var deleted = false
+        @State private var buttonTapCount = 0
+        var securedIcon: String { model.field.isSecureEntry ? "eye" : "eye.slash" }
+        var body: some View {
+            TextFieldView(model: $model) {
+                TextFieldViewButtonItem(id: "shake", text: "Shake") {
+                    model.sendAction(.shakeTextField)
+                }
+                TextFieldViewButtonItem(id: "secured", icon: securedIcon) {
+                    $model.field.isSecureEntry.animation().wrappedValue.toggle()
+                }
+                if deleted {
+                    TextFieldViewButtonItem(id: "undo", text: "Undo") {
+                        deleted = false
+                    }
+                } else {
+                    TextFieldViewButtonItem(id: "delete", text: "Delete", icon: "trash") {
+                        deleted = true
+                    }
+                    .foreground(.red)
+                    .background(.red.opacity(0.1))
+                }
+                TextFieldViewButtonItem(id: "label", text: "Label", action: {})
+                    .foreground(.secondary)
+            }
+            .onTextWillChange { text in
+                "~\(text.replacingOccurrences(of: "~", with: ""))"
+            }
+            .onCommit {
+                model.header.title = model.field.text
+            }
+            .onAppear {
+                model.header.title = "TextFieldView V2"
+                model.field.text = "Secured"
+                model.field.isInitiallyActive = true
+            }
         }
-        delete.image = UIImage(systemName: "trash")
-        delete.foreground = .systemRed
-        delete.background = delete.foreground?.withAlphaComponent(0.1)
-        
-        var noAction = TextFieldTagItem(text: "No Action")
-        
-        let shake = TextFieldTagItem(text: "Shake") { item in
-            model.action.perform(.shakeTextField)
-        }
-        
-        var secure = TextFieldToggleItem(active: false) { item in
-            model.field.isSecureEntry = item.active
-        }
-        secure.images.active = UIImage(systemName: "eye")
-        secure.images.inactive = UIImage(systemName: "eye.slash")
-        secure.backgrounds.active = UIColor.systemRed.withAlphaComponent(0.1)
-        secure.backgrounds.inactive = UIColor.systemGreen.withAlphaComponent(0.1)
-
-        model.item.items = [delete, noAction, shake, secure]
-        return model
-    }()
+    }
+    static let model = TextFieldViewModel()
     static var previews: some View {
-        TextFieldView(model: model)
+        PreviewContent()
+            .preferredColorScheme(.dark)
+        
+        PreviewContent()
     }
 }
