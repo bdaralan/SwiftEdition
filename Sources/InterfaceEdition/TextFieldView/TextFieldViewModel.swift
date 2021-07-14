@@ -30,10 +30,14 @@ public struct TextFieldViewModel {
         public var text = ""
         public var placeholder = ""
         public var isInitiallyActive = true
+        public var isSecureEntry: Bool = false
         public var keyboard: UIKeyboardType = .default
         public var returnKey: UIReturnKeyType = .done
         public var clearButtonMode: UITextField.ViewMode = .whileEditing
-        public var isSecureEntry: Bool = false
+        public var autocorrection: UITextAutocorrectionType = .default
+        public var autocapitalization: UITextAutocapitalizationType = .sentences
+        public var spellChecking: UITextSpellCheckingType = .default
+        public var textContent: UITextContentType?
         public var divider: Color?
         public init() {}
     }

@@ -107,6 +107,10 @@ extension TextFieldView {
             textField.returnKeyType = field.returnKey
             textField.clearButtonMode = field.clearButtonMode
             textField.isSecureTextEntry = field.isSecureEntry
+            textField.autocorrectionType = field.autocorrection
+            textField.autocapitalizationType = field.autocapitalization
+            textField.spellCheckingType = field.spellChecking
+            textField.textContentType = field.textContent
         }
         
         private func handleTextChanged() {
